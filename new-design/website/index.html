@@ -1608,8 +1608,21 @@ document.getElementById('burger').onclick=()=>mm.classList.toggle('open');
 mm.querySelectorAll('a').forEach(a=>a.onclick=()=>mm.classList.remove('open'));
 
 /* ---- reveal ---- */
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
-document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%3*70)+'ms';io.observe(el)});
+function revealAll() {
+  document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+}
+if (!('IntersectionObserver' in window)) {
+  revealAll();
+} else {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .02 });
+  document.querySelectorAll('.rv').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3 * 50) + 'ms';
+    io.observe(el);
+  });
+  setTimeout(revealAll, 200);
+}
 
 /* ---- form → whatsapp ---- */
 document.getElementById('bookForm').addEventListener('submit',e=>{
