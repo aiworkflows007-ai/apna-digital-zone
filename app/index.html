@@ -832,9 +832,9 @@ if (pkgParam && PACKAGES.some(p => p.id === pkgParam)) {
 render();
 
 /* PWA — registers when hosted over http(s); silently skipped on file:// */
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>
+<script>window.ADZ_CHAT_MODE = 'app';</script>
+<script src="./chatbot.js"></script>
 </body>
 </html>
