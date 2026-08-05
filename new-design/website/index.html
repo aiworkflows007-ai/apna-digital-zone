@@ -605,7 +605,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
       </nav>
       <div class="nav-cta">
         <a href="tel:+919386415795" class="btn-nav-call">📞 Call Now</a>
-        <a href="#book" class="btn-nav-date">📅 Check My Date</a>
+        <a href="javascript:void(0)" onclick="selectHireTeam('General Booking Request')" class="btn-nav-date">📅 Check My Date</a>
         <button class="burger" id="burger" aria-label="Menu">☰</button>
       </div>
     </div>
@@ -640,7 +640,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
       cinematic edits — delivered on time, every time.
     </p>
     <div class="hero-actions fu" style="animation-delay:1.12s">
-      <a href="#book" class="btn btn-gold">Check My Wedding Date →</a>
+      <a href="javascript:void(0)" onclick="selectHireTeam('General Booking Request')" class="btn btn-gold">Check My Wedding Date →</a>
       <a href="#films" class="btn btn-ghost">▶ Watch Our Films</a>
     </div>
     <div class="trust fu" style="animation-delay:1.32s">
@@ -758,7 +758,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
         <p>Looking for dedicated candid shooters, licensed 4K drone operators, or our entire 6-member cinematic crew for your wedding, VIP gala, or government project?</p>
       </div>
       <div class="hire-team-btns">
-        <a href="#book" class="btn btn-gold" onclick="selectHireTeam('Full 6-Member Crew')">💼 Hire Crew for Event →</a>
+        <a href="javascript:void(0)" class="btn btn-gold" onclick="selectHireTeam('Full 6-Member Crew')">💼 Hire Crew for Event →</a>
         <a href="https://wa.me/919386415795?text=Hi%20Apna%20Digital%20Zone%2C%20I%20want%20to%20hire%20your%20professional%20photographers%2Fdrone%20pilots" target="_blank" rel="noopener" class="btn btn-ghost">💬 Hire via WhatsApp</a>
       </div>
     </div>
@@ -808,7 +808,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
           <li>Online gallery for 1 year</li>
           <li>Delivery in 25 days</li>
         </ul>
-        <a href="#book" onclick="selectPkgForForm('silver')" class="btn btn-ghost">Check Availability & Book</a>
+        <a href="javascript:void(0)" onclick="selectPkgForForm('silver')" class="btn btn-ghost">Check Availability & Book</a>
       </div>
       <div class="pkg feat rv">
         <div class="pkg-badge">Most Booked</div>
@@ -825,7 +825,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
           <li>Karizma photobook — 30 sheets</li>
           <li>Teaser in 7 days, full delivery in 30</li>
         </ul>
-        <a href="#book" onclick="selectPkgForForm('gold')" class="btn btn-gold">Check Availability & Book</a>
+        <a href="javascript:void(0)" onclick="selectPkgForForm('gold')" class="btn btn-gold">Check Availability & Book</a>
       </div>
       <div class="pkg rv">
         <h3>Diamond</h3>
@@ -840,7 +840,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
           <li>Photobook — 70 Sheets + E-book gallery</li>
           <li>Teaser in 1 week, full delivery in 30-45 days</li>
         </ul>
-        <a href="#book" onclick="selectPkgForForm('diamond')" class="btn btn-gold">Check Availability & Book</a>
+        <a href="javascript:void(0)" onclick="selectPkgForForm('diamond')" class="btn btn-gold">Check Availability & Book</a>
       </div>
       <div class="pkg rv">
         <h3>Platinum</h3>
@@ -856,7 +856,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
           <li>Premium Album (90 Sheets) + Mini book both</li>
           <li>Teaser in 15 days, full delivery in 50-60 days</li>
         </ul>
-        <a href="#book" onclick="selectPkgForForm('platinum')" class="btn btn-ghost">Check Availability & Book</a>
+        <a href="javascript:void(0)" onclick="selectPkgForForm('platinum')" class="btn btn-ghost">Check Availability & Book</a>
       </div>
     </div>
     <p class="pkg-note">Birthday, anniversary, newborn and seminar shoots start at ₹8,999 · Custom packages available on request</p>
@@ -1230,7 +1230,7 @@ document.getElementById('svc').innerHTML=SERVICES.map(s=>`
    <div class="card-body">
      <h3>${s.t}</h3>
      <p>${s.d}</p>
-     <a href="#book" class="card-link">Book This <span>→</span></a>
+     <a href="javascript:void(0)" class="card-link" onclick="selectHireService('${s.t}')">Book This <span>→</span></a>
    </div>
  </article>`).join('');
 
@@ -1257,22 +1257,34 @@ document.getElementById('teamGrid').innerHTML=TEAM.map(m=>`
      <span>${m.r}</span>
      ${m.lead ?
        `<a href="tel:+91${m.p}" class="tm-hire-btn" style="background:rgba(255,255,255,0.06);color:#f5f1e8;border-color:rgba(245,241,232,0.25)">📞 Call Direct (+91 ${m.p})</a>` :
-       `<a href="#book" class="tm-hire-btn" onclick="selectHireSpecialist('${m.n} (${m.r})')">💼 Hire Specialist</a>`
+       `<a href="javascript:void(0)" class="tm-hire-btn" onclick="selectHireSpecialist('${m.n} (${m.r})')">💼 Hire Specialist</a>`
      }
    </div>
  </article>`).join('');
 
-function selectHireSpecialist(specName) {
-  const noteEl = document.getElementById('b_notes');
-  if (noteEl) {
-    noteEl.value = "Hiring Request for Specialist: " + specName + "\n\nRequirements / Event Details: ";
-  }
+function selectHireService(serviceName) {
+  document.getElementById('hm_specialist').value = "Service: " + serviceName;
+  document.getElementById('hireModalSpecTitle').textContent = "Booking Service: " + serviceName;
+  document.getElementById('hireModal').classList.add('open');
 }
+
+function selectHireSpecialist(specName) {
+  document.getElementById('hm_specialist').value = "Specialist: " + specName;
+  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + specName;
+  document.getElementById('hireModal').classList.add('open');
+}
+
 function selectHireTeam(teamType) {
-  const noteEl = document.getElementById('b_notes');
-  if (noteEl) {
-    noteEl.value = "Hiring Request for " + teamType + " for Wedding / Event / Govt Project.\n\nDetails: ";
-  }
+  document.getElementById('hm_specialist').value = "Team/Booking: " + teamType;
+  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + teamType;
+  document.getElementById('hireModal').classList.add('open');
+}
+
+function selectPkgForForm(pkgName) {
+  let displayName = pkgName.charAt(0).toUpperCase() + pkgName.slice(1) + " Package";
+  document.getElementById('hm_specialist').value = "Package: " + displayName;
+  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + displayName;
+  document.getElementById('hireModal').classList.add('open');
 }
 
 /* ---- gallery ---- */
