@@ -435,19 +435,26 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
   .split-img::before{display:none}
 }
 @media(max-width:768px){
+  header{top:10px;padding:0 12px}
+  .hdr-bar{padding:8px 14px;border-radius:30px}
+  .brand-txt b{font-size:17px}
+  .brand-txt span{font-size:7.5px;letter-spacing:.22em}
+  .brand-icon{width:32px;height:32px;font-size:13px}
   .menu{display:none}
   .burger{display:block}
-  .nav-cta .btn{display:none}
-  .sec{padding:74px 0}
+  .btn-nav-call{display:none}
+  .btn-nav-date{padding:7px 14px;font-size:11px}
+  .sec{padding:60px 0}
   .grid-3,.film-grid,.quotes{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr;gap:20px}
   .team-grid{grid-template-columns:repeat(2,1fr);gap:12px}
   .team-note{grid-template-columns:repeat(2,1fr);gap:22px}
   .masonry{columns:2}
   .row{grid-template-columns:1fr}
-  .trust{gap:26px}
-  .trust div b{font-size:27px}
-  .hero-inner{padding:130px 0 80px}
+  .trust{gap:20px;flex-wrap:wrap;justify-content:center}
+  .trust div b{font-size:24px}
+  .hero-inner{padding:120px 0 70px}
+  .custom-pkg-builder{padding:20px;border-radius:10px;margin-top:28px}
   .dots{right:auto;left:24px;bottom:24px;flex-direction:row;gap:8px}
   .dot{width:20px}
   .scroll-hint{left:auto;right:24px;transform:none}
@@ -456,6 +463,16 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
   .strip{background-attachment:scroll}
   .wa span{display:none}
   .wa{padding:15px;border-radius:50%}
+}
+@media(max-width:480px){
+  .hdr-bar{padding:6px 12px}
+  .brand img{height:30px}
+  .brand-txt b{font-size:15px}
+  .btn-nav-date{padding:6px 12px;font-size:10.5px}
+  .team-grid{grid-template-columns:1fr}
+  .masonry{columns:1}
+  .custom-pkg-builder{padding:16px}
+  #calc_total{font-size:32px}
 }
 </style>
 </head>
