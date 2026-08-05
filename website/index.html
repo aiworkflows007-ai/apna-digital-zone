@@ -1864,17 +1864,12 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 function handleInstallPWA(e) {
-  if (e && e.preventDefault) e.preventDefault();
   if (deferredPwaPrompt) {
     deferredPwaPrompt.prompt();
     deferredPwaPrompt.userChoice.then(function(choiceResult) {
       deferredPwaPrompt = null;
     });
-  } else {
-    var modal = document.getElementById('pwaModal');
-    if (modal) modal.style.display = 'flex';
   }
-  window.open('/app', '_blank');
 }
 
 function closePwaModal() {

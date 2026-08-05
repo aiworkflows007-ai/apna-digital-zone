@@ -286,6 +286,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 <body>
 
 <div id="phone">
+  <div id="pwaAppBanner" style="display:none;background:linear-gradient(90deg,#1c1810,#2a2012);border-bottom:1px solid rgba(201,162,77,.4);padding:9px 14px;font-size:12px;color:#ded8cc;align-items:center;justify-content:space-between;z-index:100;flex:0 0 auto">
+    <span>📱 <b>Install App to Home Screen</b></span>
+    <button id="pwaAppInstallBtn" style="background:#c9a24d;color:#0b0b0d;border:none;padding:5px 12px;border-radius:14px;font-weight:700;font-size:11px;cursor:pointer">Install PWA 📲</button>
+  </div>
   <div class="top" id="top"></div>
   <div id="view"></div>
   <div class="tabs" id="tabs"></div>
@@ -832,6 +836,30 @@ if (pkgParam && PACKAGES.some(p => p.id === pkgParam)) {
 render();
 
 /* PWA — registers when hosted over http(s); silently skipped on file:// */
+}
+</script>
+<script>
+let appDeferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  appDeferredPrompt = e;
+  const b = document.getElementById('pwaAppBanner');
+  if (b) b.style.display = 'flex';
+});
+
+const installBtn = document.getElementById('pwaAppInstallBtn');
+if (installBtn) {
+  installBtn.onclick = () => {
+    if (appDeferredPrompt) {
+      appDeferredPrompt.prompt();
+      appDeferredPrompt.userChoice.then(() => {
+        appDeferredPrompt = null;
+        document.getElementById('pwaAppBanner').style.display = 'none';
+      });
+    } else {
+      alert("To install this app on your phone:\n\n• Android: Tap browser menu (⋮) → 'Add to Home screen'\n• iPhone: Tap Share (⎋) → 'Add to Home Screen'");
+    }
+  };
 }
 </script>
 <script>window.ADZ_CHAT_MODE = 'app';</script>
