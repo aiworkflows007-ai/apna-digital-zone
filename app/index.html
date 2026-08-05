@@ -106,13 +106,14 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .tab.on i{opacity:1;transform:translateY(-1px)}
 
 /* ---------- HERO ---------- */
-.hero{position:relative;height:250px;overflow:hidden;margin-bottom:22px}
+.hero{position:relative;height:280px;overflow:hidden;margin-bottom:24px;border-radius:0 0 24px 24px;border-bottom:1px solid rgba(201,162,77,0.3)}
 .hero img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,rgba(11,11,13,.35) 60%,rgba(11,11,13,.55))}
-.hero-txt{position:absolute;left:var(--pad);right:var(--pad);bottom:20px;z-index:2}
-.hero-txt .eyebrow{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:7px}
-.hero-txt h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;line-height:1.12}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top, var(--ink) 4%, rgba(11,11,15,0.4) 55%, rgba(11,11,15,0.7) 100%)}
+.hero-txt{position:absolute;left:var(--pad);right:var(--pad);bottom:24px;z-index:2}
+.hero-txt .eyebrow{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);display:inline-block;margin-bottom:8px;background:rgba(201,162,77,0.14);padding:4px 12px;border-radius:20px;border:1px solid rgba(201,162,77,0.3)}
+.hero-txt h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;line-height:1.1}
 .hero-txt h1 em{font-style:italic;color:var(--gold-lt)}
+.hero-txt p{font-size:12px;color:#a9a49a;margin-top:6px;font-weight:300}
 
 /* ---------- COMPONENTS ---------- */
 .btn{
@@ -133,12 +134,14 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .q{
-  background:var(--surf);border:1px solid var(--line);border-radius:14px;
-  padding:14px 6px;text-align:center;cursor:pointer;transition:.22s;
+  background:linear-gradient(145deg, rgba(28,28,35,0.9) 0%, rgba(18,18,24,0.95) 100%);
+  border:1px solid rgba(201,162,77,0.22);border-radius:14px;
+  padding:15px 6px;text-align:center;cursor:pointer;transition:.22s;
+  box-shadow:0 4px 14px rgba(0,0,0,0.3);
 }
-.q:active{transform:scale(.96);border-color:var(--gold)}
-.q i{font-style:normal;font-size:20px;display:block;margin-bottom:7px}
-.q span{font-size:9.5px;color:#b8b2a7;line-height:1.3;display:block}
+.q:hover,.q:active{transform:translateY(-2px) scale(1.02);border-color:var(--gold);background:rgba(201,162,77,0.12)}
+.q i{font-style:normal;font-size:22px;display:block;margin-bottom:6px}
+.q span{font-size:10px;font-weight:500;color:#ded8cc;line-height:1.2;display:block}
 
 .offer{
   margin-top:20px;background:linear-gradient(110deg,rgba(201,162,77,.16),var(--surf) 62%);
@@ -441,26 +444,44 @@ const V={};
 V.home=()=>`
 <div class="fade">
   <div class="hero">
-    <img src="${HERO}" alt="">
+    <img src="${HERO}" alt="Apna Digital Zone Wedding Shoot">
     <div class="hero-txt">
-      <span class="eyebrow">Since 2010 · 687 Events</span>
-      <h1>Your day,<br><em>told like a film.</em></h1>
+      <span class="eyebrow">✦ SINCE 2010 · 687 WEDDINGS SHOT</span>
+      <h1>Your Love Story,<br><em>told like a film.</em></h1>
+      <p>Master candid photographers, drone pilots &amp; editors on payroll.</p>
     </div>
   </div>
-  <div class="pad pb">
-    <button class="btn btn-gold" onclick="go('date')">Check My Wedding Date →</button>
 
-    <div class="h-row"><h3>Quick Book</h3></div>
-    <div class="quick">
-      ${[['wedding','♥','Wedding'],['prewed','◇','Pre-Wed'],['bday','✿','Birthday'],['drone','✈','Drone']]
-        .map(([id,i,l])=>`<div class="q" onclick="pickService('${id}')"><i>${i}</i><span>${l}</span></div>`).join('')}
+  <div class="pad pb">
+    <!-- 1-Tap Date Availability Bar -->
+    <div style="background:linear-gradient(135deg, rgba(201,162,77,0.18) 0%, rgba(20,20,28,0.95) 100%);border:1px solid rgba(201,162,77,0.4);border-radius:16px;padding:16px;margin-bottom:24px;box-shadow:0 8px 24px rgba(0,0,0,0.4)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#c9a24d;font-weight:700">⚡ Instant Availability Check</span>
+        <span style="font-size:10px;color:#4ade80;font-weight:600">● 25% Advance Locks Date</span>
+      </div>
+      <button class="btn btn-gold" onclick="go('date')" style="box-shadow:0 6px 20px rgba(201,162,77,0.4)">📅 Check Wedding Date Availability →</button>
     </div>
 
-    <div class="offer">
+    <!-- Expanded 8-Option Quick Book Grid -->
+    <div class="h-row" style="margin-top:0"><h3>Quick Category Booking</h3><a onclick="setTab('services')">All 12 Services</a></div>
+    <div class="quick" style="grid-template-columns:repeat(4,1fr);gap:10px">
+      ${[
+        ['wedding','📸','Wedding'],
+        ['prewed','🎬','Pre-Wed'],
+        ['drone','🚁','4K Drone'],
+        ['candid','💫','Candid'],
+        ['newborn','👶','Baby Shoot'],
+        ['album','📖','Photobook'],
+        ['anniv','💍','Anniversary'],
+        ['seminar','👔','Corporate']
+      ].map(([id,i,l])=>`<div class="q" onclick="pickService('${id}')"><i>${i}</i><span>${l}</span></div>`).join('')}
+    </div>
+
+    <div class="offer" style="margin-top:24px">
       <div class="big">15%</div>
       <div>
-        <b>Monsoon Booking Offer</b>
-        <p>Book any wedding package before 30 Sept and save 15% on the total. Advance of just 25% locks your date.</p>
+        <b>Monsoon &amp; Winter Booking Offer</b>
+        <p>Book any wedding package before 30 Sept and save 15% on total price. Advance of 25% locks your date guaranteed.</p>
       </div>
     </div>
 
