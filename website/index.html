@@ -1228,7 +1228,10 @@ document.getElementById('teamGrid').innerHTML=TEAM.map(m=>`
    <div class="tm-info">
      <b>${m.n}</b>
      <span>${m.r}</span>
-     <a href="#book" class="tm-hire-btn" onclick="selectHireSpecialist('${m.n} (${m.r})')">💼 Hire Specialist</a>
+     ${m.lead ?
+       `<a href="tel:+91${m.p}" class="tm-hire-btn" style="background:rgba(255,255,255,0.06);color:#f5f1e8;border-color:rgba(245,241,232,0.25)">📞 Call Direct (+91 ${m.p})</a>` :
+       `<a href="#book" class="tm-hire-btn" onclick="selectHireSpecialist('${m.n} (${m.r})')">💼 Hire Specialist</a>`
+     }
    </div>
  </article>`).join('');
 
