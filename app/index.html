@@ -369,6 +369,14 @@ const PACKAGES=[
   f:['Complete team of 6 members','Pre-wedding shoot included','All functions: Tilak to Vidai','Drone + Gimbal + Light setup','800 edited photographs','High quality video (Teaser, 3 Reels & Running Video)','Premium Album (90 Sheets) + Mini book both','Teaser in 15 days, full delivery in 50-60 days']}
 ];
 
+const ADDONS=[
+ {id:'drone',     n:'4K Drone Aerial Coverage',         price:9999,  desc:'DGCA-licensed drone pilot for baraat & venue aerials'},
+ {id:'teaser',    n:'60s Teaser Reel (7-Day Delivery)', price:4999,  desc:'Fast-track Instagram teaser delivered within 7 days'},
+ {id:'album_sheet',n:'Karizma Album Pack (+20 Sheets)',  price:3999,  desc:'20 additional metallic photobook sheets'},
+ {id:'prewed',    n:'Pre-Wedding Story Shoot',          price:14999, desc:'Half-day outdoor romantic shoot with short film'},
+ {id:'live_tv',   n:'Live TV & YouTube Broadcasting',   price:7999,  desc:'Live HD stream setup for out-of-town relatives'}
+];
+
 const TIMG='https://apnadigitalzone.com/assets/img/teams/';
 const TEAM=[
  {n:'Anjali Gupta',      r:'Founder',          i:'team-1.jpg',  p:'8709464955'},
@@ -405,7 +413,7 @@ const store={
 };
 let S={
   tab:'home', screen:'home', stack:[],
-  draft:{service:null,pkg:null,date:null,name:'',phone:'',venue:'',notes:'',method:'upi'},
+  draft:{service:null,pkg:null,addons:[],date:null,name:'',phone:'',venue:'',notes:'',method:'upi',hireSpec:null},
   calMonth:new Date().getMonth(), calYear:new Date().getFullYear(),
   orders: store.get('orders',[]),
   user: store.get('user',{name:'',phone:''})
@@ -571,6 +579,27 @@ V.packages=()=>`
       <ul>${p.f.map(f=>`<li>${f}</li>`).join('')}</ul>
       <button class="btn ${S.draft.pkg===p.id?'btn-gold':'btn-out'}">${S.draft.pkg===p.id?'Selected ✓':'Select '+p.n}</button>
     </div>`).join('')}
+  <div style="background:var(--surf);border:1px solid rgba(201,162,77,0.3);border-radius:16px;padding:16px;margin:20px 0;box-shadow:0 6px 18px rgba(0,0,0,0.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <b style="font-size:13.5px;color:var(--gold)">⚡ Customize &amp; Edit Package Add-ons</b>
+      <span style="font-size:10px;color:var(--muted)">Tap to toggle</span>
+    </div>
+    ${ADDONS.map(a => {
+      const on = (S.draft.addons||[]).includes(a.id);
+      return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer" onclick="toggleAddon('${a.id}')">
+        <div style="padding-right:10px">
+          <b style="font-size:12.5px;display:block;color:${on?'var(--gold-lt)':'#f5f1e8'}">${a.n}</b>
+          <span style="font-size:10.5px;color:var(--muted);display:block;margin-top:2px">${a.desc}</span>
+        </div>
+        <div style="text-align:right;flex:0 0 auto">
+          <b style="font-size:12px;color:var(--gold);display:block">+${INR(a.price)}</b>
+          <span style="display:inline-block;margin-top:2px;font-size:11px;font-weight:700;color:${on?'var(--ok)':'var(--muted)'}">${on?'[ SELECTED ✓ ]':'[ ADD + ]'}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+
   <button class="btn btn-out" onclick="window.open('https://wa.me/${PHONE}?text=Hi,%20I%20need%20a%20custom%20package','_blank')">Need something custom? Ask us</button>
 </div>
 <div class="stick"><button class="btn btn-gold" onclick="go('date')" ${S.draft.pkg?'':'disabled'}>Continue to Date →</button></div>`;
@@ -766,16 +795,21 @@ V.order=()=>{
 V.team=()=>`
 <div class="pad pb fade" style="padding-top:16px">
   <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
-    Ten full-time members — photographers, cinematographers, an editor and a licensed drone pilot.
-    No freelancers hired the week of your event.
+    Ten full-time specialist crew members — senior photographers, cinematographers, drone pilots &amp; editors. Tap to hire individually or call direct.
   </p>
   ${TEAM.map(m=>`
-    <div class="trow">
+    <div class="trow" style="flex-wrap:wrap;gap:10px">
       <img loading="lazy" src="${TIMG}${m.i}" alt="${m.n}">
-      <div class="m"><b>${m.n}</b><span>${m.r}</span></div>
-      ${m.p?`<button class="call" onclick="window.open('tel:+91${m.p}')" title="Call ${m.n}">✆</button>`:''}
+      <div class="m">
+        <b style="font-size:14px;color:#f5f1e8">${m.n}</b>
+        <span style="font-size:10px;color:var(--gold);display:block;margin-top:2px">${m.r}</span>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${m.p?`<button class="call" onclick="window.open('tel:+91${m.p}')" title="Call ${m.n}">✆</button>`:''}
+        <button class="btn btn-gold btn-sm" onclick="hireSpecialist('${m.n}','${m.r}')" style="padding:6px 10px;font-size:9.5px">💼 Hire ${m.n.split(' ')[0]}</button>
+      </div>
     </div>`).join('')}
-  <div class="box" style="margin-top:6px">
+  <div class="box" style="margin-top:12px">
     <div class="kv"><span>Photographers</span><b>4</b></div>
     <div class="kv"><span>Cinematographers</span><b>2</b></div>
     <div class="kv"><span>Drone pilot</span><b>1 (DGCA licensed)</b></div>
@@ -864,12 +898,32 @@ function saveUser(){
   S.user={name:document.getElementById('a_name').value.trim(),phone:document.getElementById('a_phone').value.trim()};
   store.set('user',S.user); render(); toast('Details saved');
 }
+function toggleAddon(id){
+  if(!S.draft.addons) S.draft.addons=[];
+  const idx = S.draft.addons.indexOf(id);
+  if(idx > -1) S.draft.addons.splice(idx, 1);
+  else S.draft.addons.push(id);
+  render();
+}
+function hireSpecialist(name, role){
+  S.draft.hireSpec = `${name} (${role})`;
+  if(!S.draft.service) S.draft.service='freelance';
+  go('date');
+  toast(`Selected ${name} for your event!`);
+}
 function confirmBooking(){
   const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
-  const total=p.price*1.18, paid=total*0.25;
+  let basePrice = p.price;
+  if(S.draft.addons && S.draft.addons.length > 0){
+    S.draft.addons.forEach(aid => {
+      const a = ADDONS.find(x => x.id === aid);
+      if(a) basePrice += a.price;
+    });
+  }
+  const total=basePrice*1.18, paid=total*0.25;
   const o={
     id:'ADZ'+String(Date.now()).slice(-6),
-    service:S.draft.service,pkg:S.draft.pkg,date:S.draft.date,venue:S.draft.venue,
+    service:S.draft.service,pkg:S.draft.pkg,addons:S.draft.addons||[],hireSpec:S.draft.hireSpec,date:S.draft.date,venue:S.draft.venue,
     name:S.draft.name,phone:S.draft.phone,notes:S.draft.notes,
     total,paid,stage:1,created:new Date().toISOString(),method:S.draft.method
   };
