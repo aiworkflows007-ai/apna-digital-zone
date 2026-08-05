@@ -1262,6 +1262,12 @@ document.getElementById('teamGrid').innerHTML=TEAM.map(m=>`
    </div>
  </article>`).join('');
 
+function closeHireModal(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const modal = document.getElementById('hireModal');
+  if (modal) modal.classList.remove('open');
+}
+
 function selectHireService(serviceName) {
   document.getElementById('hm_specialist').value = "Service: " + serviceName;
   document.getElementById('hireModalSpecTitle').textContent = "Booking Service: " + serviceName;
@@ -1286,6 +1292,42 @@ function selectPkgForForm(pkgName) {
   document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + displayName;
   document.getElementById('hireModal').classList.add('open');
 }
+
+function submitHireModal(e) {
+  e.preventDefault();
+  const spec = document.getElementById('hm_specialist').value || "Specialist";
+  const name = document.getElementById('hm_name').value;
+  const phone = document.getElementById('hm_phone').value;
+  const date = document.getElementById('hm_date').value;
+
+  alert(`Thank you ${name}! Your hiring request for ${spec} on ${date} has been received. Our studio team will call you at ${phone} within 1 hour.`);
+  closeHireModal();
+}
+
+function submitHireWhatsApp() {
+  const spec = document.getElementById('hm_specialist').value || "Specialist";
+  const name = document.getElementById('hm_name').value || "Client";
+  const phone = document.getElementById('hm_phone').value || "";
+  const date = document.getElementById('hm_date').value || "TBD";
+  const eventType = document.getElementById('hm_event').value;
+  const duration = document.getElementById('hm_duration').value;
+  const notes = document.getElementById('hm_notes').value || "None";
+
+  const msg = `*NEW HIRING REQUEST - APNA DIGITAL ZONE*\n\n` +
+    `*Specialist/Team:* ${spec}\n` +
+    `*Name:* ${name}\n` +
+    `*Phone:* ${phone}\n` +
+    `*Event Date:* ${date}\n` +
+    `*Project Type:* ${eventType}\n` +
+    `*Duration:* ${duration}\n` +
+    `*Notes:* ${notes}`;
+
+  window.open(`https://wa.me/919386415795?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+window.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeHireModal();
+});
 
 /* ---- gallery ---- */
 const GAL=['pre-wedding.jpg','candid-photography.jpg','wedding-cinematic.jpg','birthday-photographer.jpg',
@@ -1506,7 +1548,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
 <!-- ================= HIRE SPECIALIST MODAL ================= -->
 <div class="hire-modal-overlay" id="hireModal" onclick="if(event.target===this)closeHireModal()">
   <div class="hire-modal-box">
-    <button class="hire-modal-close" onclick="closeHireModal()" aria-label="Close">✕</button>
+    <button type="button" class="hire-modal-close" onclick="closeHireModal(event)" aria-label="Close">✕</button>
     <div class="hire-modal-head">
       <h3>💼 Hire Specialist / Crew</h3>
       <p id="hireModalSpecTitle">Pre-selected: Senior Specialist</p>
