@@ -833,6 +833,13 @@ if (pkgParam && PACKAGES.some(p => p.id === pkgParam)) {
   S.screen = 'date';
 }
 
+function render(){
+  header();
+  tabs();
+  const viewFn = V[S.screen] || V.home;
+  document.getElementById('view').innerHTML = viewFn();
+}
+
 render();
 
 /* PWA — registers when hosted over http(s); silently skipped on file:// */
