@@ -1091,70 +1091,116 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
 </section>
 
 <!-- ================= APP DOWNLOAD ADVERTISEMENT ================= -->
-<section class="sec" id="app-download" style="background:linear-gradient(135deg, #0f0f14 0%, #17151e 100%);border-top:1px solid rgba(201,162,77,0.25);border-bottom:1px solid rgba(201,162,77,0.25);padding:90px 0;position:relative;overflow:hidden">
-  <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:48px;align-items:center">
+<section class="sec" id="app-download" style="background:radial-gradient(ellipse at 70% 30%, rgba(201,162,77,0.14) 0%, rgba(10,10,14,0.98) 70%), #070709;border-top:1px solid rgba(201,162,77,0.3);border-bottom:1px solid rgba(201,162,77,0.3);padding:100px 0;position:relative;overflow:hidden">
+  
+  <!-- Background Glow Orb -->
+  <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:rgba(201,162,77,0.12);filter:blur(90px);border-radius:50%;pointer-events:none"></div>
+  <div style="position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:rgba(37,211,102,0.08);filter:blur(90px);border-radius:50%;pointer-events:none"></div>
+
+  <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));gap:56px;align-items:center">
     
+    <!-- Left Column: Copy & Value Proposition -->
     <div class="rv">
-      <span class="eyebrow" style="color:#c9a24d;letter-spacing:.25em">✦ Official Mobile App</span>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:400;margin:12px 0 18px;line-height:1.15;color:#f5f1e8">
-        Get the Apna Digital Zone Studio App on Your Phone
+      <span class="eyebrow" style="color:#c9a24d;letter-spacing:.25em;background:rgba(201,162,77,0.1);padding:6px 14px;border-radius:20px;border:1px solid rgba(201,162,77,0.25);display:inline-block;margin-bottom:16px">✦ OFFICIAL APNA DIGITAL ZONE PWA APP</span>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.5vw,52px);font-weight:400;margin:0 0 18px;line-height:1.12;color:#f5f1e8">
+        Book Shoots &amp; Track Albums Right From Your Home Screen
       </h2>
-      <p style="font-size:15.5px;color:#a9a49a;line-height:1.75;margin-bottom:28px">
-        Install our Progressive Web App (PWA) directly to your home screen with zero app store downloads. Experience 1-tap booking, real-time date availability, live 6-stage order tracking for your wedding photos, and offline gallery access.
+      <p style="font-size:16px;color:#a9a49a;line-height:1.75;margin-bottom:32px">
+        Transform how you book and track your wedding photography. No Play Store or App Store login needed — install directly on your Android or iPhone in 2 seconds for a 100% native app experience.
       </p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;margin-bottom:34px">
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:14px;border-radius:8px">
-          <b style="color:#c9a24d;display:block;font-size:14px;margin-bottom:4px">⚡ 1-Tap Home Screen</b>
-          <span style="font-size:12.5px;color:#8c877e">Opens instantly like a native Android/iPhone app</span>
+      <!-- Feature Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:18px;margin-bottom:38px">
+        <div style="background:rgba(22,22,30,0.7);backdrop-filter:blur(16px);border:1px solid rgba(201,162,77,0.25);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
+          <div style="font-size:22px;margin-bottom:6px">⚡</div>
+          <b style="color:#f5f1e8;display:block;font-size:14.5px;margin-bottom:4px">1-Tap Home Screen</b>
+          <span style="font-size:12.5px;color:#9a958c;line-height:1.4;display:block">Opens instantly like a native app with offline access</span>
         </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:14px;border-radius:8px">
-          <b style="color:#c9a24d;display:block;font-size:14px;margin-bottom:4px">📍 Live Order Tracker</b>
-          <span style="font-size:12.5px;color:#8c877e">Track your shoot from advance payment to album delivery</span>
+        <div style="background:rgba(22,22,30,0.7);backdrop-filter:blur(16px);border:1px solid rgba(201,162,77,0.25);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
+          <div style="font-size:22px;margin-bottom:6px">📍</div>
+          <b style="color:#f5f1e8;display:block;font-size:14.5px;margin-bottom:4px">Live 6-Stage Tracker</b>
+          <span style="font-size:12.5px;color:#9a958c;line-height:1.4;display:block">Watch your photos move from RAW → Color Grading → Print</span>
         </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:14px;border-radius:8px">
-          <b style="color:#c9a24d;display:block;font-size:14px;margin-bottom:4px">📅 Live Calendar</b>
-          <span style="font-size:12.5px;color:#8c877e">Check real-time wedding date availability in seconds</span>
+        <div style="background:rgba(22,22,30,0.7);backdrop-filter:blur(16px);border:1px solid rgba(201,162,77,0.25);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
+          <div style="font-size:22px;margin-bottom:6px">📅</div>
+          <b style="color:#f5f1e8;display:block;font-size:14.5px;margin-bottom:4px">Live Calendar Check</b>
+          <span style="font-size:12.5px;color:#9a958c;line-height:1.4;display:block">Instant wedding date availability checking on the go</span>
         </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:14px;border-radius:8px">
-          <b style="color:#c9a24d;display:block;font-size:14px;margin-bottom:4px">🔒 100% Offline Access</b>
-          <span style="font-size:12.5px;color:#8c877e">Saved bookings &amp; details accessible anywhere</span>
+        <div style="background:rgba(22,22,30,0.7);backdrop-filter:blur(16px);border:1px solid rgba(201,162,77,0.25);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
+          <div style="font-size:22px;margin-bottom:6px">🔒</div>
+          <b style="color:#f5f1e8;display:block;font-size:14.5px;margin-bottom:4px">Private Family Vault</b>
+          <span style="font-size:12.5px;color:#9a958c;line-height:1.4;display:block">Your high-res album &amp; teaser clips, always saved</span>
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
-        <a href="/app" target="_blank" class="btn btn-gold" style="padding:15px 30px;font-size:13px">📲 Launch &amp; Install App →</a>
-        <a href="https://wa.me/919386415795?text=Hi%20Apna%20Digital%20Zone%2C%20please%20send%20me%20the%20mobile%20app%20download%20link" target="_blank" rel="noopener" class="btn btn-ghost" style="padding:15px 24px;font-size:13px">💬 Get App Link on WhatsApp</a>
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+        <a href="/app" target="_blank" class="btn btn-gold" style="padding:16px 32px;font-size:13.5px;box-shadow:0 10px 30px rgba(201,162,77,0.4);border-radius:8px">📲 Launch &amp; Install App Now →</a>
+        <a href="https://wa.me/919386415795?text=Hi%20Apna%20Digital%20Zone%2C%20please%20send%20me%20the%20mobile%20app%20download%20link" target="_blank" rel="noopener" class="btn btn-ghost" style="padding:16px 26px;font-size:13.5px;border-radius:8px">💬 Send App Link on WhatsApp</a>
+      </div>
+
+      <!-- Platform Badges -->
+      <div style="margin-top:24px;display:flex;align-items:center;gap:18px;font-size:12px;color:#8c877e;flex-wrap:wrap">
+        <span>✅ Google Chrome Verified</span>
+        <span>•</span>
+        <span>✅ iOS Safari Compatible</span>
+        <span>•</span>
+        <span>✅ 100% Free &amp; Ad-Free</span>
       </div>
     </div>
 
-    <!-- Phone Mockup Container -->
+    <!-- Right Column: Premium Metallic Smartphone Mockup -->
     <div class="rv" style="position:relative;text-align:center">
-      <div style="max-width:310px;margin:0 auto;background:#0b0b0d;border:9px solid #23232c;border-radius:38px;box-shadow:0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(201,162,77,0.3);overflow:hidden;position:relative">
-        <div style="height:22px;background:#141419;display:flex;align-items:center;justify-content:center">
-          <div style="width:50px;height:4px;background:#333;border-radius:2px"></div>
+      
+      <!-- Rating Badge Over Mockup -->
+      <div style="position:absolute;top:20px;left:-10px;z-index:20;background:rgba(22,22,30,0.9);backdrop-filter:blur(12px);border:1px solid rgba(201,162,77,0.4);padding:10px 16px;border-radius:30px;box-shadow:0 12px 30px rgba(0,0,0,0.6);display:flex;align-items:center;gap:8px">
+        <span style="color:#f59e0b;font-size:14px">★★★★★</span>
+        <span style="font-size:12px;color:#f5f1e8;font-weight:600">4.9 App Rating (680+ Clients)</span>
+      </div>
+
+      <!-- Phone Frame Outer -->
+      <div style="max-width:320px;margin:30px auto 0;background:#0d0d12;border:11px solid #282733;border-radius:44px;box-shadow:0 35px 80px rgba(0,0,0,0.9), 0 0 50px rgba(201,162,77,0.3);overflow:hidden;position:relative">
+        
+        <!-- Dynamic Notch Island -->
+        <div style="height:28px;background:#131319;display:flex;align-items:center;justify-content:center;position:relative">
+          <div style="width:70px;height:12px;background:#000;border-radius:10px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">
+            <div style="width:6px;height:6px;background:#0f0;border-radius:50%"></div>
+          </div>
         </div>
-        <div style="padding:20px 16px;background:linear-gradient(180deg,#1c1c24 0%,#0e0e12 100%);text-align:left">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <img src="https://apnadigitalzone.com/assets/img/anss-logo.png" style="height:34px;object-fit:contain" alt="Apna Digital Zone">
-            <div>
-              <b style="display:block;font-size:12.5px;color:#f5f1e8">Apna Digital Zone</b>
-              <span style="font-size:10px;color:#4ade80">● Official Mobile App</span>
+
+        <!-- Phone Screen Content -->
+        <div style="padding:22px 18px;background:linear-gradient(180deg,#1a1a24 0%,#0c0c10 100%);text-align:left">
+          
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <img src="https://apnadigitalzone.com/assets/img/anss-logo.png" style="height:36px;object-fit:contain" alt="Apna Digital Zone Logo">
+              <div>
+                <b style="display:block;font-size:13px;color:#f5f1e8;line-height:1.2">Apna Digital Zone</b>
+                <span style="font-size:10px;color:#4ade80;font-weight:600">● Customer App</span>
+              </div>
+            </div>
+            <span style="background:rgba(201,162,77,0.2);color:#c9a24d;font-size:9.5px;padding:3px 8px;border-radius:10px;font-weight:700">PWA</span>
+          </div>
+
+          <!-- Order Card Preview -->
+          <div style="background:linear-gradient(135deg, rgba(201,162,77,0.18) 0%, rgba(20,20,28,0.9) 100%);border:1px solid rgba(201,162,77,0.4);padding:16px;border-radius:12px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.4)">
+            <span style="font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:#c9a24d;display:block;font-weight:600">Order Tracker #ADZ-8942</span>
+            <b style="font-size:13.5px;color:#fff;display:block;margin:4px 0">Stage 4 of 6: Color Grading &amp; Print</b>
+            <div style="width:100%;height:6px;background:rgba(255,255,255,0.12);border-radius:3px;margin-top:10px;overflow:hidden">
+              <div style="width:66%;height:100%;background:linear-gradient(90deg, #c9a24d 0%, #25D366 100%)"></div>
             </div>
           </div>
-          <div style="background:rgba(201,162,77,0.12);border:1px solid rgba(201,162,77,0.3);padding:14px;border-radius:8px;margin-bottom:14px">
-            <span style="font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:#c9a24d;display:block">Active Order Status</span>
-            <b style="font-size:13px;color:#fff;display:block;margin-top:2px">Stage 4 of 6: Editing In Progress</b>
-            <div style="width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;margin-top:8px;overflow:hidden">
-              <div style="width:66%;height:100%;background:#c9a24d"></div>
-            </div>
+
+          <!-- Shoot Booking Badge -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#cfc9bd">
+            📅 Upcoming: <b>Grand Wedding &amp; Reception</b><br>
+            📍 Location: Mahadev Market, Arrah
           </div>
-          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.08);padding:10px;border-radius:6px;margin-bottom:12px;font-size:11.5px;color:#cfc9bd">
-            📅 Next Shoot: <b>Pre-Wedding Session</b><br>
-            📍 Venue: Studio &amp; Outdoor Location
-          </div>
-          <a href="/app" target="_blank" style="display:block;width:100%;text-align:center;padding:12px;background:#c9a24d;color:#0b0b0d;font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:6px;margin-top:10px">Open Mobile App ↗</a>
+
+          <!-- Install Button inside Phone -->
+          <a href="/app" target="_blank" style="display:block;width:100%;text-align:center;padding:13px;background:linear-gradient(135deg, #c9a24d 0%, #e6cd92 100%);color:#0b0b0d;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-radius:8px;box-shadow:0 6px 20px rgba(201,162,77,0.4)">Open Mobile App 🚀</a>
         </div>
+
       </div>
     </div>
 
