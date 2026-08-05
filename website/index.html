@@ -290,6 +290,33 @@ header.solid .hdr-bar{
 .story-badge-card div b { font-size:13px;color:#ffffff;display:block;font-weight:600; }
 .story-badge-card div p { font-size:11px;color:#a8a298;margin:2px 0 0;line-height:1.2; }
 
+/* ---------- HIRE SPECIALIST MODAL FORM ---------- */
+.hire-modal-overlay {
+  position:fixed;inset:0;background:rgba(11,11,13,0.85);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  z-index:999;display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;pointer-events:none;transition:all .35s ease;
+}
+.hire-modal-overlay.open { opacity:1;pointer-events:auto; }
+.hire-modal-box {
+  background:linear-gradient(135deg, #16161c 0%, #0d0d10 100%);
+  border:1px solid rgba(201,162,77,0.4);border-radius:20px;
+  width:100%;max-width:540px;padding:32px;position:relative;
+  box-shadow:0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(201,162,77,0.2);
+  transform:translateY(20px) scale(0.96);transition:all .35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hire-modal-overlay.open .hire-modal-box { transform:translateY(0) scale(1); }
+.hire-modal-close {
+  position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.15);color:#fff;width:34px;height:34px;
+  border-radius:50%;cursor:pointer;font-size:18px;display:grid;place-items:center;
+  transition:all .2s ease;
+}
+.hire-modal-close:hover { background:#c9a24d;color:#000;border-color:#c9a24d; }
+.hire-modal-head { margin-bottom:24px; }
+.hire-modal-head h3 { font-family:'Cormorant Garamond',serif;font-size:28px;color:#f5f1e8;margin:0 0 6px; }
+.hire-modal-head p { font-size:13px;color:#c9a24d;margin:0;font-weight:500; }
+
 /* ---------- SECTION HEAD ---------- */
 .sec{padding:110px 0}
 .sec-head{max-width:660px;margin-bottom:56px}
@@ -1463,5 +1490,68 @@ function applyCustomToForm() {
 
 document.getElementById('yr').textContent=new Date().getFullYear();
 </script>
+
+<!-- ================= HIRE SPECIALIST MODAL ================= -->
+<div class="hire-modal-overlay" id="hireModal" onclick="if(event.target===this)closeHireModal()">
+  <div class="hire-modal-box">
+    <button class="hire-modal-close" onclick="closeHireModal()" aria-label="Close">✕</button>
+    <div class="hire-modal-head">
+      <h3>💼 Hire Specialist / Crew</h3>
+      <p id="hireModalSpecTitle">Pre-selected: Senior Specialist</p>
+    </div>
+    
+    <form class="form" id="hireModalForm" onsubmit="submitHireModal(event)">
+      <input type="hidden" id="hm_specialist" name="specialist">
+      
+      <div class="field">
+        <label>Your Name *</label>
+        <input type="text" id="hm_name" required placeholder="e.g. Rahul Sharma">
+      </div>
+      
+      <div class="row">
+        <div class="field">
+          <label>Mobile Number / WhatsApp *</label>
+          <input type="tel" id="hm_phone" required placeholder="+91 98765 43210">
+        </div>
+        <div class="field">
+          <label>Event Date *</label>
+          <input type="date" id="hm_date" required>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="field">
+          <label>Project Type *</label>
+          <select id="hm_event">
+            <option value="Wedding Function">Wedding Function</option>
+            <option value="Pre-Wedding Shoot">Pre-Wedding Shoot</option>
+            <option value="Government Project">Government Project</option>
+            <option value="VIP Gala / Event">VIP Gala / Event</option>
+            <option value="Commercial / Drone Shoot">Commercial / Drone Shoot</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Required Duration</label>
+          <select id="hm_duration">
+            <option value="1 Day Coverage">1 Day Coverage</option>
+            <option value="2 Days Coverage">2 Days Coverage</option>
+            <option value="3 Days Full Coverage">3 Days Full Coverage</option>
+            <option value="Custom Project">Custom Duration</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="field">
+        <label>Event Location &amp; Special Instructions</label>
+        <textarea id="hm_notes" rows="3" placeholder="Specify city/venue or special requirements..."></textarea>
+      </div>
+      
+      <div style="display:flex;gap:12px;margin-top:10px">
+        <button type="submit" class="btn btn-gold" style="flex:1">🚀 Submit Request</button>
+        <button type="button" class="btn btn-ghost" onclick="submitHireWhatsApp()" style="flex:1">💬 Send via WhatsApp</button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>
