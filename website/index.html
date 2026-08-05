@@ -245,6 +245,51 @@ header.solid .hdr-bar{
   .hero h1 em{color:var(--gold-lt);background:none;-webkit-text-fill-color:currentColor}
 }
 
+/* ---------- ATTRACTIVE STORY SECTION STYLING ---------- */
+.story-img-frame {
+  position:relative;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(201,162,77,0.35);
+  box-shadow:0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(201,162,77,0.15);
+  transition:transform .4s ease, box-shadow .4s ease;
+}
+.story-img-frame:hover {
+  transform:scale(1.02);
+  box-shadow:0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(201,162,77,0.3);
+}
+.story-img-frame img { width:100%;height:100%;object-fit:cover;display:block; }
+.story-badge-floating {
+  position:absolute;bottom:18px;left:18px;right:18px;
+  background:rgba(18,18,22,0.92);backdrop-filter:blur(14px);
+  border:1px solid rgba(201,162,77,0.4);border-radius:12px;
+  padding:14px 18px;color:#f5f1e8;display:flex;align-items:center;gap:12px;
+}
+.story-quote {
+  position:relative;margin:24px 0 28px;padding:20px 24px 20px 28px;
+  background:linear-gradient(135deg, rgba(201,162,77,0.08) 0%, rgba(201,162,77,0.02) 100%);
+  border-left:3px solid #c9a24d;border-radius:0 12px 12px 0;
+}
+.story-quote p {
+  font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;
+  line-height:1.45;color:#f5dfa8;margin:0 0 8px;
+}
+.story-quote cite {
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c9a24d;font-style:normal;font-weight:600;
+}
+.story-badge-grid {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:24px 0 28px;
+}
+.story-badge-card {
+  background:rgba(255,255,255,0.025);border:1px solid rgba(245,241,232,0.08);
+  border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;
+  transition:all .3s ease;
+}
+.story-badge-card:hover {
+  border-color:rgba(201,162,77,0.4);background:rgba(201,162,77,0.06);transform:translateY(-2px);
+}
+.story-badge-card span.ic { font-size:18px;color:#c9a24d; }
+.story-badge-card div b { font-size:13px;color:#ffffff;display:block;font-weight:600; }
+.story-badge-card div p { font-size:11px;color:#a8a298;margin:2px 0 0;line-height:1.2; }
+
 /* ---------- SECTION HEAD ---------- */
 .sec{padding:110px 0}
 .sec-head{max-width:660px;margin-bottom:56px}
@@ -552,31 +597,67 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
 
 <!-- ================= STORY ================= -->
 <section class="sec" id="story">
-  <div class="wrap split">
-    <div class="split-img rv">
-      <img src="https://apnadigitalzone.com/assets/img/services/candid-photography.jpg" alt="Candid photography by Apna Digital Zone">
+  <div class="wrap split" style="align-items:center">
+    <!-- Story Image Frame -->
+    <div class="split-img rv story-img-frame">
+      <img src="https://apnadigitalzone.com/assets/img/services/candid-photography.jpg" alt="Cinematic Candid Photography by Apna Digital Zone">
+      <div class="story-badge-floating">
+        <span style="font-size:22px">✦</span>
+        <div>
+          <b style="font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#c9a24d;display:block">15 Years of Heritage</b>
+          <span style="font-size:11px;color:#d4cfc5">1,500+ Weddings &amp; Govt Events</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Story Content & Pull Quote -->
     <div class="rv">
-      <span class="eyebrow">The Studio</span>
-      <h2>We don't just shoot weddings. We remember them for you.</h2>
-      <p style="margin-top:18px">
-        Apna Digital Zone started in a small room in Vishnu Nagar with one camera and a
-        stubborn belief — that a family in Arrah deserves the same quality of wedding film
-        as anyone in Delhi or Mumbai. Over 1,500+ events and official government projects later, that hasn't changed.
+      <span class="eyebrow">Our Story &amp; Legacy</span>
+      <h2 style="font-size:clamp(30px,3.5vw,44px);line-height:1.18">We don't just shoot weddings.<br><span style="color:#c9a24d">We immortalize your family legacy.</span></h2>
+      
+      <!-- Designer Pull Quote -->
+      <blockquote class="story-quote">
+        <p>“Every frame is a heritage heirloom. We color-grade each moment so your children can relive the emotion 20 years from now.”</p>
+        <cite>— Pankaj Kumar, Founder &amp; Lead Cinematographer</cite>
+      </blockquote>
+
+      <p style="margin-top:16px;color:#cfc9bd;line-height:1.7;font-size:14.5px">
+        Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families deserve Bollywood-grade cinematic wedding films right here. Over <strong>1,500+ weddings, VIP galas, and official government projects</strong> later, our passion remains unmatched.
       </p>
-      <p style="margin-top:14px">
-        Today we run a full in-house team: candid photographers, cinematographers,
-        licensed drone pilots, and album designers who colour-grade every single frame
-        before it reaches you.
-      </p>
-      <ul class="checks">
-        <li>Trusted choice for 1,500+ weddings, VIP &amp; Government projects</li>
-        <li>In-house editing — your files never leave our studio</li>
-        <li>Licensed drone pilots for open-air and rooftop venues</li>
-        <li>Teaser film delivered within 7 days of the wedding</li>
-        <li>Karizma photobooks and premium canvas printing on site</li>
-      </ul>
-      <a href="#services" class="btn btn-gold" style="margin-top:30px">Explore Services</a>
+
+      <!-- Catchy Feature Cards Grid -->
+      <div class="story-badge-grid">
+        <div class="story-badge-card">
+          <span class="ic">👑</span>
+          <div>
+            <b>1,500+ Events &amp; Govt Done</b>
+            <p>Trusted across Bihar &amp; India</p>
+          </div>
+        </div>
+        <div class="story-badge-card">
+          <span class="ic">🔒</span>
+          <div>
+            <b>100% In-House Editing</b>
+            <p>Your raw files stay 100% secure</p>
+          </div>
+        </div>
+        <div class="story-badge-card">
+          <span class="ic">🚁</span>
+          <div>
+            <b>Licensed Drone Pilots</b>
+            <p>Aerial 4K cinematic angles</p>
+          </div>
+        </div>
+        <div class="story-badge-card">
+          <span class="ic">⚡</span>
+          <div>
+            <b>7-Day Teaser Delivery</b>
+            <p>Fastest high-res delivery</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="#services" class="btn btn-gold">Explore Services &amp; Portfolios →</a>
     </div>
   </div>
 </section>
