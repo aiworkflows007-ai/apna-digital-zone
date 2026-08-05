@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;box-sizing:border-box}
+*{box-sizing:border-box}
+body{background:#050506}
+a{color:#c9a24d;text-decoration:none}
+a:hover{color:#e6cd92}
+@keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes recBlink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes shutterFlash{0%,95%,100%{opacity:0}96.5%{opacity:.7}98%{opacity:0}}
+@keyframes shutterBarTop{0%,94%,100%{transform:translateY(-100%)}96%{transform:translateY(0)}98%{transform:translateY(-100%)}}
+@keyframes shutterBarBottom{0%,94%,100%{transform:translateY(100%)}96%{transform:translateY(0)}98%{transform:translateY(100%)}}
+@keyframes captureFrame{0%,94%,100%{opacity:0}95.5%{opacity:1}98%{opacity:0}}
+@keyframes focusPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes kbZoom{from{transform:scale(1.06)}to{transform:scale(1.16)}}
+</style>
+</helmet>
+
+<div style="width:100%;height:100dvh;display:flex;align-items:center;justify-content:center;background:#050506;overflow:hidden;font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;-webkit-tap-highlight-color:transparent">
+  <div style="width:100%;max-width:430px;height:100dvh;max-height:930px;background:#0b0b0d;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px #1d1d24,0 40px 90px rgba(0,0,0,.75);border-radius:38px;border:9px solid #17171c;color:#f2eee6">
+
+    <!-- TOP BAR -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:26px 18px 12px;background:rgba(11,11,13,.94);backdrop-filter:blur(14px);border-bottom:1px solid #26262f;z-index:50">
+        <img src="{{ logoUrl }}" alt="" style="height:32px">
+        <div style="flex:1;min-width:0">
+          <b style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;display:block;line-height:1.2">Apna Digital Zone</b>
+          <span style="font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:#c9a24d">Arrah · Bihar</span>
+        </div>
+        <button onclick="{{ callStudio }}" title="Call" style="width:36px;height:36px;flex:0 0 36px;border-radius:50%;border:1px solid #26262f;background:#141419;display:grid;place-items:center;font-size:15px;cursor:pointer;color:#f2eee6">✆</button>
+        <button onclick="{{ openAccount }}" title="Account" style="width:36px;height:36px;flex:0 0 36px;border-radius:50%;border:1px solid #26262f;background:#141419;display:grid;place-items:center;font-size:15px;cursor:pointer;color:#f2eee6">☰</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ notHome }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:26px 18px 12px;background:rgba(11,11,13,.94);backdrop-filter:blur(14px);border-bottom:1px solid #26262f;z-index:50">
+        <button onclick="{{ goBack }}" style="border:none;background:none;font-size:20px;cursor:pointer;color:#f2eee6;padding:0 4px 0 0">‹</button>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;flex:1;margin:0">{{ headerTitle }}</h2>
+        <button onclick="{{ openWA }}" title="WhatsApp" style="width:36px;height:36px;flex:0 0 36px;border-radius:50%;border:1px solid #26262f;background:#141419;display:grid;place-items:center;font-size:15px;cursor:pointer;color:#f2eee6">✆</button>
+      </div>
+    </sc-if>
+
+    <!-- SCROLL VIEW -->
+    <div style="flex:1;overflow-y:auto;overscroll-behavior:contain;position:relative">
+
+      <!-- HOME -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:fadeUp .3s ease">
+          <div style="position:relative;height:250px;overflow:hidden;margin-bottom:22px;background:#000">
+            <img src="{{ heroUrl }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;animation:kbZoom 14s ease-in-out infinite alternate">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,#0b0b0d 4%,rgba(11,11,13,.35) 60%,rgba(11,11,13,.55))"></div>
+            <div style="position:absolute;inset:0;background:#fff;pointer-events:none;animation:shutterFlash 6s linear infinite"></div>
+            <div style="position:absolute;top:0;left:0;right:0;height:50%;background:#050506;pointer-events:none;transform:translateY(-100%);animation:shutterBarTop 6s linear infinite"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:#050506;pointer-events:none;transform:translateY(100%);animation:shutterBarBottom 6s linear infinite"></div>
+            <div style="position:absolute;inset:8px;border:1.5px solid #e6cd92;pointer-events:none;opacity:0;animation:captureFrame 6s linear infinite"></div>
+
+            <!-- viewfinder focus brackets -->
+            <div style="position:absolute;top:16px;left:16px;width:20px;height:20px;border-top:2px solid #e6cd92;border-left:2px solid #e6cd92;opacity:.7;animation:focusPulse 3.2s ease-in-out infinite"></div>
+            <div style="position:absolute;top:16px;right:16px;width:20px;height:20px;border-top:2px solid #e6cd92;border-right:2px solid #e6cd92;opacity:.7;animation:focusPulse 3.2s ease-in-out infinite"></div>
+            <div style="position:absolute;bottom:66px;left:16px;width:20px;height:20px;border-bottom:2px solid #e6cd92;border-left:2px solid #e6cd92;opacity:.7;animation:focusPulse 3.2s ease-in-out infinite"></div>
+            <div style="position:absolute;bottom:66px;right:16px;width:20px;height:20px;border-bottom:2px solid #e6cd92;border-right:2px solid #e6cd92;opacity:.7;animation:focusPulse 3.2s ease-in-out infinite"></div>
+
+            <div style="position:absolute;left:18px;right:18px;bottom:20px;z-index:2">
+              <span style="font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:#c9a24d;display:block;margin-bottom:7px">Since 2010 · 687 Events</span>
+              <h1 style="font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;line-height:1.12;margin:0;color:#f2eee6;display:flex;align-items:center;gap:10px"><span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1.5px solid #e6cd92;color:#e6cd92;font-size:16px;flex:0 0 auto">◎</span><em style="font-style:italic;color:#e6cd92">Smile Please</em></h1>
+            </div>
+          </div>
+
+          <div style="padding:0 18px 34px">
+            <button onclick="{{ checkDateHandler }}" style="{{ btnGoldStyle }}">Check My Wedding Date →</button>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Quick Book</h3></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <sc-for list="{{ quickItems }}" as="q" hint-placeholder-count="4">
+                <div onclick="{{ q.onClick }}" style="background:linear-gradient(160deg,#1c1c23,#141419 70%);border:1px solid #2c2a22;border-radius:16px;padding:16px 6px 13px;text-align:center;cursor:pointer;transition:transform .15s,border-color .15s" style-active="transform:scale(.94);border-color:#c9a24d">
+                  <i style="font-style:normal;font-size:19px;width:44px;height:44px;line-height:44px;margin:0 auto 9px;display:block;border-radius:50%;background:linear-gradient(150deg,rgba(201,162,77,.28),rgba(201,162,77,.06));border:1px solid rgba(201,162,77,.4);color:#e6cd92;box-shadow:0 4px 14px rgba(201,162,77,.14)">{{ q.icon }}</i>
+                  <span style="font-size:9.5px;letter-spacing:.04em;color:#d8d2c6;line-height:1.3;display:block;font-weight:500">{{ q.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="margin-top:20px;background:linear-gradient(110deg,rgba(201,162,77,.16),#141419 62%);border:1px solid rgba(201,162,77,.34);border-radius:16px;padding:18px;display:flex;gap:14px;align-items:center">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:#c9a24d;line-height:1;flex:0 0 auto">15%</div>
+              <div>
+                <b style="display:block;font-size:13.5px;font-weight:600;margin-bottom:3px">Monsoon Booking Offer</b>
+                <p style="font-size:11.5px;color:#a09b91;line-height:1.5;margin:0">Book any wedding package before 30 Sept and save 15% on the total. Advance of just 25% locks your date.</p>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Popular Services</h3><a onclick="{{ goServicesAll }}" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d;cursor:pointer">See all</a></div>
+            <div ref="{{ svcRowRef }}" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin:0 -18px;padding-left:18px;padding-right:18px;scrollbar-width:none">
+              <sc-for list="{{ homeServices }}" as="s" hint-placeholder-count="6">
+                <div onclick="{{ s.onClick }}" style="flex:0 0 178px;scroll-snap-align:start;position:relative;height:206px;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.4);border:1px solid #26262f;transition:transform .2s" style-active="transform:scale(.96)">
+                  <img loading="lazy" src="{{ s.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+                  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.95) 8%,rgba(11,11,13,.2) 55%,rgba(11,11,13,.05))"></div>
+                  <span style="position:absolute;top:10px;left:10px;background:rgba(11,11,13,.6);backdrop-filter:blur(4px);border:1px solid rgba(201,162,77,.45);color:#e6cd92;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;border-radius:20px">Popular</span>
+                  <div style="position:absolute;left:13px;right:13px;bottom:13px">
+                    <b style="font-size:13.5px;font-weight:600;display:block;line-height:1.32;margin-bottom:6px;color:#f2eee6">{{ s.name }}</b>
+                    <span style="font-size:11px;color:#e6cd92;font-weight:600;background:rgba(201,162,77,.16);padding:3px 9px;border-radius:20px;display:inline-block">{{ s.fromText }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:center;gap:5px;margin-top:12px">
+              <sc-for list="{{ serviceDots }}" as="d" hint-placeholder-count="6">
+                <span style="{{ d.style }}"></span>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Wedding Packages</h3><a onclick="{{ goPackagesCompare }}" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d;cursor:pointer">Compare</a></div>
+            <sc-for list="{{ homePackages }}" as="p" hint-placeholder-count="3">
+              <div onclick="{{ p.onClick }}" style="{{ p.cardStyle }}">
+                <sc-if value="{{ p.hasBadge }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;top:14px;right:14px;background:#c9a24d;color:#14100a;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:20px">{{ p.badgeText }}</span>
+                </sc-if>
+                <h4 style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;margin:0">{{ p.name }}</h4>
+                <div style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8c877e;margin:3px 0 12px">{{ p.sub }}</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:30px;color:#c9a24d;line-height:1">{{ p.priceText }}</div>
+                <ul style="list-style:none;margin:14px 0 16px;padding:0;display:grid;gap:8px">
+                  <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4">
+                    <li style="font-size:12px;color:#bfb9ae;display:flex;gap:9px;line-height:1.5"><span style="color:#c9a24d;font-size:9px;line-height:1.7">✦</span>{{ f }}</li>
+                  </sc-for>
+                </ul>
+                <button style="{{ p.buttonStyle }}">{{ p.buttonLabel }}</button>
+              </div>
+            </sc-for>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 4px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Meet the Team</h3><a onclick="{{ goTeamAll }}" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d;cursor:pointer">See all</a></div>
+            <p style="font-size:11.5px;color:#8c877e;margin:0 0 14px">10 full-time members. No freelancers, ever.</p>
+            <div ref="{{ teamRowRef }}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin:0 -18px;padding-left:18px;padding-right:18px;scrollbar-width:none">
+              <sc-for list="{{ homeTeam }}" as="m" hint-placeholder-count="6">
+                <div onclick="{{ m.onClick }}" style="flex:0 0 122px;scroll-snap-align:start;position:relative;height:152px;border-radius:15px;overflow:hidden;border:1px solid #26262f;box-shadow:0 8px 20px rgba(0,0,0,.35);cursor:pointer">
+                  <img loading="lazy" src="{{ m.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:grayscale(.6) contrast(1.05)">
+                  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.96) 12%,rgba(11,11,13,.08) 60%)"></div>
+                  <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(201,162,77,.18)"></div>
+                  <sc-if value="{{ m.isLead }}" hint-placeholder-val="{{ false }}">
+                    <span style="position:absolute;top:9px;left:9px;background:#c9a24d;color:#14100a;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 7px;border-radius:20px">Founder</span>
+                  </sc-if>
+                  <sc-if value="{{ m.hasPhone }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:absolute;top:9px;right:9px;width:24px;height:24px;border-radius:50%;background:rgba(11,11,13,.6);backdrop-filter:blur(4px);border:1px solid rgba(201,162,77,.4);display:grid;place-items:center;color:#e6cd92;font-size:11px">✆</div>
+                  </sc-if>
+                  <div style="position:absolute;left:11px;right:11px;bottom:11px">
+                    <b style="font-size:12px;font-weight:600;display:block;line-height:1.28;margin-bottom:3px;color:#f2eee6">{{ m.name }}</b>
+                    <span style="font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#e6cd92">{{ m.role }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:center;gap:5px;margin-top:12px">
+              <sc-for list="{{ teamDots }}" as="d" hint-placeholder-count="6">
+                <span style="{{ d.style }}"></span>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Visit The Studio</h3></div>
+            <div style="background:linear-gradient(160deg,#171712,#141419 65%);border:1px solid rgba(201,162,77,.22);border-radius:18px;padding:6px 18px 18px;margin-bottom:16px">
+              <div style="display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(38,38,47,.7)">
+                <div style="width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:rgba(201,162,77,.12);border:1px solid rgba(201,162,77,.3);display:grid;place-items:center;color:#e6cd92;font-size:14px">⌖</div>
+                <div><span style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;display:block;margin-bottom:4px">Address</span><b style="font-weight:400;font-size:12.5px;line-height:1.5;color:#e2dcd0">Mahadev Market, near Bullet Showroom, Vishnu Nagar, Arrah, Bihar 802302</b></div>
+              </div>
+              <div style="display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(38,38,47,.7)">
+                <div style="width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:rgba(201,162,77,.12);border:1px solid rgba(201,162,77,.3);display:grid;place-items:center;color:#e6cd92;font-size:14px">◷</div>
+                <div><span style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;display:block;margin-bottom:4px">Open</span><b style="font-weight:400;font-size:12.5px;color:#e2dcd0">10:00 am – 8:00 pm · All days</b></div>
+              </div>
+              <div style="display:flex;gap:13px;align-items:center;padding:14px 0">
+                <div style="width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:rgba(201,162,77,.12);border:1px solid rgba(201,162,77,.3);display:grid;place-items:center;color:#e6cd92;font-size:14px">✆</div>
+                <div><span style="font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;display:block;margin-bottom:4px">Call</span><b style="font-weight:400;font-size:12.5px;color:#e2dcd0">+91 93864 15795</b></div>
+              </div>
+            </div>
+            <button onclick="{{ openWA }}" style="{{ btnWaStyle }}">Chat on WhatsApp</button>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #26262f">
+              <div style="text-align:center"><b style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#c9a24d;display:block;line-height:1">687</b><span style="font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e">Events</span></div>
+              <div style="text-align:center;border-left:1px solid #26262f;border-right:1px solid #26262f"><b style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#c9a24d;display:block;line-height:1">15</b><span style="font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e">Years</span></div>
+              <div style="text-align:center"><b style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#c9a24d;display:block;line-height:1">100%</b><span style="font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e">On Time</span></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- SERVICES -->
+      <sc-if value="{{ isServices }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <sc-for list="{{ servicesList }}" as="s" hint-placeholder-count="12">
+            <div onclick="{{ s.onClick }}" style="display:flex;gap:13px;align-items:center;background:#141419;border:1px solid #26262f;border-radius:14px;padding:11px;margin-bottom:11px;cursor:pointer">
+              <img loading="lazy" src="{{ s.img }}" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex:0 0 72px">
+              <div style="flex:1;min-width:0">
+                <b style="font-size:13.5px;font-weight:500;display:block;margin-bottom:4px;line-height:1.35">{{ s.name }}</b>
+                <p style="font-size:11px;color:#8c877e;line-height:1.5;margin:0 0 6px">{{ s.desc }}</p>
+                <span style="font-size:12px;color:#c9a24d;font-weight:500">{{ s.fromText }}</span>
+              </div>
+              <div style="color:#8c877e;font-size:17px;flex:0 0 auto">›</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- PACKAGES -->
+      <sc-if value="{{ isPackages }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <p style="font-size:12.5px;color:#8c877e;line-height:1.65;margin-bottom:18px">Every package includes colour-graded edits, an online gallery and a signed contract before the shoot.
+            <sc-if value="{{ packageCaptionVisible }}" hint-placeholder-val="{{ false }}"> Selected service: <b style="color:#c9a24d">{{ packageCaptionServiceName }}</b></sc-if>
+          </p>
+          <sc-for list="{{ packagesList }}" as="p" hint-placeholder-count="3">
+            <div onclick="{{ p.onClick }}" style="{{ p.cardStyle }}">
+              <sc-if value="{{ p.hasBadge }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:14px;right:14px;background:#c9a24d;color:#14100a;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:20px">{{ p.badgeText }}</span>
+              </sc-if>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;margin:0">{{ p.name }}</h4>
+              <div style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8c877e;margin:3px 0 12px">{{ p.sub }}</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:30px;color:#c9a24d;line-height:1">{{ p.priceText }}</div>
+              <ul style="list-style:none;margin:14px 0 16px;padding:0;display:grid;gap:8px">
+                <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="6">
+                  <li style="font-size:12px;color:#bfb9ae;display:flex;gap:9px;line-height:1.5"><span style="color:#c9a24d;font-size:9px;line-height:1.7">✦</span>{{ f }}</li>
+                </sc-for>
+              </ul>
+              <button style="{{ p.buttonStyle }}">{{ p.buttonLabel }}</button>
+            </div>
+          </sc-for>
+          <button onclick="{{ askCustomPkg }}" style="{{ btnOutStyle }}">Need something custom? Ask us</button>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ goDateFromPackages }}" disabled="{{ continuePkgDisabled }}" style="{{ continuePkgStyle }}">Continue to Date →</button>
+        </div>
+      </sc-if>
+
+      <!-- DATE -->
+      <sc-if value="{{ isDate }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <p style="font-size:12.5px;color:#8c877e;line-height:1.65;margin-bottom:16px">Live availability from the studio calendar. Nov–Feb is peak wedding season — dates go fast. Multiple functions? Tap every date you need us for — haldi, wedding, reception.</p>
+          <div style="background:#141419;border:1px solid #26262f;border-radius:16px;padding:16px;margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <button onclick="{{ prevMonth }}" style="background:#1c1c23;border:1px solid #26262f;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;color:#f2eee6">‹</button>
+              <b style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600">{{ monthLabel }}</b>
+              <button onclick="{{ nextMonth }}" style="background:#1c1c23;border:1px solid #26262f;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;color:#f2eee6">›</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">M</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">T</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">W</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">T</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">F</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">S</div>
+              <div style="text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:#8c877e;padding-bottom:6px">S</div>
+              <sc-for list="{{ calendarCells }}" as="c" hint-placeholder-count="35">
+                <div onclick="{{ c.onClick }}" style="{{ c.style }}">{{ c.day }}</div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:#8c877e">
+              <span><i style="display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:rgba(74,222,128,.5)"></i>Available</span>
+              <span><i style="display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:rgba(251,191,36,.5)"></i>Few slots</span>
+              <span><i style="display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:#2a2a31"></i>Fully booked</span>
+            </div>
+          </div>
+          <sc-if value="{{ hasSelectedDate }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ boxStyle }}">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px"><span style="color:#8c877e;font-size:11.5px">Selected dates ({{ selectedCount }})</span><a onclick="{{ clearDates }}" style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#c9a24d;cursor:pointer">Clear all</a></div>
+              <sc-for list="{{ selectedDatesList }}" as="d" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #26262f">
+                  <span style="{{ d.dotStyle }}"></span>
+                  <b style="flex:1;min-width:0;font-size:12.5px;font-weight:500;color:#e2dcd0">{{ d.label }}</b>
+                  <select value="{{ d.functionValue }}" onChange="{{ d.onFunctionChange }}" style="background:#1c1c23;border:1px solid #2c2a22;border-radius:8px;color:#e2dcd0;font-size:11px;padding:7px 8px;flex:0 0 auto">
+                    <sc-for list="{{ functionOptions }}" as="f" hint-placeholder-count="7"><option value="{{ f.v }}">{{ f.n }}</option></sc-for>
+                  </select>
+                  <button onclick="{{ d.onRemove }}" title="Remove" style="background:none;border:none;color:#8c877e;font-size:14px;cursor:pointer;padding:2px 3px;flex:0 0 auto">✕</button>
+                </div>
+              </sc-for>
+              <p style="font-size:10.5px;color:#8c877e;margin:12px 0 0;line-height:1.5">Tag each date with what's happening — it helps our team plan the right crew.</p>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ goDetailsFromDate }}" disabled="{{ continueDateDisabled }}" style="{{ continueDateStyle }}">Continue →</button>
+        </div>
+      </sc-if>
+
+      <!-- ADDONS -->
+      <sc-if value="{{ isAddons }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <p style="font-size:12.5px;color:#8c877e;line-height:1.65;margin-bottom:16px">Want anything beyond your package? Add any service below — each is charged additionally on top of your package price. Totally optional.</p>
+          <sc-for list="{{ addonsList }}" as="a" hint-placeholder-count="12">
+            <div onclick="{{ a.onClick }}" style="{{ a.rowStyle }}">
+              <img loading="lazy" src="{{ a.img }}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex:0 0 64px">
+              <div style="flex:1;min-width:0">
+                <b style="font-size:13px;font-weight:500;display:block;margin-bottom:3px;line-height:1.35;color:#e2dcd0">{{ a.name }}</b>
+                <span style="font-size:11.5px;color:#c9a24d;font-weight:500">+ {{ a.priceText }}</span>
+              </div>
+              <div style="{{ a.dotStyle }}"></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ hasAddons }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ boxStyle }};margin-top:6px">
+              <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Add-ons selected ({{ addonsCount }})</span><b style="color:#c9a24d;font-weight:400">+ {{ addonsTotalText }}</b></div>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ goDetailsFromAddons }}" style="{{ btnGoldStyle }}">{{ addonsContinueLabel }}</button>
+        </div>
+      </sc-if>
+
+      <!-- DETAILS -->
+      <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Full Name</label><input value="{{ nameValue }}" onChange="{{ onNameChange }}" placeholder="Your name" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6"></div>
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Mobile Number</label><input type="tel" value="{{ phoneValue }}" onChange="{{ onPhoneChange }}" placeholder="+91" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Service</label>
+              <select value="{{ serviceValue }}" onChange="{{ onServiceChange }}" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6">
+                <sc-for list="{{ serviceOptions }}" as="o" hint-placeholder-count="12"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+              </select>
+            </div>
+            <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Package</label>
+              <select value="{{ pkgValue }}" onChange="{{ onPkgChange }}" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6">
+                <sc-for list="{{ pkgOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Venue / City</label><input value="{{ venueValue }}" onChange="{{ onVenueChange }}" placeholder="e.g. Arrah, Patna, Buxar" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6"></div>
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Anything else we should know?</label><textarea value="{{ notesValue }}" onChange="{{ onNotesChange }}" placeholder="Number of functions, guest count, special requests…" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6;resize:none;min-height:82px"></textarea></div>
+          <p style="font-size:11px;color:#8c877e;line-height:1.6;text-align:center;margin-top:12px">We call to confirm within one hour during studio timings (10 am – 8 pm).</p>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ submitDetails }}" style="{{ btnGoldStyle }}">Review Booking →</button>
+        </div>
+      </sc-if>
+
+      <!-- REVIEW -->
+      <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Service</span><b style="font-weight:400">{{ reviewScreen.serviceName }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Package</span><b style="font-weight:400">{{ reviewScreen.packageNameSub }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Event date(s)</span><b style="font-weight:400">{{ reviewScreen.eventDateLong }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Venue</span><b style="font-weight:400">{{ reviewScreen.venueText }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Name</span><b style="font-weight:400">{{ reviewScreen.nameText }}</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Mobile</span><b style="font-weight:400">{{ reviewScreen.phoneText }}</b></div>
+          </div>
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Package amount</span><b style="font-weight:400">{{ reviewScreen.packageAmountText }}</b></div>
+            <sc-if value="{{ reviewScreen.hasAddons }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Add-ons — {{ reviewScreen.addonsNamesText }}</span><b style="font-weight:400">{{ reviewScreen.addonsText }}</b></div>
+            </sc-if>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">GST @ 18%</span><b style="font-weight:400">{{ reviewScreen.gstText }}</b></div>
+            <div style="display:flex;justify-content:space-between;gap:14px;padding-top:14px;margin-top:5px;border-top:1px solid #26262f"><span style="color:#8c877e;font-size:11.5px">Total</span><b style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#c9a24d">{{ reviewScreen.totalText }}</b></div>
+          </div>
+          <div style="background:#141419;border:1px solid rgba(201,162,77,.35);border-radius:16px;padding:18px;margin-bottom:14px;background-image:linear-gradient(150deg,rgba(201,162,77,.09),#141419 60%)">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Pay now (25% advance)</span><b style="color:#c9a24d;font-size:17px;font-weight:400">{{ reviewScreen.advanceText }}</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Balance on shoot day</span><b style="font-weight:400">{{ reviewScreen.balanceText }}</b></div>
+          </div>
+          <p style="font-size:11px;color:#8c877e;line-height:1.6;text-align:center;margin-top:12px">Advance is fully refundable if cancelled 30+ days before the event date.</p>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ goPay }}" style="{{ btnGoldStyle }}">Pay {{ advanceAmountText }} Advance →</button>
+        </div>
+      </sc-if>
+
+      <!-- PAY -->
+      <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <div style="{{ boxStyle }};text-align:center;border-color:rgba(201,162,77,.3)">
+            <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8c877e">Amount payable now</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:#c9a24d;line-height:1.2">{{ advanceAmountText }}</div>
+            <div style="font-size:11.5px;color:#8c877e">25% advance · {{ packageNameText }} package</div>
+          </div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Payment Method</h3></div>
+          <sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="4">
+            <div onclick="{{ m.onClick }}" style="{{ m.rowStyle }}">
+              <i style="font-style:normal;font-size:19px;flex:0 0 auto">{{ m.icon }}</i>
+              <div style="flex:1"><b style="display:block;font-size:13px;font-weight:500">{{ m.title }}</b><span style="font-size:11px;color:#8c877e">{{ m.sub }}</span></div>
+              <div style="{{ m.dotStyle }}"></div>
+            </div>
+          </sc-for>
+          <p style="font-size:11px;color:#8c877e;line-height:1.6;text-align:center;margin-top:12px">Secured payments. This demo does not charge any real money.</p>
+        </div>
+        <div style="position:sticky;bottom:0;background:linear-gradient(transparent,#0b0b0d 24%);padding:22px 18px 16px;margin-top:8px">
+          <button onclick="{{ confirmBookingHandler }}" style="{{ btnGoldStyle }}">Confirm &amp; Pay →</button>
+        </div>
+      </sc-if>
+
+      <!-- DONE -->
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:8px 18px 34px;text-align:center;animation:fadeUp .3s ease">
+          <div style="width:78px;height:78px;margin:22px auto 20px;border-radius:50%;background:rgba(74,222,128,.12);border:2px solid #4ade80;display:grid;place-items:center;font-size:36px;color:#4ade80;animation:pop .45s cubic-bezier(.34,1.56,.64,1)">✓</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:27px;margin-bottom:8px;font-weight:600">Your date is locked.</h2>
+          <p style="font-size:13px;color:#8c877e;line-height:1.7;margin-bottom:22px">Booking <b style="color:#c9a24d">{{ doneScreen.bookingId }}</b> confirmed for<br>{{ doneScreen.eventDateLong }}.<br>Our team will call you within the hour.</p>
+          <div style="{{ boxStyle }};text-align:left">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Package</span><b style="font-weight:400">{{ doneScreen.packageName }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Advance paid</span><b style="color:#4ade80;font-weight:400">{{ doneScreen.advancePaidText }}</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Balance due</span><b style="font-weight:400">{{ doneScreen.balanceDueText }}</b></div>
+          </div>
+          <button onclick="{{ trackBooking }}" style="{{ btnGoldStyle }}">Track My Booking</button>
+          <div style="height:10px"></div>
+          <button onclick="{{ waSend }}" style="{{ btnWaStyle }}">Send Details on WhatsApp</button>
+          <div style="height:10px"></div>
+          <button onclick="{{ goHome }}" style="{{ btnOutStyle }}">Back to Home</button>
+        </div>
+      </sc-if>
+
+      <!-- BOOKINGS -->
+      <sc-if value="{{ isBookings }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ hasOrders }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+            <sc-for list="{{ ordersList }}" as="o" hint-placeholder-count="3">
+              <div onclick="{{ o.onClick }}" style="{{ boxStyle }};cursor:pointer">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <b style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600">{{ o.serviceName }}</b>
+                  <span style="{{ o.stagePillStyle }}">{{ o.stagePillText }}</span>
+                </div>
+                <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Booking ID</span><b style="font-weight:400">{{ o.id }}</b></div>
+                <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Event date(s)</span><b style="font-weight:400">{{ o.dateLong }}</b></div>
+                <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Package</span><b style="font-weight:400">{{ o.packageName }}</b></div>
+                <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Balance due</span><b style="font-weight:400">{{ o.balanceText }}</b></div>
+                <div style="margin-top:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d">View &amp; Track ›</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:64px 22px;animation:fadeUp .3s ease">
+            <div style="font-size:44px;opacity:.28;margin-bottom:16px">☱</div>
+            <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:8px">No bookings yet</h3>
+            <p style="font-size:13px;color:#8c877e;line-height:1.65;margin-bottom:22px">Once you book a shoot, you'll be able to track everything here — from advance payment to album delivery.</p>
+            <button onclick="{{ browseServices }}" style="{{ btnGoldStyle }}">Browse Services</button>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- TEAM -->
+      <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <p style="font-size:12.5px;color:#8c877e;line-height:1.65;margin-bottom:18px">Ten full-time members — photographers, cinematographers, an editor and a licensed drone pilot. No freelancers hired the week of your event.</p>
+          <sc-for list="{{ teamList }}" as="m" hint-placeholder-count="10">
+            <div style="display:flex;gap:12px;align-items:center;background:#141419;border:1px solid #26262f;border-radius:14px;padding:10px;margin-bottom:10px">
+              <img loading="lazy" src="{{ m.img }}" alt="" style="width:58px;height:58px;border-radius:11px;object-fit:cover;object-position:center 20%;flex:0 0 58px">
+              <div style="flex:1;min-width:0"><b style="font-size:13.5px;font-weight:500;display:block;margin-bottom:3px">{{ m.name }}</b><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d">{{ m.role }}</span></div>
+              <sc-if value="{{ m.hasPhone }}" hint-placeholder-val="{{ false }}">
+                <button onclick="{{ m.onClick }}" title="Call" style="width:38px;height:38px;flex:0 0 38px;border-radius:50%;border:1px solid #26262f;background:#1c1c23;color:#c9a24d;font-size:15px;cursor:pointer">✆</button>
+              </sc-if>
+            </div>
+          </sc-for>
+          <div style="{{ boxStyle }};margin-top:6px">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Photographers</span><b style="font-weight:400">{{ countsPhoto }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Cinematographers</span><b style="font-weight:400">{{ countsCine }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Drone pilot</span><b style="font-weight:400">{{ countsDrone }} (DGCA licensed)</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Editors &amp; operators</span><b style="font-weight:400">{{ countsEdit }}</b></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ACCOUNT -->
+      <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <div style="{{ boxStyle }};text-align:center">
+            <img src="{{ logoUrl }}" style="height:52px;margin:4px auto 14px">
+            <b style="font-family:'Cormorant Garamond',serif;font-size:21px;display:block">{{ accountScreen.userName }}</b>
+            <span style="font-size:12.5px;color:#8c877e">{{ accountScreen.userPhone }}</span>
+          </div>
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Your Name</label><input value="{{ accountScreen.accountNameValue }}" onChange="{{ onAccountNameChange }}" placeholder="Full name" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6"></div>
+          <div style="margin-bottom:15px"><label style="display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8c877e;margin-bottom:7px">Mobile Number</label><input type="tel" value="{{ accountScreen.accountPhoneValue }}" onChange="{{ onAccountPhoneChange }}" placeholder="+91" style="width:100%;background:#141419;border:1px solid #26262f;border-radius:11px;padding:14px;font-size:14px;font-weight:300;color:#f2eee6"></div>
+          <button onclick="{{ saveAccount }}" style="{{ btnGoldStyle }}">Save Details</button>
+
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Our Team</h3><a onclick="{{ goTeamAll }}" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d;cursor:pointer">See all 10</a></div>
+          <div onclick="{{ goTeamAll }}" style="display:flex;gap:12px;align-items:center;background:#141419;border:1px solid #26262f;border-radius:14px;padding:10px;margin-bottom:10px;cursor:pointer">
+            <img loading="lazy" src="{{ timgTeam2Url }}" alt="" style="width:58px;height:58px;border-radius:11px;object-fit:cover;object-position:center 20%;flex:0 0 58px">
+            <div style="flex:1;min-width:0"><b style="font-size:13.5px;font-weight:500;display:block;margin-bottom:3px">10 full-time members</b><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#c9a24d">Photo · Video · Drone · Editing</span></div>
+            <div style="color:#8c877e;font-size:17px;flex:0 0 auto">›</div>
+          </div>
+
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Studio</h3></div>
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Address</span><b style="font-weight:400;text-align:right;font-size:12px">Mahadev Market, near Bullet Showroom,<br>Vishnu Nagar, Arrah, Bihar 802302</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Phone</span><b style="font-weight:400">+91 93864 15795</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Email</span><b style="font-weight:400;font-size:12px">apanadigitalzone@gmail.com</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Open</span><b style="font-weight:400">10 am – 8 pm · All days</b></div>
+          </div>
+
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">App</h3></div>
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Version</span><b style="font-weight:400">1.0.0</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Bookings stored</span><b style="font-weight:400">{{ accountScreen.ordersCount }}</b></div>
+          </div>
+          <button onclick="{{ clearDemoData }}" style="{{ btnOutStyle }}">Clear Demo Data</button>
+          <p style="font-size:11px;color:#8c877e;line-height:1.6;text-align:center;margin-top:12px">Apna Digital Zone · Arrah, Bihar · Professional photography since 2010</p>
+        </div>
+      </sc-if>
+
+      <!-- ORDER DETAIL -->
+      <sc-if value="{{ isOrder }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:16px 18px 34px;animation:fadeUp .3s ease">
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Booking ID</span><b style="font-weight:400">{{ orderScreen.id }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Service</span><b style="font-weight:400">{{ orderScreen.serviceName }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Package</span><b style="font-weight:400">{{ orderScreen.packageName }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Event date(s)</span><b style="font-weight:400">{{ orderScreen.dateLong }}</b></div>
+            <sc-if value="{{ orderScreen.hasAddons }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Add-ons</span><b style="font-weight:400">{{ orderScreen.addonsNamesText }}</b></div>
+            </sc-if>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Venue</span><b style="font-weight:400">{{ orderScreen.venue }}</b></div>
+            <div style="{{ kvLastStyle }}"><span style="color:#8c877e;font-size:11.5px">Booked on</span><b style="font-weight:400">{{ orderScreen.bookedOnLong }}</b></div>
+          </div>
+          <div style="{{ boxStyle }}">
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Total</span><b style="font-weight:400">{{ orderScreen.totalText }}</b></div>
+            <div style="{{ kvStyle }}"><span style="color:#8c877e;font-size:11.5px">Advance paid</span><b style="color:#4ade80;font-weight:400">{{ orderScreen.paidText }}</b></div>
+            <div style="display:flex;justify-content:space-between;gap:14px;padding-top:14px;margin-top:5px;border-top:1px solid #26262f"><span style="color:#8c877e;font-size:11.5px">Balance due</span><b style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#c9a24d">{{ orderScreen.balanceText }}</b></div>
+          </div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px"><h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin:0">Order Status</h3></div>
+          <div style="{{ boxStyle }}">
+            <sc-for list="{{ orderScreen.stagesList }}" as="t" hint-placeholder-count="6">
+              <div style="display:flex;gap:14px;padding-bottom:20px;position:relative">
+                <i style="{{ t.dotStyle }}"></i>
+                <div><b style="{{ t.labelStyle }}">{{ t.label }}</b><p style="font-size:11.5px;color:#8c877e;line-height:1.5;margin:0">{{ t.note }}</p></div>
+              </div>
+            </sc-for>
+          </div>
+          <button onclick="{{ orderScreen.advanceHandler }}" style="{{ btnOutStyle }}">Simulate Next Stage (demo)</button>
+          <div style="height:10px"></div>
+          <button onclick="{{ orderScreen.messageHandler }}" style="{{ btnWaStyle }}">Message Studio</button>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <!-- TABS -->
+    <div style="flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(11,11,13,.97);backdrop-filter:blur(14px);border-top:1px solid #26262f;padding-bottom:8px;z-index:50">
+      <sc-for list="{{ tabsList }}" as="t" hint-placeholder-count="4">
+        <button onclick="{{ t.onClick }}" style="{{ t.style }}"><i style="{{ t.iconStyle }}">{{ t.icon }}</i>{{ t.label }}</button>
+      </sc-for>
+    </div>
+
+    <!-- TOAST -->
+    <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:50%;bottom:88px;transform:translateX(-50%);background:#1c1c23;border:1px solid #c9a24d;color:#f2eee6;padding:12px 20px;border-radius:30px;font-size:12.5px;white-space:nowrap;z-index:200">{{ toastMsg }}</div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SERVICES=[
+ {id:'wedding', n:'Wedding Photography', img:'cenimatic-photographer.jpg', from:34999, d:'Full-day cinematic + candid coverage of every ritual.'},
+ {id:'prewed', n:'Pre-Wedding Shoot', img:'pre-wedding.jpg', from:14999, d:'Half-day story shoot with styling and a short reel.'},
+ {id:'cinema', n:'Wedding Cinematography', img:'wedding-cinematic.jpg', from:29999, d:'A proper wedding film with sound design and colour grade.'},
+ {id:'candid', n:'Candid Photography', img:'candid-photography.jpg', from:18999, d:'Unposed, natural frames — the moments nobody planned.'},
+ {id:'drone', n:'Drone Aerial Shoot', img:'drone-video.jpg', from:11999, d:'DGCA-licensed pilots, 4K aerials for baraat and venues.'},
+ {id:'bday', n:'Birthday Shoot', img:'birthday-photographer.jpg', from:8999, d:'Cake cutting to last dance, delivered the same week.'},
+ {id:'anniv', n:'Anniversary Shoot', img:'wedding-anniversary-photographer.jpg', from:9999, d:'Warm, unhurried coverage of your milestone day.'},
+ {id:'newborn', n:'Newborn Baby Shoot', img:'new-born-bady.jpg', from:7999, d:"Gentle in-studio session built around baby's schedule."},
+ {id:'seminar', n:'Seminar & Corporate', img:'seminar-photographer.jpg', from:12999, d:'Conferences, workshops and training — full documentation.'},
+ {id:'freelance', n:'Freelance Photographer', img:'freelance-photograpgher.jpg', from:5999, d:'Hire a photographer from our team for a day.'},
+ {id:'editing', n:'Video Editing', img:'video-editing.jpg', from:4999, d:'Send raw footage, get a polished graded edit back.'},
+ {id:'album', n:'Karizma Album & Photobook', img:'karizma-photobook-designer.jpg', from:6999, d:'Premium designed albums, printed in-house.'}
+];
+const PACKAGES=[
+ {id:'silver',n:'Silver',sub:'Single Day Coverage',price:34999,badge:'',
+  f:['1 photographer + 1 cinematographer','8 hours event coverage','250+ edited photographs','5-minute highlight film','Online gallery for 1 year','Delivery in 25 days']},
+ {id:'gold',n:'Gold',sub:'Wedding + Reception',price:74999,badge:'Most Booked',
+  f:['2 photographers + 2 cinematographers','Full 2-day coverage','Candid + traditional both','Drone aerial coverage','600+ edited photographs','Cinematic film + 60s teaser reel','Karizma photobook — 30 sheets','Teaser in 7 days']},
+ {id:'diamond',n:'Diamond',sub:'03 Days Coverage',price:99999,badge:'Popular',
+  f:['5 members team (2 Trad Photo + 1 Trad Video + 1 Candid Photo + 1 Cinematographer)','Traditional + Candid + Cinematic coverage','Drone aerial coverage','500 edited photographs','5-min Highlight film + 2 Reels','Photobook — 70 Sheets + E-book gallery','Teaser in 1 week, full delivery in 30-45 days']},
+ {id:'platinum',n:'Platinum',sub:'The Full Wedding Story',price:174999,badge:'Premium',
+  f:['Complete team of 6 members','Pre-wedding shoot included','All functions: Tilak to Vidai','Drone + Gimbal + Light setup','800 edited photographs','High quality video (Teaser, 3 Reels & Running Video)','Premium Album (90 Sheets) + Mini book both','Teaser in 15 days, full delivery in 50-60 days']}
+];
+const TEAM=[
+ {n:'Anjali Gupta', r:'Founder', i:'team-1.jpg', p:'8709464955'},
+ {n:'Rakesh Kumar Gupta', r:'Managing Director', i:'team-2.jpg', p:'9386415795'},
+ {n:'Md. Naushad', r:'Photographer', i:'team-6.jpg'},
+ {n:'Md. Sahbaz', r:'Photographer', i:'team-7.jpg'},
+ {n:'Suman Shaurav', r:'Photographer', i:'team-10.jpg'},
+ {n:'Md. Zahid', r:'Videographer', i:'team-4.jpg'},
+ {n:'Deepak Kumar', r:'Videographer', i:'team-9.jpg'},
+ {n:'Md. Nawazuddin', r:'Drone Operator', i:'team-11.jpg'},
+ {n:'Raja Kumar', r:'Editor', i:'team-5.jpg'},
+ {n:'Md. Azhar', r:'Live TV Operator', i:'team-8.jpg'}
+];
+const STAGES=['Enquiry Received','Advance Paid — Date Locked','Shoot Day','Editing In Progress','Teaser Delivered','Album & Final Delivery'];
+const STAGE_NOTES=['We received your request and confirmed the date.','Advance received. Your date is blocked in our calendar.','Our team arrives 90 minutes before the first ritual.','Colour grading and edit in progress at the studio.','60-second teaser film shared within 7 days.','Full gallery, film and printed album handed over.'];
+const IMG='https://apnadigitalzone.com/assets/img/services/';
+const TIMG='https://apnadigitalzone.com/assets/img/teams/';
+const LOGO='https://apnadigitalzone.com/assets/img/anss-logo.png';
+const HERO='https://apnadigitalzone.com/assets/img/teams/img-1.jpg';
+const HERO_GALLERY=[HERO, IMG+'wedding-cinematic.jpg', IMG+'candid-photography.jpg', IMG+'pre-wedding.jpg', IMG+'cenimatic-photographer.jpg', IMG+'drone-video.jpg'];
+const PHONE='919386415795';
+const GOLD='#c9a24d', LINE='#26262f', SURF='#141419', CREAM='#f2eee6', MUTED='#8c877e', OK='#4ade80', WARN='#fbbf24', WA='#25D366', INK='#0b0b0d';
+function INR(n){return '₹'+Math.round(n).toLocaleString('en-IN')}
+function avail(d){
+  const k=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  const h=(k*2654435761)%97;
+  const m=d.getMonth();
+  const peak=(m===10||m===11||m===0||m===1);
+  if(h<(peak?34:14))return 'full';
+  if(h<(peak?62:34))return 'few';
+  return 'free';
+}
+function fmtISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function longDate(d){return d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function orderDatesLong(o){
+  const arr=(o.dates&&o.dates.length)?o.dates:(o.date?[o.date]:[]);
+  const fn=o.dateFunctions||{};
+  return arr.length? arr.slice().sort().map(d=>{ const f=fn[d]; const long=longDate(new Date(d)); return f? f+' — '+long : long; }).join('; ') : '—';
+}
+const FUNCTIONS=['Haldi','Mehndi','Sangeet','Wedding','Reception','Other'];
+
+class Component extends DCLogic {
+  state={
+    screen:'home', tab:'home', stack:[],
+    draft:{service:'wedding', pkg:'gold', dates:[], dateFunctions:{}, addons:[], name:'', phone:'', venue:'', notes:'', method:'upi'},
+    calMonth:new Date().getMonth(), calYear:new Date().getFullYear(),
+    orders:[], user:{name:'',phone:''},
+    openId:null, accountName:'', accountPhone:'',
+    toastMsg:'', toastShow:false, heroIndex:0, activeDot:0, activeTeamDot:0
+  };
+  svcRowRef=React.createRef();
+  teamRowRef=React.createRef();
+
+  componentDidMount(){
+    try{
+      const o=JSON.parse(localStorage.getItem('adz_orders_dc')||'[]');
+      const u=JSON.parse(localStorage.getItem('adz_user_dc')||'{}')||{};
+      this.setState({orders:o, user:u, accountName:u.name||'', accountPhone:u.phone||''});
+    }catch(e){}
+    this._heroTimer=setInterval(()=>this.setState(s=>({heroIndex:(s.heroIndex+1)%HERO_GALLERY.length})), 6000);
+    this._svcTimer=setInterval(this.advanceServiceSlide, 3000);
+    this._teamTimer=setInterval(this.advanceTeamSlide, 3400);
+  }
+  componentWillUnmount(){ clearInterval(this._heroTimer); clearInterval(this._svcTimer); clearInterval(this._teamTimer); }
+  advanceTeamSlide=()=>{
+    const el=this.teamRowRef.current;
+    const count=6, cardW=136;
+    this.setState(s=>{
+      const next=(s.activeTeamDot+1)%count;
+      if(el){
+        const maxScroll=el.scrollWidth-el.clientWidth;
+        el.scrollTo({left: next===0?0:Math.min(next*cardW, maxScroll), behavior:'smooth'});
+      }
+      return {activeTeamDot:next};
+    });
+  };
+  advanceServiceSlide=()=>{
+    const el=this.svcRowRef.current;
+    const count=6, cardW=192;
+    this.setState(s=>{
+      const next=(s.activeDot+1)%count;
+      if(el){
+        const maxScroll=el.scrollWidth-el.clientWidth;
+        el.scrollTo({left: next===0?0:Math.min(next*cardW, maxScroll), behavior:'smooth'});
+      }
+      return {activeDot:next};
+    });
+  };
+
+  toast=(m)=>{
+    this.setState({toastMsg:m, toastShow:true});
+    clearTimeout(this._t);
+    this._t=setTimeout(()=>this.setState({toastShow:false}), 2100);
+  };
+
+  go=(screen)=>{ this.setState(s=>({screen, stack: s.screen!==screen?[...s.stack, s.screen]:s.stack})); };
+  goBack=()=>{ this.setState(s=>{ const stack=[...s.stack]; const prev=stack.pop(); return {screen:prev||'home', stack}; }); };
+  setTab=(t)=>{ this.setState({tab:t, screen:t, stack:[]}); };
+
+  selectService=(id)=>{ this.setState(s=>({draft:{...s.draft, service:id}})); this.go('packages'); };
+  selectPkg=(id)=>{ this.setState(s=>({draft:{...s.draft, pkg:id, service:s.draft.service||'wedding'}})); this.go('date'); };
+  selectDate=(iso)=>{
+    this.setState(s=>{
+      const has=s.draft.dates.includes(iso);
+      const dates=has? s.draft.dates.filter(d=>d!==iso) : [...s.draft.dates, iso];
+      const dateFunctions={...s.draft.dateFunctions};
+      if(has) delete dateFunctions[iso];
+      return {draft:{...s.draft, dates, dateFunctions}};
+    });
+  };
+  clearDates=()=>{ this.setState(s=>({draft:{...s.draft, dates:[], dateFunctions:{}}})); };
+  setDateFunction=(iso)=>(e)=>{
+    const v=e.target.value;
+    this.setState(s=>({draft:{...s.draft, dateFunctions:{...s.draft.dateFunctions, [iso]:v}}}));
+  };
+  toggleAddon=(id)=>{
+    this.setState(s=>{
+      const has=s.draft.addons.includes(id);
+      const addons=has? s.draft.addons.filter(x=>x!==id) : [...s.draft.addons, id];
+      return {draft:{...s.draft, addons}};
+    });
+  };
+  shiftMonth=(n)=>{
+    this.setState(s=>{
+      let m=s.calMonth+n, y=s.calYear;
+      if(m<0){m=11;y--;} if(m>11){m=0;y++;}
+      const now=new Date();
+      if(y<now.getFullYear()||(y===now.getFullYear()&&m<now.getMonth())) return {};
+      return {calMonth:m, calYear:y};
+    });
+  };
+  setDraftField=(field)=>(e)=>{ const v=e.target.value; this.setState(s=>({draft:{...s.draft,[field]:v}})); };
+  selectMethod=(k)=>{ this.setState(s=>({draft:{...s.draft, method:k}})); };
+
+  saveDetailsAndReview=()=>{
+    const {draft}=this.state;
+    if(!draft.name || !draft.phone){ this.toast('Please enter name and mobile number'); return; }
+    const user={name:draft.name, phone:draft.phone};
+    this.setState({user, accountName:user.name, accountPhone:user.phone});
+    try{ localStorage.setItem('adz_user_dc', JSON.stringify(user)); }catch(e){}
+    this.go('review');
+  };
+
+  confirmBooking=()=>{
+    const {draft}=this.state;
+    const p=PACKAGES.find(x=>x.id===draft.pkg)||PACKAGES[1];
+    const addonsTotal=draft.addons.reduce((sum,id)=>{ const x=SERVICES.find(y=>y.id===id); return sum+(x?x.from:0); },0);
+    const base=p.price+addonsTotal, total=base*1.18, paid=total*0.25;
+    const o={ id:'ADZ'+String(Date.now()).slice(-6), service:draft.service, pkg:draft.pkg, dates:draft.dates, dateFunctions:draft.dateFunctions, addons:draft.addons, venue:draft.venue, name:draft.name, phone:draft.phone, notes:draft.notes, total, paid, stage:1, created:new Date().toISOString(), method:draft.method };
+    this.setState(s=>{
+      const orders=[o, ...s.orders];
+      try{ localStorage.setItem('adz_orders_dc', JSON.stringify(orders)); }catch(e){}
+      return {orders, tab:'bookings', stack:[], screen:'done'};
+    });
+    this.toast('Payment successful');
+  };
+
+  openOrder=(id)=>{ this.setState({openId:id}); this.go('order'); };
+  advanceStage=(id)=>{
+    this.setState(s=>{
+      const ordr=s.orders.find(x=>x.id===id);
+      if(!ordr) return {};
+      if(ordr.stage>=STAGES.length-1){ this.toast('Order complete'); return {}; }
+      const orders=s.orders.map(x=>x.id===id?{...x,stage:x.stage+1}:x);
+      try{ localStorage.setItem('adz_orders_dc', JSON.stringify(orders)); }catch(e){}
+      this.toast(STAGES[ordr.stage+1]);
+      return {orders};
+    });
+  };
+
+  saveAccount=()=>{
+    const user={name:this.state.accountName.trim(), phone:this.state.accountPhone.trim()};
+    this.setState({user});
+    try{ localStorage.setItem('adz_user_dc', JSON.stringify(user)); }catch(e){}
+    this.toast('Details saved');
+  };
+  clearDemoData=()=>{
+    this.setState({orders:[]});
+    try{ localStorage.setItem('adz_orders_dc', '[]'); }catch(e){}
+    this.toast('Cleared');
+  };
+  setAccountName=(e)=>this.setState({accountName:e.target.value});
+  setAccountPhone=(e)=>this.setState({accountPhone:e.target.value});
+
+  callStudio=()=>window.open('tel:+91'+PHONE);
+  openWAChat=()=>window.open('https://wa.me/'+PHONE, '_blank');
+
+  waConfirmForLastOrder=()=>{
+    const o=this.state.orders[0]; if(!o) return;
+    const p=PACKAGES.find(x=>x.id===o.pkg);
+    const s=SERVICES.find(x=>x.id===o.service);
+    const addonNames=(o.addons||[]).map(id=>{ const x=SERVICES.find(y=>y.id===id); return x?x.n:''; }).filter(Boolean).join(', ');
+    const t=encodeURIComponent(`Booking Confirmed — Apna Digital Zone\n\nID: ${o.id}\nName: ${o.name}\nMobile: ${o.phone}\nService: ${s?s.n:''}\nPackage: ${p?p.n:''}\nDate(s): ${orderDatesLong(o)}${addonNames?`\nAdd-ons: ${addonNames}`:''}\nVenue: ${o.venue||'TBC'}\nAdvance paid: ${INR(o.paid)}\nBalance: ${INR(o.total-o.paid)}`);
+    window.open('https://wa.me/'+PHONE+'?text='+t,'_blank');
+  };
+
+  renderVals(){
+    const s=this.state, draft=s.draft;
+    const svc=id=>SERVICES.find(x=>x.id===id)||SERVICES[0];
+    const pkgOf=id=>PACKAGES.find(x=>x.id===id)||PACKAGES[1];
+
+    const isHome=s.screen==='home', notHome=!isHome;
+    const isServices=s.screen==='services', isPackages=s.screen==='packages', isDate=s.screen==='date',
+      isAddons=s.screen==='addons',
+      isDetails=s.screen==='details', isReview=s.screen==='review', isPay=s.screen==='pay',
+      isDone=s.screen==='done', isBookings=s.screen==='bookings', isOrder=s.screen==='order',
+      isTeam=s.screen==='team', isAccount=s.screen==='account';
+
+    const TITLES={services:'Our Services',packages:'Choose a Package',date:'Pick Your Date',addons:'Add-ons',details:'Your Details',review:'Review & Pay',pay:'Payment',done:'Booking Confirmed',bookings:'My Bookings',order:'Order Details',account:'My Account',team:'Our Team'};
+    const headerTitle=TITLES[s.screen]||'';
+
+    const TABS=[['home','⌂','Home'],['services','◈','Services'],['bookings','☱','Bookings'],['account','◔','Account']];
+    const tabsList=TABS.map(([key,icon,label])=>({
+      key, icon, label,
+      style:`background:none;border:none;cursor:pointer;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:${s.tab===key?GOLD:MUTED}`,
+      iconStyle:`font-style:normal;font-size:18px;line-height:1;opacity:${s.tab===key?1:.7}`,
+      onClick:()=>this.setTab(key)
+    }));
+
+    const btnGold=(disabled)=>`display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:12px;border:none;cursor:${disabled?'not-allowed':'pointer'};font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:${GOLD};color:#14100a;opacity:${disabled?.4:1}`;
+    const btnOut=`display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:12px;border:1px solid ${LINE};cursor:pointer;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:${CREAM}`;
+    const btnWa=`display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:12px;border:none;cursor:pointer;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:${WA};color:#062d12`;
+    const box=`background:${SURF};border:1px solid ${LINE};border-radius:16px;padding:18px;margin-bottom:14px`;
+    const kv=`display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:13px;border-bottom:1px solid rgba(38,38,47,.7)`;
+    const kvLast=`display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:13px`;
+
+    const QUICK=[['wedding','♥','Wedding'],['prewed','◇','Pre-Wed'],['bday','✿','Birthday'],['drone','✈','Drone']];
+    const quickItems=QUICK.map(([id,icon,label])=>({key:id,icon,label,onClick:()=>this.selectService(id)}));
+
+    const mapSvc=list=>list.map(x=>({ id:x.id, img:IMG+x.img, name:x.n, desc:x.d, fromText:'from '+INR(x.from), onClick:()=>this.selectService(x.id) }));
+    const homeServices=mapSvc(SERVICES.slice(0,6));
+    const servicesList=mapSvc(SERVICES);
+    const serviceDots=homeServices.map((_,i)=>({
+      style:`width:${i===s.activeDot?16:6}px;height:6px;border-radius:3px;background:${i===s.activeDot?GOLD:'#3a3a44'};transition:.3s`
+    }));
+
+    const pkgCardStyle=sel=>`background:${sel?`linear-gradient(160deg,rgba(201,162,77,.10),${SURF} 55%)`:SURF};border:1px solid ${sel?GOLD:LINE};border-radius:16px;padding:20px;margin-bottom:14px;position:relative;cursor:pointer`;
+    const mapPkg=(selId, full)=>PACKAGES.map(p=>{
+      const selected=selId===p.id;
+      return { id:p.id, name:p.n, sub:p.sub, priceText:INR(p.price)+' onwards', selected,
+        cardStyle:pkgCardStyle(selected), hasBadge:!!p.badge, badgeText:p.badge,
+        features: full? p.f : p.f.slice(0,4),
+        buttonLabel: selected? 'Selected ✓' : 'Select '+p.n,
+        buttonStyle: selected? btnGold(false) : btnOut,
+        onClick:()=>this.selectPkg(p.id)
+      };
+    });
+    const homePackages=mapPkg('gold', false);
+    const packagesList=mapPkg(draft.pkg, true);
+    const packageCaptionVisible=!!draft.service;
+    const packageCaptionServiceName=draft.service? svc(draft.service).n : '';
+    const continuePkgEnabled=!!draft.pkg;
+
+    const LEADS=['Founder','Managing Director'];
+    const mapTeam=list=>list.map(m=>({img:TIMG+m.i,name:m.n,role:m.r,hasPhone:!!m.p,isLead:LEADS.includes(m.r),onClick:m.p?(()=>window.open('tel:+91'+m.p)):(()=>{})}));
+    const homeTeam=mapTeam(TEAM.slice(0,6));
+    const teamList=mapTeam(TEAM);
+    const teamDots=homeTeam.map((_,i)=>({
+      style:`width:${i===s.activeTeamDot?16:6}px;height:6px;border-radius:3px;background:${i===s.activeTeamDot?GOLD:'#3a3a44'};transition:.3s`
+    }));
+
+    const first=new Date(s.calYear,s.calMonth,1);
+    const daysInMonth=new Date(s.calYear,s.calMonth+1,0).getDate();
+    const lead=(first.getDay()+6)%7;
+    const today=new Date(); today.setHours(0,0,0,0);
+    const dayStyle=(status,selected)=>{
+      const base='aspect-ratio:1;display:grid;place-items:center;border-radius:9px;font-size:12.5px;border:1px solid transparent;';
+      if(status==='off') return base+'opacity:0;pointer-events:none';
+      if(status==='past') return base+`color:${MUTED}20;pointer-events:none;opacity:.25`;
+      if(selected) return base+`background:${GOLD};color:#14100a;font-weight:700;border-color:${GOLD};cursor:pointer`;
+      if(status==='full') return base+'color:#4d4a45;cursor:not-allowed;text-decoration:line-through';
+      if(status==='few') return base+'background:rgba(251,191,36,.09);color:#f0dfae;border-color:rgba(251,191,36,.24);cursor:pointer';
+      return base+'background:rgba(74,222,128,.08);color:#cfe9d8;border-color:rgba(74,222,128,.2);cursor:pointer';
+    };
+    const calendarCells=[];
+    for(let i=0;i<lead;i++) calendarCells.push({day:'', style:dayStyle('off'), onClick:()=>{}});
+    for(let d=1;d<=daysInMonth;d++){
+      const dt=new Date(s.calYear,s.calMonth,d);
+      if(dt<today){ calendarCells.push({day:String(d), style:dayStyle('past'), onClick:()=>{}}); continue; }
+      const a=avail(dt); const iso=fmtISO(dt); const sel=draft.dates.includes(iso);
+      calendarCells.push({day:String(d), style:dayStyle(a,sel), onClick: a==='full'? (()=>{}) : (()=>this.selectDate(iso)) });
+    }
+    const monthLabel=first.toLocaleString('en-IN',{month:'long'})+' '+s.calYear;
+    const selectedCount=draft.dates.length;
+    const hasSelectedDate=selectedCount>0;
+    const functionOptions=[{v:'',n:'Function?'}, ...FUNCTIONS.map(f=>({v:f,n:f}))];
+    const selectedDatesList=draft.dates.slice().sort().map(iso=>{
+      const dt=new Date(iso), a=avail(dt), free=a==='free';
+      return {
+        iso, label:dt.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}),
+        dotStyle:`width:7px;height:7px;border-radius:50%;flex:0 0 auto;background:${free?OK:WARN}`,
+        functionValue: draft.dateFunctions[iso]||'',
+        onFunctionChange: this.setDateFunction(iso),
+        onRemove:()=>this.selectDate(iso)
+      };
+    });
+    const continueDateEnabled=selectedCount>0;
+
+    const serviceOptions=SERVICES.map(x=>({id:x.id,name:x.n}));
+    const pkgOptions=PACKAGES.map(p=>({id:p.id,name:p.n}));
+
+    const addonsList=SERVICES.map(x=>{
+      const on=draft.addons.includes(x.id);
+      return {
+        id:x.id, name:x.n, img:IMG+x.img, priceText:INR(x.from),
+        rowStyle:`display:flex;gap:13px;align-items:center;background:${on?'rgba(201,162,77,.09)':'#141419'};border:1px solid ${on?'#c9a24d':'#26262f'};border-radius:14px;padding:11px;margin-bottom:11px;cursor:pointer`,
+        dotStyle:`width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:1.5px solid ${on?'#c9a24d':'#3a3a42'};background:${on?'#c9a24d':'transparent'};display:grid;place-items:center;color:#14100a;font-size:12px;font-weight:700`,
+        onClick:()=>this.toggleAddon(x.id)
+      };
+    });
+    const addonsCount=draft.addons.length;
+    const hasAddons=addonsCount>0;
+    const addonsTotal=draft.addons.reduce((sum,id)=>{ const x=SERVICES.find(y=>y.id===id); return sum+(x?x.from:0); },0);
+    const addonsTotalText=INR(addonsTotal);
+    const addonsContinueLabel=hasAddons? `Continue with ${addonsCount} Add-on${addonsCount>1?'s':''} →` : 'Skip — Continue →';
+
+    const rp=pkgOf(draft.pkg);
+    const rBase=rp.price+addonsTotal, rGst=rBase*0.18, rTot=rBase+rGst, rAdv=rTot*0.25, rBal=rTot-rAdv;
+    const draftDatesLong=draft.dates.length? draft.dates.slice().sort().map(d=>{ const f=draft.dateFunctions[d]; const long=longDate(new Date(d)); return f? f+' — '+long : long; }).join('; ') : '—';
+    const reviewScreen={
+      serviceName: draft.service? svc(draft.service).n : '—',
+      packageNameSub: rp.n+' — '+rp.sub,
+      eventDateLong: draftDatesLong,
+      venueText: draft.venue||'To be confirmed',
+      nameText: draft.name||'—', phoneText: draft.phone||'—',
+      packageAmountText: INR(rp.price), addonsText: hasAddons? '+ '+INR(addonsTotal) : null,
+      addonsNamesText: draft.addons.map(id=>{ const x=SERVICES.find(y=>y.id===id); return x?x.n:''; }).join(', '),
+      hasAddons,
+      gstText: INR(rGst), totalText: INR(rTot),
+      advanceText: INR(rAdv), balanceText: INR(rBal)
+    };
+
+    const METHODS=[['upi','⌗','UPI','GPay · PhonePe · Paytm · BHIM'],['card','▭','Card','Credit / Debit / RuPay'],['net','🏦','Net Banking','All major Indian banks'],['cash','₹','Pay at Studio','Cash or UPI at the counter']];
+    const payMethods=METHODS.map(([key,icon,title,sub])=>{
+      const selected=draft.method===key;
+      return {key,icon,title,sub,selected,
+        rowStyle:`display:flex;align-items:center;gap:13px;background:${selected?'rgba(201,162,77,.07)':SURF};border:1px solid ${selected?GOLD:LINE};border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer`,
+        dotStyle:`width:17px;height:17px;border-radius:50%;border:1.5px solid ${selected?GOLD:LINE};flex:0 0 auto;background:${selected?`radial-gradient(circle at center, ${GOLD} 40%, transparent 42%)`:'transparent'}`,
+        onClick:()=>this.selectMethod(key)
+      };
+    });
+
+    const lastOrder=s.orders[0];
+    const doneScreen=lastOrder? {
+      bookingId:lastOrder.id, eventDateLong:orderDatesLong(lastOrder),
+      packageName:pkgOf(lastOrder.pkg).n, advancePaidText:INR(lastOrder.paid), balanceDueText:INR(lastOrder.total-lastOrder.paid)
+    } : {bookingId:'',eventDateLong:'',packageName:'',advancePaidText:'',balanceDueText:''};
+
+    const hasOrders=s.orders.length>0;
+    const noOrders=!hasOrders;
+    const ordersList=s.orders.map(o=>({
+      id:o.id, serviceName:svc(o.service).n, stagePillText:STAGES[o.stage],
+      stagePillStyle:`display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;border-radius:20px;font-weight:600;background:${o.stage>=5?'rgba(201,162,77,.16)':o.stage>=1?'rgba(74,222,128,.14)':'rgba(251,191,36,.14)'};color:${o.stage>=5?GOLD:o.stage>=1?OK:WARN}`,
+      dateLong:orderDatesLong(o), packageName:pkgOf(o.pkg).n, balanceText:INR(o.total-o.paid),
+      onClick:()=>this.openOrder(o.id)
+    }));
+
+    const ord=s.orders.find(o=>o.id===s.openId);
+    const hasOrder=!!ord;
+    const orderAddonNames = ord? (ord.addons||[]).map(id=>{ const x=SERVICES.find(y=>y.id===id); return x?x.n:''; }).filter(Boolean).join(', ') : '';
+    const orderScreen = ord ? {
+      id:ord.id, serviceName:svc(ord.service).n, packageName:pkgOf(ord.pkg).n,
+      dateLong:orderDatesLong(ord), venue:ord.venue||'To be confirmed',
+      hasAddons: !!orderAddonNames, addonsNamesText: orderAddonNames,
+      bookedOnLong:longDate(new Date(ord.created)), totalText:INR(ord.total), paidText:INR(ord.paid),
+      balanceText:INR(ord.total-ord.paid),
+      stagesList: STAGES.map((label,i)=>{
+        const done=i<ord.stage, now=i===ord.stage;
+        return { label, note:STAGE_NOTES[i],
+          dotStyle:`flex:0 0 17px;height:17px;border-radius:50%;border:2px solid ${done||now?GOLD:LINE};background:${done?GOLD:INK};margin-top:2px;${now?`box-shadow:0 0 0 4px rgba(201,162,77,.16);`:''}`,
+          labelStyle:`font-size:13px;font-weight:500;display:block;margin-bottom:3px;color:${done||now?CREAM:'#5f5b55'}`
+        };
+      }),
+      advanceHandler:()=>this.advanceStage(ord.id),
+      messageHandler:()=>window.open('https://wa.me/'+PHONE+'?text='+encodeURIComponent('Hi, about booking '+ord.id),'_blank')
+    } : { id:'',serviceName:'',packageName:'',dateLong:'',venue:'',hasAddons:false,addonsNamesText:'',bookedOnLong:'',totalText:'',paidText:'',balanceText:'',stagesList:[],advanceHandler:()=>{},messageHandler:()=>{} };
+
+    const accountScreen={
+      userName:s.user.name||'Guest User', userPhone:s.user.phone||'Sign in to save your bookings',
+      accountNameValue:s.accountName, accountPhoneValue:s.accountPhone, ordersCount:s.orders.length
+    };
+
+    return {
+      screen:s.screen, isHome, notHome, isServices, isPackages, isDate, isAddons, isDetails, isReview, isPay, isDone, isBookings, isOrder, isTeam, isAccount,
+      headerTitle, tabsList, toastShow:s.toastShow, toastMsg:s.toastMsg,
+      goBack:this.goBack, openAccount:()=>this.setTab('account'), callStudio:this.callStudio, openWA:this.openWAChat,
+      quickItems, homeServices, homePackages, homeTeam, serviceDots, svcRowRef:this.svcRowRef,
+      teamDots, teamRowRef:this.teamRowRef,
+      goServicesAll:()=>this.setTab('services'), goPackagesCompare:()=>this.go('packages'), goTeamAll:()=>this.go('team'),
+      checkDateHandler:()=>this.go('date'),
+      servicesList,
+      packagesList, packageCaptionVisible, packageCaptionServiceName, continuePkgEnabled, continuePkgDisabled:!continuePkgEnabled,
+      continuePkgStyle: btnGold(!continuePkgEnabled), goDateFromPackages:()=>{ if(continuePkgEnabled) this.go('date'); },
+      askCustomPkg:()=>window.open('https://wa.me/'+PHONE+'?text='+encodeURIComponent('Hi, I need a custom package'),'_blank'),
+      monthLabel, calendarCells, prevMonth:()=>this.shiftMonth(-1), nextMonth:()=>this.shiftMonth(1),
+      hasSelectedDate, selectedCount, selectedDatesList, functionOptions, clearDates:this.clearDates,
+      continueDateEnabled, continueDateDisabled:!continueDateEnabled, continueDateStyle: btnGold(!continueDateEnabled),
+      goDetailsFromDate:()=>{ if(continueDateEnabled) this.go('addons'); },
+      addonsList, hasAddons, addonsCount, addonsTotalText, addonsContinueLabel,
+      goDetailsFromAddons:()=>this.go('details'),
+      nameValue:draft.name, phoneValue:draft.phone, venueValue:draft.venue, notesValue:draft.notes,
+      onNameChange:this.setDraftField('name'), onPhoneChange:this.setDraftField('phone'),
+      onVenueChange:this.setDraftField('venue'), onNotesChange:this.setDraftField('notes'),
+      serviceOptions, pkgOptions, serviceValue:draft.service, pkgValue:draft.pkg,
+      onServiceChange:this.setDraftField('service'), onPkgChange:this.setDraftField('pkg'),
+      submitDetails:this.saveDetailsAndReview,
+      reviewScreen, goPay:()=>this.go('pay'),
+      advanceAmountText:reviewScreen.advanceText, packageNameText:rp.n,
+      payMethods, confirmBookingHandler:this.confirmBooking,
+      doneScreen, trackBooking:()=>this.setTab('bookings'), waSend:this.waConfirmForLastOrder, goHome:()=>this.setTab('home'),
+      hasOrders, noOrders, ordersList, browseServices:()=>this.setTab('services'),
+      hasOrder, orderScreen,
+      teamList, countsPhoto:4, countsCine:2, countsDrone:1, countsEdit:2,
+      accountScreen, onAccountNameChange:this.setAccountName, onAccountPhoneChange:this.setAccountPhone,
+      saveAccount:this.saveAccount, clearDemoData:this.clearDemoData,
+      logoUrl:LOGO, heroUrl:HERO_GALLERY[s.heroIndex%HERO_GALLERY.length], timgTeam2Url:TIMG+'team-2.jpg',
+      btnGoldStyle:btnGold(false), btnOutStyle:btnOut, btnWaStyle:btnWa, boxStyle:box, kvStyle:kv, kvLastStyle:kvLast
+    };
+  }
+}
+</script>
+<script>window.ADZ_CHAT_MODE='app';</script>
+<script src="./chatbot.js"></script>
+</body>
+</html>

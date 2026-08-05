@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>Apna Digital Zone — Book Your Shoot</title>
+<meta name="theme-color" content="#0b0b0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Apna Digital">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://apnadigitalzone.com/assets/img/anss-logo.png">
+<link rel="icon" href="https://apnadigitalzone.com/assets/img/anss-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0b0d;--surf:#141419;--surf2:#1c1c23;--line:#26262f;
+  --gold:#c9a24d;--gold-lt:#e6cd92;--cream:#f2eee6;--muted:#8c877e;
+  --ok:#4ade80;--warn:#fbbf24;--wa:#25D366;
+  --pad:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:#050506;color:var(--cream);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;font-weight:300;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+img{display:block;max-width:100%}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.serif{font-family:'Cormorant Garamond',Georgia,serif}
+
+/* ---------- PHONE SHELL ---------- */
+#phone{
+  width:100%;max-width:430px;height:100dvh;max-height:930px;
+  background:var(--ink);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px #1d1d24,0 40px 90px rgba(0,0,0,.75);
+}
+@media(min-width:520px) and (min-height:820px){
+  #phone{border-radius:38px;border:9px solid #17171c}
+  body::after{
+    content:'Installable web app — add to home screen on Android or iPhone';
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4b4a46;
+  }
+}
+
+/* ---------- TOP BAR ---------- */
+.top{
+  flex:0 0 auto;display:flex;align-items:center;gap:12px;
+  padding:calc(env(safe-area-inset-top) + 14px) var(--pad) 12px;
+  background:rgba(11,11,13,.94);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);z-index:50;
+}
+.top img{height:32px}
+.top .tt{flex:1;min-width:0}
+.top .tt b{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;display:block;line-height:1.2}
+.top .tt span{font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.icobtn{
+  width:36px;height:36px;flex:0 0 36px;border-radius:50%;border:1px solid var(--line);
+  background:var(--surf);display:grid;place-items:center;font-size:15px;cursor:pointer;color:var(--cream);
+}
+.back{border:none;background:none;font-size:20px;cursor:pointer;color:var(--cream);padding:0 4px 0 0}
+.top h2.title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;flex:1}
+
+/* ---------- SCROLL AREA ---------- */
+#view{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+#view::-webkit-scrollbar{display:none}
+.pad{padding:0 var(--pad)}
+.pb{padding-bottom:34px}
+
+/* ---------- TABS ---------- */
+.tabs{
+  flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(11,11,13,.97);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:50;
+}
+.tab{
+  background:none;border:none;cursor:pointer;padding:10px 4px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:.2s;
+}
+.tab i{font-style:normal;font-size:18px;line-height:1;opacity:.7;transition:.2s}
+.tab.on{color:var(--gold)}
+.tab.on i{opacity:1;transform:translateY(-1px)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;height:250px;overflow:hidden;margin-bottom:22px}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--ink) 4%,rgba(11,11,13,.35) 60%,rgba(11,11,13,.55))}
+.hero-txt{position:absolute;left:var(--pad);right:var(--pad);bottom:20px;z-index:2}
+.hero-txt .eyebrow{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:7px}
+.hero-txt h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;line-height:1.12}
+.hero-txt h1 em{font-style:italic;color:var(--gold-lt)}
+
+/* ---------- COMPONENTS ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:15px 20px;border-radius:12px;border:none;cursor:pointer;
+  font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:.22s;
+}
+.btn:active{transform:scale(.975)}
+.btn-gold{background:var(--gold);color:#14100a}
+.btn-out{background:transparent;color:var(--cream);border:1px solid var(--line)}
+.btn-wa{background:var(--wa);color:#062d12}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:11px 16px;font-size:11px;width:auto}
+
+.h-row{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 14px}
+.h-row h3{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600}
+.h-row a{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);cursor:pointer}
+
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.q{
+  background:var(--surf);border:1px solid var(--line);border-radius:14px;
+  padding:14px 6px;text-align:center;cursor:pointer;transition:.22s;
+}
+.q:active{transform:scale(.96);border-color:var(--gold)}
+.q i{font-style:normal;font-size:20px;display:block;margin-bottom:7px}
+.q span{font-size:9.5px;color:#b8b2a7;line-height:1.3;display:block}
+
+.offer{
+  margin-top:20px;background:linear-gradient(110deg,rgba(201,162,77,.16),var(--surf) 62%);
+  border:1px solid rgba(201,162,77,.34);border-radius:16px;padding:18px;
+  display:flex;gap:14px;align-items:center;
+}
+.offer .big{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);line-height:1;flex:0 0 auto}
+.offer b{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px}
+.offer p{font-size:11.5px;color:#a09b91;line-height:1.5}
+
+/* service cards */
+.srow{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none;margin:0 calc(var(--pad) * -1);padding-left:var(--pad);padding-right:var(--pad)}
+.srow::-webkit-scrollbar{display:none}
+.scard{flex:0 0 168px;scroll-snap-align:start;border-radius:14px;overflow:hidden;background:var(--surf);border:1px solid var(--line);cursor:pointer;transition:.22s}
+.scard:active{transform:scale(.97)}
+.scard img{width:100%;height:112px;object-fit:cover}
+.scard .b{padding:11px 12px 13px}
+.scard .b b{font-size:12.5px;font-weight:500;display:block;line-height:1.35;margin-bottom:5px}
+.scard .b span{font-size:11px;color:var(--gold)}
+
+.list-item{
+  display:flex;gap:13px;align-items:center;background:var(--surf);border:1px solid var(--line);
+  border-radius:14px;padding:11px;margin-bottom:11px;cursor:pointer;transition:.22s;
+}
+.list-item:active{transform:scale(.985);border-color:var(--gold)}
+.list-item img{width:72px;height:72px;object-fit:cover;border-radius:10px;flex:0 0 72px}
+.list-item .m{flex:1;min-width:0}
+.list-item .m b{font-size:13.5px;font-weight:500;display:block;margin-bottom:4px;line-height:1.35}
+.list-item .m p{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.list-item .m span{font-size:12px;color:var(--gold);font-weight:500}
+.chev{color:var(--muted);font-size:17px;flex:0 0 auto}
+
+/* package cards */
+.pk{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;transition:.22s;position:relative}
+.pk.sel{border-color:var(--gold);background:linear-gradient(160deg,rgba(201,162,77,.10),var(--surf) 55%)}
+.pk .badge{position:absolute;top:14px;right:14px;background:var(--gold);color:#14100a;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:20px}
+.pk h4{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600}
+.pk .sub{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:3px 0 12px}
+.pk .amt{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--gold);line-height:1}
+.pk .amt small{font-size:11px;color:var(--muted);font-family:'Inter',sans-serif}
+.pk ul{list-style:none;margin:14px 0 16px;display:grid;gap:8px}
+.pk li{font-size:12px;color:#bfb9ae;display:flex;gap:9px;line-height:1.5}
+.pk li::before{content:'✦';color:var(--gold);font-size:9px;line-height:1.7;flex:0 0 auto}
+
+/* team */
+.tcard{flex:0 0 108px;scroll-snap-align:start;text-align:center;cursor:default}
+.tcard .ph{width:108px;height:132px;border-radius:13px;overflow:hidden;background:var(--surf2);border:1px solid var(--line);margin-bottom:9px}
+.tcard .ph img{width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:grayscale(.7)}
+.tcard b{font-size:11.5px;font-weight:500;display:block;line-height:1.3}
+.tcard span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.trow{display:flex;gap:12px;align-items:center;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.trow img{width:58px;height:58px;border-radius:11px;object-fit:cover;object-position:center 20%;flex:0 0 58px}
+.trow .m{flex:1;min-width:0}
+.trow .m b{font-size:13.5px;font-weight:500;display:block;margin-bottom:3px}
+.trow .m span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.trow .call{width:38px;height:38px;flex:0 0 38px;border-radius:50%;border:1px solid var(--line);background:var(--surf2);color:var(--gold);font-size:15px;cursor:pointer}
+
+/* fields */
+.field{margin-bottom:15px}
+.field label{display:block;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--surf);border:1px solid var(--line);border-radius:11px;
+  padding:14px;font-size:14px;font-weight:300;transition:.2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:var(--surf2)}
+.field textarea{resize:none;min-height:82px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* calendar */
+.cal{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.cal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-hd b{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600}
+.cal-nav{background:var(--surf2);border:1px solid var(--line);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dow{text-align:center;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-bottom:6px}
+.day{
+  aspect-ratio:1;display:grid;place-items:center;border-radius:9px;font-size:12.5px;
+  cursor:pointer;border:1px solid transparent;position:relative;transition:.15s;
+}
+.day.free{background:rgba(74,222,128,.08);color:#cfe9d8;border-color:rgba(74,222,128,.2)}
+.day.few{background:rgba(251,191,36,.09);color:#f0dfae;border-color:rgba(251,191,36,.24)}
+.day.full{color:#4d4a45;cursor:not-allowed;text-decoration:line-through}
+.day.off{opacity:0;pointer-events:none}
+.day.past{color:#37353120;pointer-events:none;opacity:.25}
+.day.pick{background:var(--gold);color:#14100a;font-weight:700;border-color:var(--gold)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* summary / status */
+.box{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:13px;border-bottom:1px solid rgba(38,38,47,.7)}
+.kv:last-child{border:none}
+.kv span{color:var(--muted);font-size:11.5px;letter-spacing:.04em;flex:0 0 auto}
+.kv b{font-weight:400;text-align:right}
+.kv.tot{padding-top:14px;margin-top:5px;border-top:1px solid var(--line)}
+.kv.tot b{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold)}
+
+.pill{display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 11px;border-radius:20px;font-weight:600}
+.p-ok{background:rgba(74,222,128,.14);color:var(--ok)}
+.p-wait{background:rgba(251,191,36,.14);color:var(--warn)}
+.p-done{background:rgba(201,162,77,.16);color:var(--gold)}
+
+.track{margin-top:6px}
+.tr{display:flex;gap:14px;padding-bottom:20px;position:relative}
+.tr:last-child{padding-bottom:0}
+.tr::before{content:'';position:absolute;left:8px;top:20px;bottom:0;width:1px;background:var(--line)}
+.tr:last-child::before{display:none}
+.tr i{
+  flex:0 0 17px;height:17px;border-radius:50%;border:2px solid var(--line);background:var(--ink);
+  margin-top:2px;z-index:1;font-style:normal;
+}
+.tr.done i{background:var(--gold);border-color:var(--gold)}
+.tr.now i{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,162,77,.16)}
+.tr .c b{font-size:13px;font-weight:500;display:block;margin-bottom:3px}
+.tr .c p{font-size:11.5px;color:var(--muted);line-height:1.5}
+.tr:not(.done):not(.now) .c b{color:#5f5b55}
+
+.empty{text-align:center;padding:64px 22px}
+.empty .ic{font-size:44px;opacity:.28;margin-bottom:16px}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:8px}
+.empty p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:22px}
+
+/* pay methods */
+.pay{display:flex;align-items:center;gap:13px;background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer;transition:.2s}
+.pay.on{border-color:var(--gold);background:rgba(201,162,77,.07)}
+.pay i{font-style:normal;font-size:19px;flex:0 0 auto}
+.pay .t{flex:1}
+.pay .t b{display:block;font-size:13px;font-weight:500}
+.pay .t span{font-size:11px;color:var(--muted)}
+.pay .dot{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--line);flex:0 0 auto;position:relative}
+.pay.on .dot{border-color:var(--gold)}
+.pay.on .dot::after{content:'';position:absolute;inset:3.5px;border-radius:50%;background:var(--gold)}
+
+/* sticky footer bar */
+.stick{
+  position:sticky;bottom:0;background:linear-gradient(transparent,var(--ink) 24%);
+  padding:22px var(--pad) 16px;margin-top:8px;
+}
+
+/* success */
+.tick{
+  width:78px;height:78px;margin:22px auto 20px;border-radius:50%;
+  background:rgba(74,222,128,.12);border:2px solid var(--ok);
+  display:grid;place-items:center;font-size:36px;color:var(--ok);
+  animation:pop .45s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* toast */
+#toast{
+  position:absolute;left:50%;bottom:88px;transform:translate(-50%,16px);
+  background:var(--surf2);border:1px solid var(--gold);color:var(--cream);
+  padding:12px 20px;border-radius:30px;font-size:12.5px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:.3s;z-index:200;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.note{font-size:11px;color:var(--muted);line-height:1.6;text-align:center;margin-top:12px}
+</style>
+</head>
+<body>
+
+<div id="phone">
+  <div class="top" id="top"></div>
+  <div id="view"></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ======================= DATA ======================= */
+const IMG='https://apnadigitalzone.com/assets/img/services/';
+const LOGO='https://apnadigitalzone.com/assets/img/anss-logo.png';
+const HERO='https://apnadigitalzone.com/assets/img/teams/img-1.jpg';
+const PHONE='919386415795';
+
+const SERVICES=[
+ {id:'wedding', n:'Wedding Photography',      img:'cenimatic-photographer.jpg',        from:34999, d:'Full-day cinematic + candid coverage of every ritual.'},
+ {id:'prewed',  n:'Pre-Wedding Shoot',        img:'pre-wedding.jpg',                   from:14999, d:'Half-day story shoot with styling and a short reel.'},
+ {id:'cinema',  n:'Wedding Cinematography',   img:'wedding-cinematic.jpg',             from:29999, d:'A proper wedding film with sound design and colour grade.'},
+ {id:'candid',  n:'Candid Photography',       img:'candid-photography.jpg',            from:18999, d:'Unposed, natural frames — the moments nobody planned.'},
+ {id:'drone',   n:'Drone Aerial Shoot',       img:'drone-video.jpg',                   from:11999, d:'DGCA-licensed pilots, 4K aerials for baraat and venues.'},
+ {id:'bday',    n:'Birthday Shoot',           img:'birthday-photographer.jpg',         from:8999,  d:'Cake cutting to last dance, delivered the same week.'},
+ {id:'anniv',   n:'Anniversary Shoot',        img:'wedding-anniversary-photographer.jpg',from:9999, d:'Warm, unhurried coverage of your milestone day.'},
+ {id:'newborn', n:'Newborn Baby Shoot',       img:'new-born-bady.jpg',                 from:7999,  d:'Gentle in-studio session built around baby\'s schedule.'},
+ {id:'seminar', n:'Seminar & Corporate',      img:'seminar-photographer.jpg',          from:12999, d:'Conferences, workshops and training — full documentation.'},
+ {id:'freelance',n:'Freelance Photographer',  img:'freelance-photograpgher.jpg',       from:5999,  d:'Hire a photographer from our team for a day.'},
+ {id:'editing', n:'Video Editing',            img:'video-editing.jpg',                 from:4999,  d:'Send raw footage, get a polished graded edit back.'},
+ {id:'album',   n:'Karizma Album & Photobook',img:'karizma-photobook-designer.jpg',    from:6999,  d:'Premium designed albums, printed in-house.'}
+];
+
+const PACKAGES=[
+ {id:'silver',n:'Silver',sub:'Single Day Coverage',price:34999,badge:'',
+  f:['1 photographer + 1 cinematographer','8 hours event coverage','250+ edited photographs','5-minute highlight film','Online gallery for 1 year','Delivery in 25 days']},
+ {id:'gold',n:'Gold',sub:'Wedding + Reception',price:74999,badge:'Most Booked',
+  f:['2 photographers + 2 cinematographers','Full 2-day coverage','Candid + traditional both','Drone aerial coverage','600+ edited photographs','Cinematic film + 60s teaser reel','Karizma photobook — 30 sheets','Teaser in 7 days']},
+ {id:'diamond',n:'Diamond',sub:'03 Days Coverage',price:99999,badge:'Popular',
+  f:['5 members team (2 Trad Photo + 1 Trad Video + 1 Candid Photo + 1 Cinematographer)','Traditional + Candid + Cinematic coverage','Drone aerial coverage','500 edited photographs','5-min Highlight film + 2 Reels','Photobook — 70 Sheets + E-book gallery','Teaser in 1 week, full delivery in 30-45 days']},
+ {id:'platinum',n:'Platinum',sub:'The Full Wedding Story',price:174999,badge:'Premium',
+  f:['Complete team of 6 members','Pre-wedding shoot included','All functions: Tilak to Vidai','Drone + Gimbal + Light setup','800 edited photographs','High quality video (Teaser, 3 Reels & Running Video)','Premium Album (90 Sheets) + Mini book both','Teaser in 15 days, full delivery in 50-60 days']}
+];
+
+const TIMG='https://apnadigitalzone.com/assets/img/teams/';
+const TEAM=[
+ {n:'Anjali Gupta',      r:'Founder',          i:'team-1.jpg',  p:'8709464955'},
+ {n:'Rakesh Kumar Gupta',r:'Managing Director',i:'team-2.jpg',  p:'9386415795'},
+ {n:'Md. Naushad',       r:'Photographer',     i:'team-6.jpg'},
+ {n:'Md. Sahbaz',        r:'Photographer',     i:'team-7.jpg'},
+ {n:'Suman Shaurav',     r:'Photographer',     i:'team-10.jpg'},
+ {n:'Md. Zahid',         r:'Videographer',     i:'team-4.jpg'},
+ {n:'Deepak Kumar',      r:'Videographer',     i:'team-9.jpg'},
+ {n:'Md. Nawazuddin',    r:'Drone Operator',   i:'team-11.jpg'},
+ {n:'Raja Kumar',        r:'Editor',           i:'team-5.jpg'},
+ {n:'Md. Azhar',         r:'Live TV Operator', i:'team-8.jpg'}
+];
+
+const STAGES=['Enquiry Received','Advance Paid — Date Locked','Shoot Day','Editing In Progress','Teaser Delivered','Album & Final Delivery'];
+
+/* fake availability: deterministic per date */
+function avail(d){
+  const k=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  const h=(k*2654435761)%97;
+  const m=d.getMonth();
+  const peak=(m===10||m===11||m===0||m===1); // Nov-Feb wedding season
+  if(h<(peak?34:14))return 'full';
+  if(h<(peak?62:34))return 'few';
+  return 'free';
+}
+const INR=n=>'₹'+n.toLocaleString('en-IN');
+const money=n=>INR(Math.round(n));
+
+/* ======================= STATE ======================= */
+const store={
+  get(k,f){try{return JSON.parse(localStorage.getItem('adz_'+k))??f}catch(e){return f}},
+  set(k,v){try{localStorage.setItem('adz_'+k,JSON.stringify(v))}catch(e){}}
+};
+let S={
+  tab:'home', screen:'home', stack:[],
+  draft:{service:null,pkg:null,date:null,name:'',phone:'',venue:'',notes:'',method:'upi'},
+  calMonth:new Date().getMonth(), calYear:new Date().getFullYear(),
+  orders: store.get('orders',[]),
+  user: store.get('user',{name:'',phone:''})
+};
+
+/* ======================= NAV ======================= */
+function go(screen,push=true){
+  if(push && S.screen!==screen) S.stack.push(S.screen);
+  S.screen=screen; render(); document.getElementById('view').scrollTop=0;
+}
+function back(){ S.screen=S.stack.pop()||'home'; render(); }
+function setTab(t){ S.tab=t; S.stack=[]; S.screen=t; render(); document.getElementById('view').scrollTop=0; }
+function toast(m){
+  const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
+  clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove('show'),2100);
+}
+
+/* ======================= HEADERS ======================= */
+const TITLES={
+  services:'Our Services', packages:'Choose a Package', date:'Pick Your Date',
+  details:'Your Details', review:'Review & Pay', pay:'Payment', done:'Booking Confirmed',
+  bookings:'My Bookings', order:'Order Details', account:'My Account',
+  team:'Our Team', offers:'Offers & Updates'
+};
+function header(){
+  const t=document.getElementById('top');
+  if(S.screen==='home'){
+    t.innerHTML=`
+      <img src="${LOGO}" alt="">
+      <div class="tt"><b>Apna Digital Zone</b><span>Arrah · Bihar</span></div>
+      <button class="icobtn" onclick="window.open('tel:+91${PHONE}')" title="Call">✆</button>
+      <button class="icobtn" onclick="setTab('account')" title="Account">☰</button>`;
+  }else{
+    t.innerHTML=`
+      <button class="back" onclick="back()">‹</button>
+      <h2 class="title">${TITLES[S.screen]||''}</h2>
+      <button class="icobtn" onclick="window.open('https://wa.me/${PHONE}','_blank')" title="WhatsApp">✆</button>`;
+  }
+}
+function tabs(){
+  const T=[['home','⌂','Home'],['services','◈','Services'],['bookings','☱','Bookings'],['account','◔','Account']];
+  document.getElementById('tabs').innerHTML=T.map(([k,i,l])=>
+    `<button class="tab ${S.tab===k?'on':''}" onclick="setTab('${k}')"><i>${i}</i>${l}</button>`).join('');
+}
+
+/* ======================= SCREENS ======================= */
+const V={};
+
+V.home=()=>`
+<div class="fade">
+  <div class="hero">
+    <img src="${HERO}" alt="">
+    <div class="hero-txt">
+      <span class="eyebrow">Since 2010 · 687 Events</span>
+      <h1>Your day,<br><em>told like a film.</em></h1>
+    </div>
+  </div>
+  <div class="pad pb">
+    <button class="btn btn-gold" onclick="go('date')">Check My Wedding Date →</button>
+
+    <div class="h-row"><h3>Quick Book</h3></div>
+    <div class="quick">
+      ${[['wedding','♥','Wedding'],['prewed','◇','Pre-Wed'],['bday','✿','Birthday'],['drone','✈','Drone']]
+        .map(([id,i,l])=>`<div class="q" onclick="pickService('${id}')"><i>${i}</i><span>${l}</span></div>`).join('')}
+    </div>
+
+    <div class="offer">
+      <div class="big">15%</div>
+      <div>
+        <b>Monsoon Booking Offer</b>
+        <p>Book any wedding package before 30 Sept and save 15% on the total. Advance of just 25% locks your date.</p>
+      </div>
+    </div>
+
+    <div class="h-row"><h3>Popular Services</h3><a onclick="setTab('services')">See all</a></div>
+    <div class="srow">
+      ${SERVICES.slice(0,6).map(s=>`
+        <div class="scard" onclick="pickService('${s.id}')">
+          <img loading="lazy" src="${IMG}${s.img}" alt="">
+          <div class="b"><b>${s.n}</b><span>from ${INR(s.from)}</span></div>
+        </div>`).join('')}
+    </div>
+
+    <div class="h-row"><h3>Wedding Packages</h3><a onclick="go('packages')">Compare</a></div>
+    ${PACKAGES.map(p=>`
+      <div class="pk ${p.id==='gold'?'sel':''}" onclick="pickPkg('${p.id}')">
+        ${p.badge?`<span class="badge">${p.badge}</span>`:''}
+        <h4>${p.n}</h4><div class="sub">${p.sub}</div>
+        <div class="amt">${INR(p.price)}<small> onwards</small></div>
+        <ul>${p.f.slice(0,4).map(f=>`<li>${f}</li>`).join('')}</ul>
+        <button class="btn ${p.id==='gold'?'btn-gold':'btn-out'}">Select ${p.n}</button>
+      </div>`).join('')}
+
+    <div class="h-row"><h3>Meet the Team</h3><a onclick="go('team')">See all</a></div>
+    <div class="srow">
+      ${TEAM.slice(0,6).map(m=>`
+        <div class="tcard">
+          <div class="ph"><img loading="lazy" src="${TIMG}${m.i}" alt="${m.n}"></div>
+          <b>${m.n}</b><span>${m.r}</span>
+        </div>`).join('')}
+    </div>
+
+    <div class="h-row"><h3>Studio</h3></div>
+    <div class="box">
+      <div class="kv"><span>Address</span><b style="font-size:12px">Mahadev Market, near Bullet Showroom,<br>Vishnu Nagar, Arrah, Bihar 802302</b></div>
+      <div class="kv"><span>Open</span><b>10:00 am – 8:00 pm · All days</b></div>
+      <div class="kv"><span>Call</span><b>+91 93864 15795</b></div>
+    </div>
+    <button class="btn btn-wa" onclick="window.open('https://wa.me/${PHONE}','_blank')">Chat on WhatsApp</button>
+    <p class="note">687 events covered · 15 years · 100% on-time delivery</p>
+  </div>
+</div>`;
+
+V.services=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  ${SERVICES.map(s=>`
+    <div class="list-item" onclick="pickService('${s.id}')">
+      <img loading="lazy" src="${IMG}${s.img}" alt="">
+      <div class="m"><b>${s.n}</b><p>${s.d}</p><span>from ${INR(s.from)}</span></div>
+      <div class="chev">›</div>
+    </div>`).join('')}
+</div>`;
+
+V.packages=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
+    Every package includes colour-graded edits, an online gallery and a signed contract before the shoot.
+    ${S.draft.service?`Selected service: <b style="color:var(--gold)">${svc(S.draft.service).n}</b>`:''}
+  </p>
+  ${PACKAGES.map(p=>`
+    <div class="pk ${S.draft.pkg===p.id?'sel':''}" onclick="pickPkg('${p.id}')">
+      ${p.badge?`<span class="badge">${p.badge}</span>`:''}
+      <h4>${p.n}</h4><div class="sub">${p.sub}</div>
+      <div class="amt">${INR(p.price)}<small> onwards</small></div>
+      <ul>${p.f.map(f=>`<li>${f}</li>`).join('')}</ul>
+      <button class="btn ${S.draft.pkg===p.id?'btn-gold':'btn-out'}">${S.draft.pkg===p.id?'Selected ✓':'Select '+p.n}</button>
+    </div>`).join('')}
+  <button class="btn btn-out" onclick="window.open('https://wa.me/${PHONE}?text=Hi,%20I%20need%20a%20custom%20package','_blank')">Need something custom? Ask us</button>
+</div>
+<div class="stick"><button class="btn btn-gold" onclick="go('date')" ${S.draft.pkg?'':'disabled'}>Continue to Date →</button></div>`;
+
+V.date=()=>{
+  const first=new Date(S.calYear,S.calMonth,1);
+  const days=new Date(S.calYear,S.calMonth+1,0).getDate();
+  const lead=(first.getDay()+6)%7; // Mon start
+  const today=new Date(); today.setHours(0,0,0,0);
+  let cells='';
+  for(let i=0;i<lead;i++)cells+='<div class="day off"></div>';
+  for(let d=1;d<=days;d++){
+    const dt=new Date(S.calYear,S.calMonth,d);
+    if(dt<today){cells+=`<div class="day past">${d}</div>`;continue}
+    const a=avail(dt), iso=fmtISO(dt), pick=S.draft.date===iso;
+    cells+=`<div class="day ${a} ${pick?'pick':''}" ${a==='full'?'':`onclick="pickDate('${iso}')"`}>${d}</div>`;
+  }
+  const sel=S.draft.date?new Date(S.draft.date):null;
+  return `
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:16px">
+    Live availability from the studio calendar. Nov–Feb is peak wedding season — dates go fast.
+  </p>
+  <div class="cal">
+    <div class="cal-hd">
+      <button class="cal-nav" onclick="shiftMonth(-1)">‹</button>
+      <b>${first.toLocaleString('en-IN',{month:'long'})} ${S.calYear}</b>
+      <button class="cal-nav" onclick="shiftMonth(1)">›</button>
+    </div>
+    <div class="cal-grid">
+      ${['M','T','W','T','F','S','S'].map(d=>`<div class="dow">${d}</div>`).join('')}
+      ${cells}
+    </div>
+    <div class="legend">
+      <span><i style="background:rgba(74,222,128,.5)"></i>Available</span>
+      <span><i style="background:rgba(251,191,36,.5)"></i>Few slots</span>
+      <span><i style="background:#2a2a31"></i>Fully booked</span>
+    </div>
+  </div>
+  ${sel?`<div class="box"><div class="kv"><span>Selected date</span><b>${longDate(sel)}</b></div>
+     <div class="kv"><span>Status</span><b><span class="pill ${avail(sel)==='free'?'p-ok':'p-wait'}">${avail(sel)==='free'?'Available':'Only 1 slot left'}</span></b></div></div>`:''}
+</div>
+<div class="stick"><button class="btn btn-gold" onclick="go('details')" ${S.draft.date?'':'disabled'}>Continue →</button></div>`;
+};
+
+V.details=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <div class="field"><label>Full Name</label><input id="f_name" value="${S.draft.name||S.user.name}" placeholder="Your name"></div>
+  <div class="field"><label>Mobile Number</label><input id="f_phone" type="tel" value="${S.draft.phone||S.user.phone}" placeholder="+91"></div>
+  <div class="f2">
+    <div class="field"><label>Service</label>
+      <select id="f_service">${SERVICES.map(s=>`<option value="${s.id}" ${S.draft.service===s.id?'selected':''}>${s.n}</option>`).join('')}</select>
+    </div>
+    <div class="field"><label>Package</label>
+      <select id="f_pkg">${PACKAGES.map(p=>`<option value="${p.id}" ${S.draft.pkg===p.id?'selected':''}>${p.n}</option>`).join('')}</select>
+    </div>
+  </div>
+  <div class="field"><label>Venue / City</label><input id="f_venue" value="${S.draft.venue}" placeholder="e.g. Arrah, Patna, Buxar"></div>
+  <div class="field"><label>Anything else we should know?</label><textarea id="f_notes" placeholder="Number of functions, guest count, special requests…">${S.draft.notes}</textarea></div>
+  <p class="note">We call to confirm within one hour during studio timings (10 am – 8 pm).</p>
+</div>
+<div class="stick"><button class="btn btn-gold" onclick="saveDetails()">Review Booking →</button></div>`;
+
+V.review=()=>{
+  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
+  const gst=p.price*0.18, tot=p.price+gst, adv=tot*0.25;
+  return `
+<div class="pad pb fade" style="padding-top:16px">
+  <div class="box">
+    <div class="kv"><span>Service</span><b>${svc(S.draft.service).n}</b></div>
+    <div class="kv"><span>Package</span><b>${p.n} — ${p.sub}</b></div>
+    <div class="kv"><span>Event date</span><b>${longDate(new Date(S.draft.date))}</b></div>
+    <div class="kv"><span>Venue</span><b>${S.draft.venue||'To be confirmed'}</b></div>
+    <div class="kv"><span>Name</span><b>${S.draft.name}</b></div>
+    <div class="kv"><span>Mobile</span><b>${S.draft.phone}</b></div>
+  </div>
+  <div class="box">
+    <div class="kv"><span>Package amount</span><b>${money(p.price)}</b></div>
+    <div class="kv"><span>GST @ 18%</span><b>${money(gst)}</b></div>
+    <div class="kv tot"><span>Total</span><b>${money(tot)}</b></div>
+  </div>
+  <div class="box" style="border-color:rgba(201,162,77,.35);background:linear-gradient(150deg,rgba(201,162,77,.09),var(--surf) 60%)">
+    <div class="kv"><span>Pay now (25% advance)</span><b style="color:var(--gold);font-size:17px">${money(adv)}</b></div>
+    <div class="kv"><span>Balance on shoot day</span><b>${money(tot-adv)}</b></div>
+  </div>
+  <p class="note">Advance is fully refundable if cancelled 30+ days before the event date.</p>
+</div>
+<div class="stick"><button class="btn btn-gold" onclick="go('pay')">Pay ${money(adv)} Advance →</button></div>`;
+};
+
+V.pay=()=>{
+  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
+  const adv=p.price*1.18*0.25;
+  const M=[['upi','⌗','UPI','GPay · PhonePe · Paytm · BHIM'],
+           ['card','▭','Card','Credit / Debit / RuPay'],
+           ['net','🏦','Net Banking','All major Indian banks'],
+           ['cash','₹','Pay at Studio','Cash or UPI at the counter']];
+  return `
+<div class="pad pb fade" style="padding-top:16px">
+  <div class="box" style="text-align:center;border-color:rgba(201,162,77,.3)">
+    <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">Amount payable now</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);line-height:1.2">${money(adv)}</div>
+    <div style="font-size:11.5px;color:var(--muted)">25% advance · ${p.n} package</div>
+  </div>
+  <div class="h-row"><h3>Payment Method</h3></div>
+  ${M.map(([k,i,t,s])=>`
+    <div class="pay ${S.draft.method===k?'on':''}" onclick="S.draft.method='${k}';render()">
+      <i>${i}</i><div class="t"><b>${t}</b><span>${s}</span></div><div class="dot"></div>
+    </div>`).join('')}
+  <p class="note">Secured payments. This demo does not charge any real money.</p>
+</div>
+<div class="stick"><button class="btn btn-gold" onclick="confirmBooking()">Confirm & Pay →</button></div>`;
+};
+
+V.done=()=>{
+  const o=S.orders[0];
+  return `
+<div class="pad pb fade" style="padding-top:8px;text-align:center">
+  <div class="tick">✓</div>
+  <h2 class="serif" style="font-size:27px;margin-bottom:8px">Your date is locked.</h2>
+  <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:22px">
+    Booking <b style="color:var(--gold)">${o.id}</b> confirmed for<br>${longDate(new Date(o.date))}.<br>
+    Our team will call you within the hour.
+  </p>
+  <div class="box" style="text-align:left">
+    <div class="kv"><span>Package</span><b>${PACKAGES.find(p=>p.id===o.pkg).n}</b></div>
+    <div class="kv"><span>Advance paid</span><b style="color:var(--ok)">${money(o.paid)}</b></div>
+    <div class="kv"><span>Balance due</span><b>${money(o.total-o.paid)}</b></div>
+  </div>
+  <button class="btn btn-gold" onclick="setTab('bookings')">Track My Booking</button>
+  <div style="height:10px"></div>
+  <button class="btn btn-wa" onclick="waConfirm()">Send Details on WhatsApp</button>
+  <div style="height:10px"></div>
+  <button class="btn btn-out" onclick="setTab('home')">Back to Home</button>
+</div>`;
+};
+
+V.bookings=()=>{
+  if(!S.orders.length) return `
+  <div class="empty fade">
+    <div class="ic">☱</div>
+    <h3>No bookings yet</h3>
+    <p>Once you book a shoot, you'll be able to track everything here — from advance payment to album delivery.</p>
+    <button class="btn btn-gold" onclick="setTab('services')">Browse Services</button>
+  </div>`;
+  return `<div class="pad pb fade" style="padding-top:16px">
+    ${S.orders.map(o=>`
+      <div class="box" style="cursor:pointer" onclick="openOrder('${o.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <b class="serif" style="font-size:19px;font-weight:600">${svc(o.service).n}</b>
+          <span class="pill ${o.stage>=5?'p-done':o.stage>=1?'p-ok':'p-wait'}">${STAGES[o.stage]}</span>
+        </div>
+        <div class="kv"><span>Booking ID</span><b>${o.id}</b></div>
+        <div class="kv"><span>Event date</span><b>${longDate(new Date(o.date))}</b></div>
+        <div class="kv"><span>Package</span><b>${PACKAGES.find(p=>p.id===o.pkg).n}</b></div>
+        <div class="kv"><span>Balance due</span><b>${money(o.total-o.paid)}</b></div>
+        <div style="margin-top:14px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">View & Track ›</div>
+      </div>`).join('')}
+  </div>`;
+};
+
+V.order=()=>{
+  const o=S.orders.find(x=>x.id===S.openId); if(!o)return V.bookings();
+  return `
+<div class="pad pb fade" style="padding-top:16px">
+  <div class="box">
+    <div class="kv"><span>Booking ID</span><b>${o.id}</b></div>
+    <div class="kv"><span>Service</span><b>${svc(o.service).n}</b></div>
+    <div class="kv"><span>Package</span><b>${PACKAGES.find(p=>p.id===o.pkg).n}</b></div>
+    <div class="kv"><span>Event date</span><b>${longDate(new Date(o.date))}</b></div>
+    <div class="kv"><span>Venue</span><b>${o.venue||'To be confirmed'}</b></div>
+    <div class="kv"><span>Booked on</span><b>${longDate(new Date(o.created))}</b></div>
+  </div>
+  <div class="box">
+    <div class="kv"><span>Total</span><b>${money(o.total)}</b></div>
+    <div class="kv"><span>Advance paid</span><b style="color:var(--ok)">${money(o.paid)}</b></div>
+    <div class="kv tot"><span>Balance due</span><b>${money(o.total-o.paid)}</b></div>
+  </div>
+  <div class="h-row"><h3>Order Status</h3></div>
+  <div class="box track">
+    ${STAGES.map((s,i)=>`
+      <div class="tr ${i<o.stage?'done':i===o.stage?'now':''}">
+        <i></i>
+        <div class="c"><b>${s}</b><p>${stageNote(i,o)}</p></div>
+      </div>`).join('')}
+  </div>
+  <button class="btn btn-out" onclick="advance('${o.id}')">Simulate Next Stage (demo)</button>
+  <div style="height:10px"></div>
+  <button class="btn btn-wa" onclick="window.open('https://wa.me/${PHONE}?text=Hi,%20about%20booking%20${o.id}','_blank')">Message Studio</button>
+</div>`;
+};
+
+V.team=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
+    Ten full-time members — photographers, cinematographers, an editor and a licensed drone pilot.
+    No freelancers hired the week of your event.
+  </p>
+  ${TEAM.map(m=>`
+    <div class="trow">
+      <img loading="lazy" src="${TIMG}${m.i}" alt="${m.n}">
+      <div class="m"><b>${m.n}</b><span>${m.r}</span></div>
+      ${m.p?`<button class="call" onclick="window.open('tel:+91${m.p}')" title="Call ${m.n}">✆</button>`:''}
+    </div>`).join('')}
+  <div class="box" style="margin-top:6px">
+    <div class="kv"><span>Photographers</span><b>4</b></div>
+    <div class="kv"><span>Cinematographers</span><b>2</b></div>
+    <div class="kv"><span>Drone pilot</span><b>1 (DGCA licensed)</b></div>
+    <div class="kv"><span>Editors &amp; operators</span><b>2</b></div>
+    <div class="kv tot"><span>Total team</span><b style="font-size:20px">10</b></div>
+  </div>
+</div>`;
+
+V.account=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <div class="box" style="text-align:center">
+    <img src="${LOGO}" style="height:52px;margin:4px auto 14px">
+    <b class="serif" style="font-size:21px;display:block">${S.user.name||'Guest User'}</b>
+    <span style="font-size:12.5px;color:var(--muted)">${S.user.phone||'Sign in to save your bookings'}</span>
+  </div>
+  <div class="field"><label>Your Name</label><input id="a_name" value="${S.user.name}" placeholder="Full name"></div>
+  <div class="field"><label>Mobile Number</label><input id="a_phone" type="tel" value="${S.user.phone}" placeholder="+91"></div>
+  <button class="btn btn-gold" onclick="saveUser()">Save Details</button>
+
+  <div class="h-row"><h3>Our Team</h3><a onclick="go('team')">See all 10</a></div>
+  <div class="trow" onclick="go('team')" style="cursor:pointer">
+    <img loading="lazy" src="${TIMG}${TEAM[1].i}" alt="">
+    <div class="m"><b>10 full-time members</b><span>Photo · Video · Drone · Editing</span></div>
+    <div class="chev">›</div>
+  </div>
+
+  <div class="h-row"><h3>Studio</h3></div>
+  <div class="box">
+    <div class="kv"><span>Address</span><b style="font-size:12px">Mahadev Market, near Bullet Showroom,<br>Vishnu Nagar, Arrah, Bihar 802302</b></div>
+    <div class="kv"><span>Phone</span><b>+91 93864 15795</b></div>
+    <div class="kv"><span>Email</span><b style="font-size:12px">apanadigitalzone@gmail.com</b></div>
+    <div class="kv"><span>Open</span><b>10 am – 8 pm · All days</b></div>
+  </div>
+
+  <div class="h-row"><h3>Follow Us</h3></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button class="btn btn-out btn-sm" style="width:100%" onclick="window.open('https://www.instagram.com/apnadigitalzone/','_blank')">Instagram</button>
+    <button class="btn btn-out btn-sm" style="width:100%" onclick="window.open('https://www.youtube.com/@apnadigitalzone3158','_blank')">YouTube</button>
+    <button class="btn btn-out btn-sm" style="width:100%" onclick="window.open('https://www.facebook.com/apnadigitalzone','_blank')">Facebook</button>
+    <button class="btn btn-out btn-sm" style="width:100%" onclick="window.open('https://apnadigitalzone.com','_blank')">Website</button>
+  </div>
+
+  <div class="h-row"><h3>App</h3></div>
+  <div class="box">
+    <div class="kv"><span>Version</span><b>1.0.0</b></div>
+    <div class="kv"><span>Bookings stored</span><b>${S.orders.length}</b></div>
+  </div>
+  <button class="btn btn-out" onclick="if(confirm('Clear all demo bookings?')){S.orders=[];store.set('orders',[]);render();toast('Cleared')}">Clear Demo Data</button>
+  <p class="note">Apna Digital Zone · Arrah, Bihar · Professional photography since 2010</p>
+</div>`;
+
+/* ======================= HELPERS ======================= */
+const svc=id=>SERVICES.find(s=>s.id===id)||SERVICES[0];
+const fmtISO=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const longDate=d=>d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function stageNote(i,o){
+  const N=['We received your request and confirmed the date.',
+           'Advance received. Your date is blocked in our calendar.',
+           'Our team arrives 90 minutes before the first ritual.',
+           'Colour grading and edit in progress at the studio.',
+           '60-second teaser film shared within 7 days.',
+           'Full gallery, film and printed album handed over.'];
+  return N[i];
+}
+function pickService(id){S.draft.service=id;go('packages')}
+function pickPkg(id){S.draft.pkg=id;if(!S.draft.service)S.draft.service='wedding';go('date')}
+function pickDate(iso){S.draft.date=iso;render()}
+function shiftMonth(n){
+  let m=S.calMonth+n,y=S.calYear;
+  if(m<0){m=11;y--} if(m>11){m=0;y++}
+  const now=new Date();
+  if(y<now.getFullYear()||(y===now.getFullYear()&&m<now.getMonth()))return;
+  S.calMonth=m;S.calYear=y;render();
+}
+function saveDetails(){
+  const g=id=>document.getElementById(id).value.trim();
+  S.draft.name=g('f_name'); S.draft.phone=g('f_phone');
+  S.draft.venue=g('f_venue'); S.draft.notes=g('f_notes');
+  S.draft.service=document.getElementById('f_service').value;
+  S.draft.pkg=document.getElementById('f_pkg').value;
+  if(!S.draft.name||!S.draft.phone){toast('Please enter name and mobile number');return}
+  S.user={name:S.draft.name,phone:S.draft.phone}; store.set('user',S.user);
+  go('review');
+}
+function saveUser(){
+  S.user={name:document.getElementById('a_name').value.trim(),phone:document.getElementById('a_phone').value.trim()};
+  store.set('user',S.user); render(); toast('Details saved');
+}
+function confirmBooking(){
+  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
+  const total=p.price*1.18, paid=total*0.25;
+  const o={
+    id:'ADZ'+String(Date.now()).slice(-6),
+    service:S.draft.service,pkg:S.draft.pkg,date:S.draft.date,venue:S.draft.venue,
+    name:S.draft.name,phone:S.draft.phone,notes:S.draft.notes,
+    total,paid,stage:1,created:new Date().toISOString(),method:S.draft.method
+  };
+  S.orders.unshift(o); store.set('orders',S.orders);
+  S.stack=[]; S.tab='bookings'; go('done',false); toast('Payment successful');
+}
+function openOrder(id){S.openId=id;go('order')}
+function advance(id){
+  const o=S.orders.find(x=>x.id===id);
+  if(o.stage<STAGES.length-1){o.stage++;store.set('orders',S.orders);render();toast(STAGES[o.stage])}
+  else toast('Order complete');
+}
+function waConfirm(){
+  const o=S.orders[0], p=PACKAGES.find(x=>x.id===o.pkg);
+  const t=`*Booking Confirmed — Apna Digital Zone*%0A%0A*ID:* ${o.id}%0A*Name:* ${o.name}%0A*Mobile:* ${o.phone}%0A`+
+    `*Service:* ${svc(o.service).n}%0A*Package:* ${p.n}%0A*Date:* ${longDate(new Date(o.date))}%0A`+
+    `*Venue:* ${o.venue||'TBC'}%0A*Advance paid:* ${money(o.paid)}%0A*Balance:* ${money(o.total-o.paid)}`;
+  window.open('https://wa.me/'+PHONE+'?text='+t,'_blank');
+}
+
+/* URL param auto-selection to directly check date availability */
+const urlParams = new URLSearchParams(window.location.search);
+const pkgParam = urlParams.get('pkg');
+if (pkgParam && PACKAGES.some(p => p.id === pkgParam)) {
+  S.draft.pkg = pkgParam;
+  S.draft.service = 'wedding';
+  S.screen = 'date';
+} else if (urlParams.has('check') || urlParams.has('date')) {
+  S.screen = 'date';
+}
+
+render();
+
+/* PWA — registers when hosted over http(s); silently skipped on file:// */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

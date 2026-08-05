@@ -1,0 +1,22 @@
+{
+  "name": "Apna Digital Zone — Book Your Shoot",
+  "short_name": "Apna Digital",
+  "description": "Book wedding, pre-wedding, birthday and event photography with Apna Digital Zone, Arrah. Check date availability, pay advance and track your order.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0b0d",
+  "theme_color": "#0b0b0d",
+  "lang": "en-IN",
+  "categories": ["lifestyle", "photo", "business"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Check My Date", "short_name": "Check Date", "url": "./index.html#date" },
+    { "name": "My Bookings", "short_name": "Bookings", "url": "./index.html#bookings" }
+  ]
+}
