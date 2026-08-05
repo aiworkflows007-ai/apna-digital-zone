@@ -19,7 +19,9 @@ const MIME = {
 const PAGES = {
   "/": "website/index.html",
   "/website": "website/index.html",
-  "/app": "app/index.html"
+  "/website/": "website/index.html",
+  "/app": "app/index.html",
+  "/app/": "app/index.html"
 };
 
 http

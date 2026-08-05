@@ -1854,15 +1854,14 @@ function handleInstallPWA(e) {
   if (e && e.preventDefault) e.preventDefault();
   if (deferredPwaPrompt) {
     deferredPwaPrompt.prompt();
-    deferredPwaPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted PWA installation');
-      }
+    deferredPwaPrompt.userChoice.then(function(choiceResult) {
       deferredPwaPrompt = null;
     });
   } else {
-    document.getElementById('pwaModal').style.display = 'flex';
+    var modal = document.getElementById('pwaModal');
+    if (modal) modal.style.display = 'flex';
   }
+  window.open('/app', '_blank');
 }
 
 function closePwaModal() {
