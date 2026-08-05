@@ -78,24 +78,9 @@ header.solid .hdr-bar{
   padding:8px 20px;
 }
 .nav{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
-.brand-icon {
-  width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg, rgba(201,162,77,0.25) 0%, rgba(201,162,77,0.05) 100%);
-  border:1px solid rgba(201,162,77,0.4);
-  display:flex;align-items:center;justify-content:center;
-  color:#c9a24d;font-size:16px;box-shadow:0 0 12px rgba(201,162,77,0.2);
-  transition:transform .3s ease;
-}
-.brand:hover .brand-icon { transform:rotate(180deg) scale(1.05); }
-.brand img{height:36px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
-.brand-txt{line-height:1.1}
-.brand-txt b{
-  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.03em;display:block;
-  background:linear-gradient(135deg, #ffffff 0%, #f5dfa8 60%, #c9a24d 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.brand-txt span{font-size:8.5px;letter-spacing:.32em;text-transform:uppercase;color:#c9a24d;font-weight:500}
+.brand{display:flex;align-items:center;text-decoration:none}
+.hdr-logo{height:48px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,.7));transition:transform .3s ease}
+.brand:hover .hdr-logo{transform:scale(1.06)}
 .menu{display:flex;gap:28px;align-items:center}
 .menu a{
   font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#d8d2c5;
@@ -483,12 +468,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
   <div class="hdr-bar">
     <div class="nav">
       <a href="#top" class="brand">
-        <div class="brand-icon">✦</div>
-        <img src="https://apnadigitalzone.com/assets/img/anss-logo.png" alt="Apna Digital Zone" loading="eager">
-        <div class="brand-txt">
-          <b>Apna Digital Zone</b>
-          <span>Studio &amp; Cinema</span>
-        </div>
+        <img src="https://apnadigitalzone.com/assets/img/anss-logo.png" alt="Apna Digital Zone Logo" class="hdr-logo" loading="eager">
       </a>
       <nav class="menu">
         <a href="#story">Studio</a>
