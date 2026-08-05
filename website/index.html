@@ -1268,29 +1268,68 @@ function closeHireModal(e) {
   if (modal) modal.classList.remove('open');
 }
 
-function selectHireService(serviceName) {
-  document.getElementById('hm_specialist').value = "Service: " + serviceName;
-  document.getElementById('hireModalSpecTitle').textContent = "Booking Service: " + serviceName;
+function openHireModalWithSpec(titleText, specVal) {
+  document.getElementById('hm_specialist').value = specVal;
+  document.getElementById('hireModalSpecTitle').textContent = titleText;
+  
+  const dateInput = document.getElementById('hm_date');
+  if (!dateInput.value) {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 14);
+    dateInput.value = futureDate.toISOString().split('T')[0];
+  }
+  
+  checkDateAvailability();
   document.getElementById('hireModal').classList.add('open');
+}
+
+function checkDateAvailability() {
+  const dateVal = document.getElementById('hm_date').value;
+  if (!dateVal) return;
+
+  const d = new Date(dateVal);
+  const month = d.getMonth() + 1;
+  const formattedDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const statusBox = document.getElementById('availabilityStatus');
+  const titleEl = document.getElementById('availTitle');
+  const descEl = document.getElementById('availDesc');
+  const iconEl = document.getElementById('availIcon');
+
+  const isPeakMonth = [11, 12, 1, 2, 5, 6].includes(month);
+
+  if (isPeakMonth) {
+    statusBox.style.background = 'rgba(251,191,36,0.12)';
+    statusBox.style.borderColor = 'rgba(251,191,36,0.4)';
+    iconEl.textContent = '⚡';
+    titleEl.style.color = '#fbbf24';
+    titleEl.textContent = `High Demand — Slots Filling Fast for ${formattedDate}`;
+    descEl.textContent = `Peak wedding season date! Only 2 crew teams remaining. Lock your date now.`;
+  } else {
+    statusBox.style.background = 'rgba(37,211,102,0.12)';
+    statusBox.style.borderColor = 'rgba(37,211,102,0.4)';
+    iconEl.textContent = '🟢';
+    titleEl.style.color = '#25D366';
+    titleEl.textContent = `Studio Available for ${formattedDate}`;
+    descEl.textContent = `Great news! Our 6-member cinematic crew & drone pilots are free for your date.`;
+  }
+}
+
+function selectHireService(serviceName) {
+  openHireModalWithSpec("Booking Service: " + serviceName, "Service: " + serviceName);
 }
 
 function selectHireSpecialist(specName) {
-  document.getElementById('hm_specialist').value = "Specialist: " + specName;
-  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + specName;
-  document.getElementById('hireModal').classList.add('open');
+  openHireModalWithSpec("Pre-selected: " + specName, "Specialist: " + specName);
 }
 
 function selectHireTeam(teamType) {
-  document.getElementById('hm_specialist').value = "Team/Booking: " + teamType;
-  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + teamType;
-  document.getElementById('hireModal').classList.add('open');
+  openHireModalWithSpec("Pre-selected: " + teamType, "Team/Booking: " + teamType);
 }
 
 function selectPkgForForm(pkgName) {
   let displayName = pkgName.charAt(0).toUpperCase() + pkgName.slice(1) + " Package";
-  document.getElementById('hm_specialist').value = "Package: " + displayName;
-  document.getElementById('hireModalSpecTitle').textContent = "Pre-selected: " + displayName;
-  document.getElementById('hireModal').classList.add('open');
+  openHireModalWithSpec("Pre-selected: " + displayName, "Package: " + displayName);
 }
 
 function submitHireModal(e) {
@@ -1550,8 +1589,17 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   <div class="hire-modal-box">
     <button type="button" class="hire-modal-close" onclick="closeHireModal(event)" aria-label="Close">✕</button>
     <div class="hire-modal-head">
-      <h3>💼 Hire Specialist / Crew</h3>
+      <h3>📅 Check Studio Availability &amp; Book</h3>
       <p id="hireModalSpecTitle">Pre-selected: Senior Specialist</p>
+    </div>
+
+    <!-- Live Studio Availability Status Box -->
+    <div id="availabilityStatus" style="margin-bottom:20px;padding:14px 16px;border-radius:12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.35);display:flex;align-items:center;gap:12px;transition:all .3s ease">
+      <span style="font-size:20px" id="availIcon">🟢</span>
+      <div>
+        <b id="availTitle" style="font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#25D366;display:block;margin-bottom:2px">Studio Available</b>
+        <span id="availDesc" style="font-size:12px;color:#cfc9bd;line-height:1.3;display:block">Select your event date below to check real-time availability!</span>
+      </div>
     </div>
     
     <form class="form" id="hireModalForm" onsubmit="submitHireModal(event)">
@@ -1569,7 +1617,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
         </div>
         <div class="field">
           <label>Event Date *</label>
-          <input type="date" id="hm_date" required>
+          <input type="date" id="hm_date" required onchange="checkDateAvailability()">
         </div>
       </div>
       
