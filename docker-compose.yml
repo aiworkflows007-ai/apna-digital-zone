@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  apna-digital-zone:
+    build: .
+    container_name: apna-digital-zone
+    restart: always
+    ports:
+      - "3008:3000"
