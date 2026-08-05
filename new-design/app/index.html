@@ -412,23 +412,15 @@ function header(){
   const t=document.getElementById('top');
   if(S.screen==='home'){
     t.innerHTML=`
-      <div class="brand-logo">
-        <img src="${LOGO}" alt="Apna Digital Zone Logo">
-        <div class="dot-live" title="Studio Open Now"></div>
-      </div>
-      <div class="tt">
-        <b>Apna Digital Zone</b>
-        <span>✦ STUDIO PWA APP</span>
-      </div>
-      <button class="icobtn" onclick="window.open('tel:+91${PHONE}')" title="Call Studio">📞</button>
-      <button class="icobtn" onclick="go('offers')" title="Notifications">
-        🔔<span class="noti-badge"></span>
-      </button>
-      <button class="icobtn" onclick="setTab('account')" title="Account">👤</button>`;
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:4px 0">
+        <img src="${LOGO}" alt="Apna Digital Zone Logo" style="height:42px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(201,162,77,0.3))">
+      </div>`;
   }else{
     t.innerHTML=`
       <button class="back" onclick="back()">‹</button>
-      <h2 class="title">${TITLES[S.screen]||''}</h2>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center">
+        <img src="${LOGO}" alt="Apna Digital Zone Logo" style="height:34px;object-fit:contain">
+      </div>
       <button class="icobtn" onclick="window.open('https://wa.me/${PHONE}','_blank')" title="WhatsApp Direct">💬</button>`;
   }
 }
