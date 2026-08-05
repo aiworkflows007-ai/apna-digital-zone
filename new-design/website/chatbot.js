@@ -59,17 +59,28 @@
 
   var AVATAR_SVG =
     '<svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
-    '<circle cx="32" cy="32" r="32" fill="url(#adzAvatarBg)"/>' +
-    '<defs><linearGradient id="adzAvatarBg" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0" stop-color="#1c1c23"/><stop offset="1" stop-color="#141419"/></linearGradient></defs>' +
-    '<path d="M10 60c0-13.5 9.8-21 22-21s22 7.5 22 21" fill="#2a2a33"/>' +
-    '<circle cx="32" cy="23" r="12" fill="#2a2a33"/>' +
-    '<rect x="19" y="27" width="26" height="17" rx="4" fill="#c9a24d"/>' +
-    '<rect x="27" y="21" width="10" height="7" rx="2" fill="#c9a24d"/>' +
-    '<circle cx="32" cy="35.5" r="6.5" fill="#0b0b0d" stroke="#e6cd92" stroke-width="2"/>' +
-    '<circle cx="32" cy="35.5" r="2.4" fill="#e6cd92"/>' +
-    '<circle cx="41.5" cy="29.5" r="1.6" fill="#0b0b0d"/>' +
-    "</svg>";
+    '<circle cx="32" cy="32" r="32" fill="url(#swetaBg)"/>' +
+    '<defs><linearGradient id="swetaBg" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="#2c2214"/><stop offset="1" stop-color="#120e09"/>' +
+    '</linearGradient></defs>' +
+    '<path d="M18 24c0-10 6-16 14-16s14 6 14 16v14c0 4-2 8-5 10H23c-3-2-5-6-5-10V24z" fill="#1a140e"/>' +
+    '<path d="M12 58c0-12 9-18 20-18s20 6 20 18" fill="#c9a24d"/>' +
+    '<circle cx="32" cy="26" r="11" fill="#fceade"/>' +
+    '<path d="M21 22c3-5 8-7 11-7 5 0 9 2 11 7-3-2-7-3-11-3-4 0-8 1-11 3z" fill="#2c1f14"/>' +
+    '<circle cx="28" cy="25" r="1.5" fill="#2c1f14"/>' +
+    '<circle cx="36" cy="25" r="1.5" fill="#2c1f14"/>' +
+    '<path d="M29 29q3 2.5 6 0" stroke="#b35a38" stroke-width="1.5" fill="none" stroke-linecap="round"/>' +
+    '<path d="M21 24a11 11 0 0 1 22 0" stroke="#c9a24d" stroke-width="2" fill="none"/>' +
+    '<rect x="19" y="22" width="3" height="6" rx="1.5" fill="#c9a24d"/>' +
+    '<rect x="42" y="22" width="3" height="6" rx="1.5" fill="#c9a24d"/>' +
+    '<path d="M43 27v4c0 2-2 3-4 3h-2" stroke="#c9a24d" stroke-width="1.5" fill="none"/>' +
+    '<circle cx="37" cy="34" r="1.5" fill="#c9a24d"/>' +
+    '<!-- Waving Hand HI Posture -->' +
+    '<g transform="translate(42,32) rotate(-15)">' +
+    '<path d="M2 12c1-4 3-7 5-7s3 2 3 5v-4c0-2 1.5-3 3-3s3 1 3 3v4c0-2 1.5-3 3-3s3 1 3 3v8c0 5-4 8-9 8-4 0-8-3-8-9z" fill="#fceade" stroke="#c9a24d" stroke-width="0.8"/>' +
+    '<text x="-6" y="-3" font-size="10" fill="#ffdd80" font-weight="bold">👋 HI</text>' +
+    '</g>' +
+    '</svg>';
 
   var CSS = "" +
     "#adz-chat-fab{cursor:pointer;border:1px solid rgba(201,162,77,.55);background:linear-gradient(160deg,#1c1c23,#141419 70%);box-shadow:0 10px 28px rgba(0,0,0,.5),0 0 0 rgba(201,162,77,.4);display:grid;place-items:center;overflow:hidden;transition:transform .18s ease;padding:0}" +
@@ -103,9 +114,11 @@
     ".adz-chips{display:flex;flex-wrap:wrap;gap:8px}" +
     ".adz-chip{border:1px solid rgba(201,162,77,.4);background:transparent;color:#e2dcd0;font-size:12.5px;padding:9px 14px;border-radius:20px;cursor:pointer;transition:.15s;font-family:inherit;text-align:left}" +
     ".adz-chip:hover{background:rgba(201,162,77,.14);border-color:#c9a24d}" +
-    ".adz-inputrow{display:flex;gap:8px}" +
+    ".adz-inputrow{display:flex;gap:8px;align-items:center}" +
     ".adz-inputrow input{flex:1;background:#141419;border:1px solid #26262f;border-radius:11px;padding:12px 13px;font-size:13.5px;color:#f2eee6;font-family:inherit;min-width:0}" +
     ".adz-inputrow input:focus{outline:none;border-color:#c9a24d}" +
+    ".adz-mic{flex:0 0 auto;width:42px;height:42px;border-radius:11px;border:1px solid rgba(201,162,77,0.4);background:#1c1c23;color:#e2dcd0;font-size:16px;cursor:pointer;display:grid;place-items:center;transition:.2s}" +
+    ".adz-mic:hover{background:rgba(201,162,77,0.2);border-color:#c9a24d}" +
     ".adz-send{flex:0 0 auto;width:42px;height:42px;border-radius:11px;border:none;background:#c9a24d;color:#14100a;font-size:16px;cursor:pointer;display:grid;place-items:center}" +
     ".adz-send:disabled{opacity:.4;cursor:default}" +
     ".adz-summary{background:#141419;border:1px solid #26262f;border-radius:12px;padding:12px 14px;font-size:12.5px;display:grid;gap:7px;margin-bottom:4px}" +
@@ -432,18 +445,71 @@
   ChatWidget.prototype.showTextInput = function (placeholder, type, onSubmit) {
     var row = el("div", { class: "adz-inputrow" });
     var input = el("input", { type: type, placeholder: placeholder });
+    var mic = el("button", { class: "adz-mic", title: "Voice Chat — Speak your message" });
+    mic.innerHTML = "🎙️";
     var send = el("button", { class: "adz-send" });
     send.innerHTML = "→";
+
+    // Web Speech API Integration
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      var recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-IN';
+
+      var isListening = false;
+      mic.onclick = function() {
+        if (!isListening) {
+          try {
+            recognition.start();
+            isListening = true;
+            mic.style.background = "#ef4444";
+            mic.style.color = "#ffffff";
+            mic.style.borderColor = "#ef4444";
+            input.placeholder = "🔴 Listening... speak now";
+          } catch(e) {}
+        } else {
+          recognition.stop();
+          isListening = false;
+          mic.style.background = "";
+          mic.style.color = "";
+          mic.style.borderColor = "";
+          input.placeholder = placeholder;
+        }
+      };
+
+      recognition.onresult = function(event) {
+        var transcript = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        input.value = transcript;
+      };
+
+      recognition.onerror = recognition.onend = function() {
+        isListening = false;
+        mic.style.background = "";
+        mic.style.color = "";
+        mic.style.borderColor = "";
+        input.placeholder = placeholder;
+      };
+    } else {
+      mic.onclick = function() {
+        alert("Voice recognition is available on Chrome, Edge, and Safari browsers.");
+      };
+    }
+
     function submit() {
       var v = input.value.trim();
       if (!v) { input.focus(); return; }
       if (type === "tel" && v.replace(/\D/g, "").length < 10) { input.focus(); return; }
-      send.disabled = true; input.disabled = true;
+      send.disabled = true; input.disabled = true; mic.disabled = true;
       onSubmit(v);
     }
     send.onclick = submit;
     input.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
-    row.appendChild(input); row.appendChild(send);
+    row.appendChild(input); row.appendChild(mic); row.appendChild(send);
     this.setComposer(row);
     setTimeout(function () { input.focus(); }, 50);
   };
