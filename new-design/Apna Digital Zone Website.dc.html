@@ -300,7 +300,7 @@ a:hover{color:#e6cd92}
             </sc-if>
             <h3 style="font-size:26px;margin:0 0 6px;font-family:'Cormorant Garamond',serif;font-weight:300">{{ p.name }}</h3>
             <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9a958c;margin-bottom:22px">{{ p.sub }}</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:#c9a24d;line-height:1">{{ p.priceText }}<small style="font-size:14px;color:#9a958c;font-family:'Inter',sans-serif"> {{ T.packages.onwards }}</small></div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:#c9a24d;line-height:1">{{ p.priceText }}<small style="font-size:14px;color:#9a958c;font-family:'Inter',sans-serif"> {{ T.packages.onwards }} *</small><span style="display:block;font-size:10.5px;color:#c9a24d;margin-top:4px;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:.05em">* T&amp;C Applied</span></div>
             <ul style="list-style:none;margin:26px 0 28px;padding:0;display:grid;gap:11px;flex:1">
               <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="8">
                 <li style="font-size:13.5px;color:#c6c0b5;display:flex;gap:10px;align-items:flex-start"><span style="color:#c9a24d;font-size:11px;line-height:1.6">✦</span>{{ f }}</li>

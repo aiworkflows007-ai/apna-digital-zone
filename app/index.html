@@ -450,7 +450,7 @@ V.home=()=>`
       <div class="pk ${p.id==='gold'?'sel':''}" onclick="pickPkg('${p.id}')">
         ${p.badge?`<span class="badge">${p.badge}</span>`:''}
         <h4>${p.n}</h4><div class="sub">${p.sub}</div>
-        <div class="amt">${INR(p.price)}<small> onwards</small></div>
+        <div class="amt">${INR(p.price)}<small> onwards *</small><span style="display:block;font-size:10px;color:var(--gold);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">* T&amp;C Applied</span></div>
         <ul>${p.f.slice(0,4).map(f=>`<li>${f}</li>`).join('')}</ul>
         <button class="btn ${p.id==='gold'?'btn-gold':'btn-out'}">Select ${p.n}</button>
       </div>`).join('')}
@@ -495,7 +495,7 @@ V.packages=()=>`
     <div class="pk ${S.draft.pkg===p.id?'sel':''}" onclick="pickPkg('${p.id}')">
       ${p.badge?`<span class="badge">${p.badge}</span>`:''}
       <h4>${p.n}</h4><div class="sub">${p.sub}</div>
-      <div class="amt">${INR(p.price)}<small> onwards</small></div>
+      <div class="amt">${INR(p.price)}<small> onwards *</small><span style="display:block;font-size:10px;color:var(--gold);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.05em">* T&amp;C Applied</span></div>
       <ul>${p.f.map(f=>`<li>${f}</li>`).join('')}</ul>
       <button class="btn ${S.draft.pkg===p.id?'btn-gold':'btn-out'}">${S.draft.pkg===p.id?'Selected ✓':'Select '+p.n}</button>
     </div>`).join('')}
