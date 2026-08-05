@@ -333,27 +333,60 @@ header.solid .hdr-bar{
 
 /* ---------- TEAM ---------- */
 .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
-.tm{position:relative;border-radius:2px;overflow:hidden;background:var(--ink-3);border:1px solid rgba(245,241,232,.07);transition:.35s}
-.tm:hover{border-color:var(--gold);transform:translateY(-5px)}
+.tm{
+  position:relative;border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(18,18,22,0.95) 100%);
+  border:1px solid rgba(245,241,232,0.1);transition:all .35s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+.tm:hover{
+  border-color:rgba(201,162,77,0.5);transform:translateY(-6px);
+  box-shadow:0 15px 40px rgba(0,0,0,0.7), 0 0 20px rgba(201,162,77,0.2);
+}
 .tm-ph{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--ink-3)}
-.tm-ph img{width:100%;height:100%;object-fit:cover;object-position:center 22%;filter:grayscale(.85) contrast(1.05);transition:.6s}
+.tm-ph img{width:100%;height:100%;object-fit:cover;object-position:center 22%;filter:grayscale(.3) contrast(1.05);transition:.6s}
 .tm:hover .tm-ph img{filter:grayscale(0);transform:scale(1.06)}
-.tm-ph::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.96) 6%,rgba(11,11,13,.18) 52%,transparent)}
-.tm-info{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 15px 15px}
-.tm-info b{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;display:block;line-height:1.25;margin-bottom:4px}
-.tm-info span{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:block}
-.tm-info a{display:inline-block;margin-top:8px;font-size:11px;color:#cdc7bb;border-bottom:1px solid var(--line);padding-bottom:2px;transition:.2s}
-.tm-info a:hover{color:var(--gold);border-color:var(--gold)}
+.tm-ph::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.98) 8%,rgba(11,11,13,.25) 55%,transparent)}
+.tm-badge{
+  position:absolute;top:10px;right:10px;z-index:3;
+  background:rgba(18,18,22,0.85);backdrop-filter:blur(8px);
+  border:1px solid rgba(201,162,77,0.4);color:#c9a24d;
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px;font-weight:600;
+}
+.tm-info{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 14px 14px}
+.tm-info b{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;display:block;line-height:1.2;margin-bottom:3px;color:#ffffff}
+.tm-info span{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#c9a24d;display:block;margin-bottom:10px;font-weight:500}
+.tm-hire-btn{
+  width:100%;background:rgba(201,162,77,0.12);color:#f5dfa8;
+  border:1px solid rgba(201,162,77,0.35);padding:7px 10px;
+  border-radius:20px;font-size:10.5px;letter-spacing:.06em;font-weight:600;
+  text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  transition:all .25s ease;
+}
+.tm-hire-btn:hover{
+  background:#c9a24d;color:#0b0b0d;border-color:#c9a24d;box-shadow:0 4px 14px rgba(201,162,77,0.4);
+}
 .tm.lead .tm-ph::before{
   content:'';position:absolute;inset:0;z-index:1;
-  box-shadow:inset 0 0 0 2px rgba(201,162,77,.55);
+  box-shadow:inset 0 0 0 2px rgba(201,162,77,.65);
 }
 .team-note{
   margin-top:34px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
   border-top:1px solid var(--line);padding-top:30px;
 }
-.tn b{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--gold);display:block;line-height:1}
+.tn b{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);display:block;line-height:1}
 .tn span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.hire-team-banner {
+  margin-top:40px;background:linear-gradient(135deg, rgba(201,162,77,0.12) 0%, rgba(18,18,22,0.9) 100%);
+  border:1px solid rgba(201,162,77,0.35);border-radius:16px;padding:32px;
+  display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;
+  box-shadow:0 15px 45px rgba(0,0,0,0.5), 0 0 30px rgba(201,162,77,0.1);
+}
+.hire-team-banner h3 { font-family:'Cormorant Garamond',serif;font-size:28px;color:#f5f1e8;margin:0 0 8px;line-height:1.2; }
+.hire-team-banner p { font-size:14px;color:#cfc9bd;margin:0;max-width:650px;line-height:1.6; }
+.hire-team-btns { display:flex;gap:12px;flex-wrap:wrap;align-items:center; }
 
 /* ---------- FILMS ---------- */
 .films{background:var(--ink-2);border-top:1px solid rgba(245,241,232,.06);border-bottom:1px solid rgba(245,241,232,.06)}
@@ -688,6 +721,19 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
       <div class="tn"><b>4</b><span>Photographers</span></div>
       <div class="tn"><b>2</b><span>Cinematographers</span></div>
       <div class="tn"><b>1</b><span>Licensed Drone Pilot</span></div>
+    </div>
+
+    <!-- Hire Our Team CTA Banner -->
+    <div class="hire-team-banner rv">
+      <div class="htb-content">
+        <span class="eyebrow" style="margin-bottom:8px;display:inline-block;color:#c9a24d">✦ Dedicated Crew Hiring</span>
+        <h3>Hire Our Certified Photographers &amp; Drone Specialists</h3>
+        <p>Looking for dedicated candid shooters, licensed 4K drone operators, or our entire 6-member cinematic crew for your wedding, VIP gala, or government project?</p>
+      </div>
+      <div class="hire-team-btns">
+        <a href="#book" class="btn btn-gold" onclick="selectHireTeam('Full 6-Member Crew')">💼 Hire Crew for Event →</a>
+        <a href="https://wa.me/919386415795?text=Hi%20Apna%20Digital%20Zone%2C%20I%20want%20to%20hire%20your%20professional%20photographers%2Fdrone%20pilots" target="_blank" rel="noopener" class="btn btn-ghost">💬 Hire via WhatsApp</a>
+      </div>
     </div>
   </div>
 </section>
@@ -1166,24 +1212,38 @@ const T='https://apnadigitalzone.com/assets/img/teams/';
 const TEAM=[
  {n:'Anjali Gupta',      r:'Founder',           i:'team-1.jpg',  p:'8709464955', lead:1},
  {n:'Rakesh Kumar Gupta',r:'Managing Director', i:'team-2.jpg',  p:'9386415795', lead:1},
- {n:'Md. Naushad',       r:'Photographer',      i:'team-6.jpg'},
- {n:'Md. Sahbaz',        r:'Photographer',      i:'team-7.jpg'},
- {n:'Suman Shaurav',     r:'Photographer',      i:'team-10.jpg'},
- {n:'Md. Zahid',         r:'Videographer',      i:'team-4.jpg'},
- {n:'Deepak Kumar',      r:'Videographer',      i:'team-9.jpg'},
- {n:'Md. Nawazuddin',    r:'Drone Operator',    i:'team-11.jpg'},
- {n:'Raja Kumar',        r:'Editor',            i:'team-5.jpg'},
- {n:'Md. Azhar',         r:'Live TV Operator',  i:'team-8.jpg'}
+ {n:'Md. Naushad',       r:'Lead Candid Shooter',i:'team-6.jpg'},
+ {n:'Md. Sahbaz',        r:'Senior Photographer',i:'team-7.jpg'},
+ {n:'Suman Shaurav',     r:'Studio Photographer',i:'team-10.jpg'},
+ {n:'Md. Zahid',         r:'Senior Cinematographer',i:'team-4.jpg'},
+ {n:'Deepak Kumar',      r:'Cinematographer',   i:'team-9.jpg'},
+ {n:'Md. Nawazuddin',    r:'4K Drone Specialist',i:'team-11.jpg'},
+ {n:'Raja Kumar',        r:'Karizma Album Designer',i:'team-5.jpg'},
+ {n:'Md. Azhar',         r:'Live TV & Broadcast',i:'team-8.jpg'}
 ];
 document.getElementById('teamGrid').innerHTML=TEAM.map(m=>`
  <article class="tm rv ${m.lead?'lead':''}">
+   <span class="tm-badge">${m.lead?'EXECUTIVE':m.r.split(' ')[0]}</span>
    <div class="tm-ph"><img loading="lazy" src="${T}${m.i}" alt="${m.n} — ${m.r}"></div>
    <div class="tm-info">
      <b>${m.n}</b>
      <span>${m.r}</span>
-     ${m.p?`<a href="tel:+91${m.p}">+91 ${m.p}</a>`:''}
+     <a href="#book" class="tm-hire-btn" onclick="selectHireSpecialist('${m.n} (${m.r})')">💼 Hire Specialist</a>
    </div>
  </article>`).join('');
+
+function selectHireSpecialist(specName) {
+  const noteEl = document.getElementById('b_notes');
+  if (noteEl) {
+    noteEl.value = "Hiring Request for Specialist: " + specName + "\n\nRequirements / Event Details: ";
+  }
+}
+function selectHireTeam(teamType) {
+  const noteEl = document.getElementById('b_notes');
+  if (noteEl) {
+    noteEl.value = "Hiring Request for " + teamType + " for Wedding / Event / Govt Project.\n\nDetails: ";
+  }
+}
 
 /* ---- gallery ---- */
 const GAL=['pre-wedding.jpg','candid-photography.jpg','wedding-cinematic.jpg','birthday-photographer.jpg',
