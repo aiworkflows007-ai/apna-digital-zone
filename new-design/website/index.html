@@ -6,6 +6,11 @@
 <title>Apna Digital Zone | Wedding & Event Photography in Arrah, Bihar</title>
 <meta name="description" content="Apna Digital Zone — cinematic wedding photography, pre-wedding films, drone shoots and candid coverage in Arrah, Bihar. 687 events shot. 15 years. Book your date online.">
 <link rel="icon" href="https://apnadigitalzone.com/assets/img/anss-logo.png">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#0b0b0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apna Digital">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -624,7 +629,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
 <!-- ================= TOP ANNOUNCEMENT BANNER ================= -->
 <div class="top-app-banner" style="background:linear-gradient(90deg, #1c1810 0%, #2a2012 50%, #1c1810 100%);border-bottom:1px solid rgba(201,162,77,0.3);padding:9px 16px;text-align:center;font-size:12.5px;color:#ded8cc;display:flex;align-items:center;justify-content:center;gap:12px;position:relative;z-index:1000;flex-wrap:wrap">
   <span>📱 <b>New! Download the Apna Digital Zone Customer App</b> — Live calendar, 6-stage order tracking &amp; instant booking on your phone.</span>
-  <a href="/app" target="_blank" style="background:#c9a24d;color:#0b0b0d;padding:5px 14px;border-radius:20px;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;display:inline-block">Install App 📲</a>
+  <a href="/app" target="_blank" onclick="handleInstallPWA(event)" style="background:#c9a24d;color:#0b0b0d;padding:5px 14px;border-radius:20px;font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;display:inline-block">Install App 📲</a>
 </div>
 
 <!-- ================= NAV ================= -->
@@ -1135,7 +1140,7 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
 
       <!-- Action Buttons -->
       <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
-        <a href="/app" target="_blank" class="btn btn-gold" style="padding:16px 32px;font-size:13.5px;box-shadow:0 10px 30px rgba(201,162,77,0.4);border-radius:8px">📲 Launch &amp; Install App Now →</a>
+        <a href="/app" target="_blank" onclick="handleInstallPWA(event)" class="btn btn-gold" style="padding:16px 32px;font-size:13.5px;box-shadow:0 10px 30px rgba(201,162,77,0.4);border-radius:8px">📲 Launch &amp; Install App Now →</a>
         <a href="https://wa.me/919386415795?text=Hi%20Apna%20Digital%20Zone%2C%20please%20send%20me%20the%20mobile%20app%20download%20link" target="_blank" rel="noopener" class="btn btn-ghost" style="padding:16px 26px;font-size:13.5px;border-radius:8px">💬 Send App Link on WhatsApp</a>
       </div>
 
@@ -1817,7 +1822,54 @@ document.getElementById('yr').textContent=new Date().getFullYear();
         <button type="button" class="btn btn-ghost" onclick="submitHireWhatsApp()" style="flex:1">💬 Send via WhatsApp</button>
       </div>
     </form>
+<!-- PWA Install Guide Modal -->
+<div class="pwa-install-modal" id="pwaModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#141419;border:1px solid rgba(201,162,77,0.4);border-radius:18px;max-width:420px;width:100%;padding:28px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,0.8);position:relative">
+    <button onclick="closePwaModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#8c877e;font-size:22px;cursor:pointer">✕</button>
+    <img src="https://apnadigitalzone.com/assets/img/anss-logo.png" style="height:48px;margin-bottom:14px" alt="Apna Digital Zone Logo">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#f5f1e8;margin:0 0 8px">Install Apna Digital Zone App</h3>
+    <p style="font-size:13.5px;color:#a9a49a;line-height:1.6;margin-bottom:20px">Add our official Customer App to your home screen for 1-tap booking, live 6-stage order tracking, and offline availability.</p>
+    
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(245,241,232,0.1);padding:14px;border-radius:10px;text-align:left;font-size:12.5px;color:#ded8cc;margin-bottom:22px">
+      <b style="color:#c9a24d;display:block;margin-bottom:6px">How to Install on Mobile:</b>
+      1. <b>Android (Chrome):</b> Tap <b>⋮ Menu</b> → select <b>"Add to Home screen"</b> or <b>"Install App"</b>.<br><br>
+      2. <b>iPhone (Safari):</b> Tap Share <b>⎋</b> → select <b>"Add to Home Screen" (+)</b>.
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <a href="/app" target="_blank" onclick="closePwaModal()" class="btn btn-gold" style="flex:1;padding:12px;font-size:12px;letter-spacing:.05em;text-transform:uppercase">Open App Now 📱</a>
+      <button onclick="closePwaModal()" class="btn btn-ghost" style="flex:1;padding:12px;font-size:12px">Close</button>
+    </div>
   </div>
+</div>
+
+<script>
+let deferredPwaPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPwaPrompt = e;
+});
+
+function handleInstallPWA(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted PWA installation');
+      }
+      deferredPwaPrompt = null;
+    });
+  } else {
+    document.getElementById('pwaModal').style.display = 'flex';
+  }
+}
+
+function closePwaModal() {
+  document.getElementById('pwaModal').style.display = 'none';
+}
+</script>
+
 <script>window.ADZ_CHAT_MODE = 'website';</script>
 <script src="./chatbot.js"></script>
 </body>
