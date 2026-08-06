@@ -42,16 +42,28 @@ jobs:
               -o ConnectTimeout=20 \
               "$DEPLOY_USER@$DEPLOY_HOST" deploy
 
-      - name: Verify site responds
+      # Checks the hostnames that actually resolve to this VPS. Do NOT point
+      # this at apnadigitalzone.com — that domain still resolves to the
+      # client's old hosting (132.148.183.62), so it returns 200 regardless of
+      # whether this deploy succeeded.
+      - name: Verify deployed site responds
         run: |
-          for attempt in 1 2 3 4 5; do
-            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://apnadigitalzone.com/ || echo 000)
-            if [ "$code" = "200" ]; then
-              echo "Site returned 200"
-              exit 0
-            fi
-            echo "Attempt $attempt: got $code, retrying in 10s"
-            sleep 10
-          done
-          echo "Site did not return 200 after deploy"
-          exit 1
+          check() {
+            host="$1"
+            min_bytes="$2"
+            for attempt in 1 2 3 4 5; do
+              read -r code size <<<"$(curl -sS -o /dev/null \
+                -w '%{http_code} %{size_download}' --max-time 20 "$host" || echo '000 0')"
+              if [ "$code" = "200" ] && [ "$size" -ge "$min_bytes" ]; then
+                echo "OK  $host -> $code, ${size} bytes"
+                return 0
+              fi
+              echo "Attempt $attempt: $host -> $code, ${size} bytes; retrying in 10s"
+              sleep 10
+            done
+            echo "FAIL $host did not serve a valid response after deploy"
+            return 1
+          }
+
+          check https://apnadigital.ai-workflows.cloud/ 50000
+          check https://apnadigitalapp.ai-workflows.cloud/ 30000
