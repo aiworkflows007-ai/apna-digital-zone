@@ -2,7 +2,7 @@
    Enables offline use + "Add to Home Screen" install on Android & iPhone.
    Upload this file alongside apna-booking-app.html and manifest.json. */
 
-const CACHE = 'adz-v1';
+const CACHE = 'adz-v2';
 const SHELL = [
   './index.html',
   './manifest.json'
