@@ -7,9 +7,9 @@
   var PHONE = "919386415795";
 
   var SERVICES = [
-    { id: "wedding", label: "Wedding Photography & Cinematography" },
+    { id: "wedding", label: "Wedding Photography & Videography" },
     { id: "prewed", label: "Pre-Wedding Shoot" },
-    { id: "cinema", label: "Wedding Cinematography (film only)" },
+    { id: "cinema", label: "Wedding Videography (film only)" },
     { id: "candid", label: "Candid Photography" },
     { id: "drone", label: "Drone Aerial Coverage" },
     { id: "bday", label: "Birthday Shoot" },

@@ -322,6 +322,11 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 @keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .note{font-size:11px;color:var(--muted);line-height:1.6;text-align:center;margin-top:12px}
 
+/* ---- per-service rate chips + book-online row ---- */
+.ratelist{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 8px;padding:0 2px}
+.ratechip{font-size:10.5px;color:var(--gold-lt);background:rgba(201,162,77,.10);border:1px solid rgba(201,162,77,.3);border-radius:999px;padding:4px 9px;white-space:nowrap}
+.bookline{margin:0 0 18px}
+
 /* ---- portfolio gallery ---- */
 .gal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .gal img{width:100%;height:132px;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:pointer;transition:.22s}
@@ -382,27 +387,27 @@ const HERO='assets/img/couple-decor.jpg';
 const PHONE='919386415795';
 
 const SERVICES=[
- {id:'wedding', n:'Wedding Photography',      img:'cenimatic-photographer.jpg',        from:34999, d:'Full-day cinematic + candid coverage of every ritual.'},
+ {id:'wedding', n:'Wedding Photography',      img:'cenimatic-photographer.jpg',        from:34999, d:'Full-day video + candid coverage of every ritual.'},
  {id:'prewed',  n:'Pre-Wedding Shoot',        img:'pre-wedding.jpg',                   from:14999, d:'Half-day story shoot with styling and a short reel.'},
- {id:'cinema',  n:'Wedding Cinematography',   img:'wedding-cinematic.jpg',             from:29999, d:'A proper wedding film with sound design and colour grade.'},
- {id:'candid',  n:'Candid Photography',       img:'candid-photography.jpg',            from:18999, d:'Unposed, natural frames — the moments nobody planned.'},
+ {id:'cinema',  n:'Wedding Videography',   img:'wedding-cinematic.jpg',             from:29999, d:'A proper wedding film with sound design and colour grade.'},
+ {id:'candid',  n:'Candid Photography',       img:'candid-photography.jpg',            from:7000, d:'Unposed, natural frames — the moments nobody planned.'},
  {id:'drone',   n:'Drone Aerial Shoot',       img:'drone-video.jpg',                   from:11999, d:'DGCA-licensed pilots, 4K aerials for baraat and venues.'},
  {id:'bday',    n:'Birthday Shoot',           img:'birthday-photographer.jpg',         from:8999,  d:'Cake cutting to last dance, delivered the same week.'},
  {id:'anniv',   n:'Anniversary Shoot',        img:'wedding-anniversary-photographer.jpg',from:9999, d:'Warm, unhurried coverage of your milestone day.'},
- {id:'newborn', n:'Newborn Baby Shoot',       img:'new-born-bady.jpg',                 from:7999,  d:'Gentle in-studio session built around baby\'s schedule.'},
- {id:'seminar', n:'Seminar & Corporate',      img:'seminar-photographer.jpg',          from:12999, d:'Conferences, workshops and training — full documentation.'},
- {id:'freelance',n:'Freelance Photographer',  img:'freelance-photograpgher.jpg',       from:5999,  d:'Hire a photographer from our team for a day.'},
+ {id:'newborn', n:'Newborn Baby Shoot',       img:'new-born-bady.jpg',                 from:10000,  d:'Gentle in-studio session built around baby\'s schedule.'},
+ {id:'seminar', n:'Seminar & Corporate',      img:'seminar-photographer.jpg',          from:10000, d:'Conferences, workshops and training — full documentation.'},
+ {id:'freelance',n:'Freelance Photographer',  img:'freelance-photograpgher.jpg',       from:2000,  d:'Hire a photographer from our team for a day.'},
  {id:'editing', n:'Video Editing',            img:'video-editing.jpg',                 from:4999,  d:'Send raw footage, get a polished graded edit back.'},
  {id:'album',   n:'Karizma Album & Photobook',img:'karizma-photobook-designer.jpg',    from:6999,  d:'Premium designed albums, printed in-house.'}
 ];
 
 const PACKAGES=[
  {id:'silver',n:'Silver',sub:'Single Day Coverage',price:34999,badge:'',
-  f:['1 photographer + 1 cinematographer','8 hours event coverage','250+ edited photographs','5-minute highlight film','Online gallery for 1 year','Delivery in 25 days']},
+  f:['1 photographer + 1 videographer','8 hours event coverage','250+ edited photographs','5-minute highlight film','Online gallery for 1 year','Delivery in 25 days']},
  {id:'gold',n:'Gold',sub:'Wedding + Reception',price:74999,badge:'Most Booked',
-  f:['2 photographers + 2 cinematographers','Full 2-day coverage','Candid + traditional both','Drone aerial coverage','500 edited photographs','Cinematic film + 60s teaser reel','Karizma photobook — 30 sheets','Teaser in 7 days']},
+  f:['2 photographers + 2 videographers','Full 2-day coverage','Candid + traditional both','Drone aerial coverage','500 edited photographs','Video film + 60s teaser reel','Karizma photobook — 30 sheets','Teaser in 7 days']},
  {id:'diamond',n:'Diamond',sub:'03 Days Coverage',price:99999,badge:'Popular',
-  f:['5 members team (2 Trad Photo + 1 Trad Video + 1 Candid Photo + 1 Cinematographer)','Traditional + Candid + Cinematic coverage','Drone aerial coverage','600+ edited photographs','5-min Highlight film + 2 Reels','Photobook — 70 Sheets + E-book gallery','Teaser in 1 week, full delivery in 30-45 days']},
+  f:['5 members team (2 Trad Photo + 1 Trad Video + 1 Candid Photo + 1 Videographer)','Traditional + Candid + Video coverage','Drone aerial coverage','600+ edited photographs','5-min Highlight film + 2 Reels','Photobook — 70 Sheets + E-book gallery','Teaser in 1 week, full delivery in 30-45 days']},
  {id:'platinum',n:'Platinum',sub:'The Full Wedding Story',price:174999,badge:'Premium',
   f:['Complete team of 6 members','Pre-wedding shoot included','All functions: Tilak to Vidai','Drone + Gimbal + Light setup','800 edited photographs','High quality video (Teaser, 3 Reels & Running Video)','Premium Album (90 Sheets) + Mini book both','Teaser in 15 days, full delivery in 50-60 days']}
 ];
@@ -446,22 +451,68 @@ const money=n=>INR(Math.round(n));
 
 const GST_RATE=0.18, ADVANCE_RATE=0.25;
 
+/* Services priced on a day / staff rate rather than a wedding package.
+   Choosing one of these skips the package step: the quote is rate x quantity,
+   where quantity is the number of dates picked (unit 'day') or the crew size
+   asked for (unit 'staff'). VIP Event has no published rate -- it is quoted by
+   the studio, so it routes to WhatsApp instead of producing a number. */
+const RATES={
+  candid:{unit:'day', label:'What is the candid shoot for?', opts:[
+    {id:'wedding', n:'Wedding',      price:8000},
+    {id:'birthday',n:'Birthday',     price:7000},
+    {id:'anniv',   n:'Anniversary',  price:7000},
+    {id:'baby',    n:'Baby Shoot',   price:15000},
+    {id:'vip',     n:'VIP Event',    price:null}
+  ]},
+  newborn:{unit:'day', label:'Which style?', opts:[
+    {id:'trad',  n:'Traditional', price:10000},
+    {id:'candid',n:'Candid',      price:15000}
+  ]},
+  seminar:{unit:'day', label:'Which style?', opts:[
+    {id:'trad',  n:'Traditional', price:10000},
+    {id:'candid',n:'Candid',      price:15000}
+  ]},
+  freelance:{unit:'staff', label:'What do you need the crew for?', opts:[
+    {id:'wedding',n:'Wedding',            price:2000},
+    {id:'govt',   n:'Government Project', price:4000},
+    {id:'drone',  n:'Drone Operator',     price:5000}
+  ]}
+};
+const rateCfg = id => RATES[id] || null;
+const rateOpt = (sid,rid) => { const c=rateCfg(sid); return c ? c.opts.find(o=>o.id===rid)||null : null; };
+const UNIT_LABEL={day:'day', staff:'staff member'};
+
 /* Single source of truth for what a booking costs. Every screen that shows a
    price and the order that gets saved all go through this -- previously the
    review and payment screens quoted the bare package while the saved order
    included add-ons, so the customer was shown one number and charged another. */
 function estimate(draft){
-  const pkg = PACKAGES.find(x=>x.id===(draft&&draft.pkg)) || null;
-  const base = pkg ? pkg.price : 0;
-  const picked = ((draft&&draft.addons)||[])
-    .map(id=>ADDONS.find(a=>a.id===id))
-    .filter(Boolean);
+  draft = draft || {};
+  const cfg = rateCfg(draft.service);
+  const opt = cfg ? rateOpt(draft.service, draft.rate) : null;
+
+  // Rate-priced service: quantity is days booked, or crew size for /staff.
+  let pkg=null, base=0, rate=null, qty=0, onRequest=false;
+  if(cfg){
+    rate = opt;
+    qty = cfg.unit==='staff'
+      ? Math.max(1, parseInt(draft.staff,10)||1)
+      : Math.max(1, ((draft.dates||[]).length||0));
+    if(opt && opt.price==null) onRequest=true;
+    base = (opt && opt.price!=null) ? opt.price*qty : 0;
+  }else{
+    pkg = PACKAGES.find(x=>x.id===draft.pkg) || null;
+    base = pkg ? pkg.price : 0;
+  }
+
+  const picked = (draft.addons||[]).map(id=>ADDONS.find(a=>a.id===id)).filter(Boolean);
   const addonsTotal = picked.reduce((s,a)=>s+a.price,0);
   const subtotal = base + addonsTotal;
   const gst = subtotal*GST_RATE;
   const total = subtotal+gst;
   const advance = total*ADVANCE_RATE;
-  return {pkg, base, picked, addonsTotal, subtotal, gst, total, advance, balance: total-advance};
+  return {pkg, rate, qty, unit: cfg?cfg.unit:null, onRequest,
+          base, picked, addonsTotal, subtotal, gst, total, advance, balance: total-advance};
 }
 
 /* ======================= STATE ======================= */
@@ -471,7 +522,8 @@ const store={
 };
 let S={
   tab:'home', screen:'home', stack:[],
-  draft:{service:null,pkg:null,addons:[],date:null,name:'',phone:'',venue:'',notes:'',method:'upi',hireSpec:null},
+  draft:{service:null,pkg:null,rate:null,staff:1,addons:[],dates:[],name:'',phone:'',
+         region:'bihar',district:'',city:'',pin:'',venue:'',notes:'',method:'upi',hireSpec:null},
   calMonth:new Date().getMonth(), calYear:new Date().getFullYear(),
   orders: store.get('orders',[]),
   user: store.get('user',{name:'',phone:''})
@@ -663,12 +715,20 @@ V.home=()=>`
 
 V.services=()=>`
 <div class="pad pb fade" style="padding-top:16px">
-  ${SERVICES.map(s=>`
+  ${SERVICES.map(s=>{
+    const cfg=rateCfg(s.id);
+    return `
     <div class="list-item" onclick="pickService('${s.id}')">
       <img loading="lazy" src="${IMG}${s.img}" alt="">
       <div class="m"><b>${s.n}</b><p>${s.d}</p><span>from ${INR(s.from)}</span></div>
       <div class="chev">›</div>
-    </div>`).join('')}
+    </div>
+    ${cfg?`<div class="ratelist">
+      ${cfg.opts.map(o=>`<span class="ratechip">${o.n} · ${o.price!=null?`${INR(o.price)}/${UNIT_LABEL[cfg.unit]}`:'on request'}</span>`).join('')}
+    </div>`:''}
+    <button class="btn btn-out btn-sm bookline" onclick="pickService('${s.id}')">Book ${s.n} Online →</button>`;
+  }).join('')}
+  <p class="note">All prices exclude 18% GST. A 25% advance confirms your date.</p>
 </div>`;
 
 V.packages=()=>`
@@ -739,10 +799,10 @@ V.date=()=>{
   for(let d=1;d<=days;d++){
     const dt=new Date(S.calYear,S.calMonth,d);
     if(dt<today){cells+=`<div class="day past">${d}</div>`;continue}
-    const a=avail(dt), iso=fmtISO(dt), pick=S.draft.date===iso;
+    const a=avail(dt), iso=fmtISO(dt), pick=(S.draft.dates||[]).includes(iso);
     cells+=`<div class="day ${a} ${pick?'pick':''}" ${a==='full'?'':`onclick="pickDate('${iso}')"`}>${d}</div>`;
   }
-  const sel=S.draft.date?new Date(S.draft.date):null;
+  const sel=(S.draft.dates||[]).slice().sort();
   return `
 <div class="pad pb fade" style="padding-top:16px">
   <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:16px">
@@ -764,10 +824,20 @@ V.date=()=>{
       <span><i style="background:#2a2a31"></i>Fully booked</span>
     </div>
   </div>
-  ${sel?`<div class="box"><div class="kv"><span>Selected date</span><b>${longDate(sel)}</b></div>
-     <div class="kv"><span>Status</span><b><span class="pill ${avail(sel)==='free'?'p-ok':'p-wait'}">${avail(sel)==='free'?'Available':'Only 1 slot left'}</span></b></div></div>`:''}
+  <p class="note" style="text-align:left;margin:14px 0 0">
+    Tap every date you need us for — haldi, wedding and reception can be on different days. Tap again to remove.
+  </p>
+  ${sel.length?`<div class="box" style="margin-top:12px">
+     ${sel.map(iso=>{const d=new Date(iso); return `<div class="kv"><span>${longDate(d)}</span><b><span class="pill ${avail(d)==='free'?'p-ok':'p-wait'}">${avail(d)==='free'?'Available':'1 slot left'}</span> <button class="call" style="margin-left:6px" onclick="pickDate('${iso}')" title="Remove">✕</button></b></div>`;}).join('')}
+     <div class="kv tot"><span>Days booked</span><b>${sel.length}</b></div>
+   </div>`:''}
+  ${(()=>{const e=estimate(S.draft); return (e.rate&&!e.onRequest&&sel.length)?`
+   <div class="box" style="border-color:rgba(201,162,77,.35)">
+     <div class="kv"><span>${e.rate.n} — ${money(e.rate.price)}/${UNIT_LABEL[e.unit]}</span><b>× ${e.qty}</b></div>
+     <div class="kv tot"><span>Estimated total (incl. GST)</span><b>${money(e.total)}</b></div>
+   </div>`:'';})()}
 </div>
-<div class="stick"><button class="btn btn-gold" onclick="go('details')" ${S.draft.date?'':'disabled'}>Continue →</button></div>`;
+<div class="stick"><button class="btn btn-gold" onclick="go('details')" ${sel.length?'':'disabled'}>Continue →</button></div>`;
 };
 
 V.details=()=>`
@@ -776,13 +846,38 @@ V.details=()=>`
   <div class="field"><label>Mobile Number</label><input id="f_phone" type="tel" value="${S.draft.phone||S.user.phone}" placeholder="+91"></div>
   <div class="f2">
     <div class="field"><label>Service</label>
-      <select id="f_service">${SERVICES.map(s=>`<option value="${s.id}" ${S.draft.service===s.id?'selected':''}>${s.n}</option>`).join('')}</select>
+      ${/* Already chosen earlier in the flow, so the dropdown is locked to it
+            rather than offering eleven ways to contradict that choice. */''}
+      <select id="f_service" disabled style="opacity:.85">
+        <option value="${S.draft.service||SERVICES[0].id}" selected>${svc(S.draft.service).n}</option>
+      </select>
     </div>
+    ${rateCfg(S.draft.service)?`
+    <div class="field"><label>Rate</label>
+      <select id="f_rate" onchange="setRate(this.value)">
+        ${rateCfg(S.draft.service).opts.map(o=>`<option value="${o.id}" ${S.draft.rate===o.id?'selected':''}>${o.n}${o.price!=null?` — ${money(o.price)}/${UNIT_LABEL[rateCfg(S.draft.service).unit]}`:' — on request'}</option>`).join('')}
+      </select>
+    </div>`:`
     <div class="field"><label>Package</label>
       <select id="f_pkg">${PACKAGES.map(p=>`<option value="${p.id}" ${S.draft.pkg===p.id?'selected':''}>${p.n}</option>`).join('')}</select>
+    </div>`}
+  </div>
+  ${(rateCfg(S.draft.service)||{}).unit==='staff'?`
+  <div class="field"><label>How many crew members?</label>
+    <input id="f_staff" type="number" min="1" max="20" value="${S.draft.staff||1}" oninput="setStaff(this.value)">
+  </div>`:''}
+  <div class="field"><label>Event location</label>
+    <div style="display:flex;gap:8px">
+      ${[['bihar','Bihar'],['outside','Outside Bihar']].map(([v,l])=>`
+        <button type="button" class="btn ${S.draft.region===v?'btn-gold':'btn-out'}" style="flex:1;padding:10px" onclick="setRegion('${v}')">${l}</button>`).join('')}
     </div>
   </div>
-  <div class="field"><label>Venue / City</label><input id="f_venue" value="${S.draft.venue}" placeholder="e.g. Arrah, Patna, Buxar"></div>
+  <div class="f2">
+    <div class="field"><label>District</label><input id="f_district" value="${S.draft.district||''}" placeholder="${S.draft.region==='outside'?'e.g. Varanasi':'e.g. Bhojpur'}"></div>
+    <div class="field"><label>City / Town</label><input id="f_city" value="${S.draft.city||''}" placeholder="e.g. Arrah"></div>
+  </div>
+  <div class="field"><label>PIN code</label><input id="f_pin" type="tel" inputmode="numeric" maxlength="6" value="${S.draft.pin||''}" placeholder="802302"></div>
+  <div class="field"><label>Venue name / landmark</label><input id="f_venue" value="${S.draft.venue}" placeholder="e.g. Mahadev Palace, near Bullet Showroom"></div>
   <div class="field"><label>Anything else we should know?</label><textarea id="f_notes" placeholder="Number of functions, guest count, special requests…">${S.draft.notes}</textarea></div>
   <p class="note">We call to confirm within one hour during studio timings (10 am – 8 pm).</p>
 </div>
@@ -796,26 +891,40 @@ V.review=()=>{
 <div class="pad pb fade" style="padding-top:16px">
   <div class="box">
     <div class="kv"><span>Service</span><b>${svc(S.draft.service).n}</b></div>
-    <div class="kv"><span>Package</span><b>${p.n} — ${p.sub}</b></div>
-    <div class="kv"><span>Event date</span><b>${longDate(new Date(S.draft.date))}</b></div>
+    ${e.rate
+      ? `<div class="kv"><span>Rate</span><b>${e.rate.n}${e.rate.price!=null?` — ${money(e.rate.price)}/${UNIT_LABEL[e.unit]}`:' — on request'}</b></div>
+         ${e.unit==='staff'?`<div class="kv"><span>Crew size</span><b>${e.qty}</b></div>`:''}`
+      : `<div class="kv"><span>Package</span><b>${p.n} — ${p.sub}</b></div>`}
+    <div class="kv"><span>Event date${(S.draft.dates||[]).length>1?'s':''}</span><b>${(S.draft.dates||[]).slice().sort().map(d=>longDate(new Date(d))).join('<br>')||'—'}</b></div>
+    <div class="kv"><span>Location</span><b>${S.draft.region==='outside'?'Outside Bihar':'Bihar'}</b></div>
+    ${S.draft.district?`<div class="kv"><span>District</span><b>${S.draft.district}</b></div>`:''}
+    ${S.draft.city?`<div class="kv"><span>City / Town</span><b>${S.draft.city}</b></div>`:''}
+    ${S.draft.pin?`<div class="kv"><span>PIN code</span><b>${S.draft.pin}</b></div>`:''}
     <div class="kv"><span>Venue</span><b>${S.draft.venue||'To be confirmed'}</b></div>
     <div class="kv"><span>Name</span><b>${S.draft.name}</b></div>
     <div class="kv"><span>Mobile</span><b>${S.draft.phone}</b></div>
   </div>
+  ${e.onRequest?`
+  <div class="box" style="border-color:rgba(251,191,36,.4)">
+    <b style="font-size:13px;color:var(--warn);display:block;margin-bottom:6px">Quoted on request</b>
+    <p style="font-size:12px;color:var(--muted);line-height:1.6">VIP Event coverage is priced per event. Send us the details and the studio will confirm a rate the same day.</p>
+    <button class="btn btn-wa" style="margin-top:12px" onclick="window.open('https://wa.me/${PHONE}?text=${encodeURIComponent('Hi, I need a quote for VIP Event candid coverage on '+((S.draft.dates||[]).join(', ')||'a date to be confirmed'))}','_blank')">Get a quote on WhatsApp</button>
+  </div>`:`
   <div class="box">
-    <div class="kv"><span>Package amount</span><b>${money(e.base)}</b></div>
+    <div class="kv"><span>${e.rate?`${e.rate.n} — ${money(e.rate.price)}/${UNIT_LABEL[e.unit]} × ${e.qty}`:'Package amount'}</span><b>${money(e.base)}</b></div>
     ${e.picked.map(a=>`<div class="kv"><span>+ ${a.n}</span><b>${money(a.price)}</b></div>`).join('')}
     ${e.picked.length?`<div class="kv"><span>Subtotal</span><b>${money(e.subtotal)}</b></div>`:''}
     <div class="kv"><span>GST @ 18%</span><b>${money(gst)}</b></div>
     <div class="kv tot"><span>Total</span><b>${money(tot)}</b></div>
-  </div>
+  </div>`}
+  ${e.onRequest?'':`
   <div class="box" style="border-color:rgba(201,162,77,.35);background:linear-gradient(150deg,rgba(201,162,77,.09),var(--surf) 60%)">
     <div class="kv"><span>Pay now (25% advance)</span><b style="color:var(--gold);font-size:17px">${money(adv)}</b></div>
     <div class="kv"><span>Balance on shoot day</span><b>${money(tot-adv)}</b></div>
-  </div>
+  </div>`}
   <p class="note">Advance is fully refundable if cancelled 30+ days before the event date.</p>
 </div>
-<div class="stick"><button class="btn btn-gold" onclick="go('pay')">Pay ${money(adv)} Advance →</button></div>`;
+${e.onRequest?'':`<div class="stick"><button class="btn btn-gold" onclick="go('pay')">Pay ${money(adv)} Advance →</button></div>`}`;
 };
 
 V.pay=()=>{
@@ -922,7 +1031,7 @@ V.order=()=>{
 V.team=()=>`
 <div class="pad pb fade" style="padding-top:16px">
   <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
-    Ten full-time specialist crew members — senior photographers, cinematographers, drone pilots &amp; editors. Tap to hire individually or call direct.
+    Ten full-time specialist crew members — senior photographers, videographers, drone pilots &amp; editors. Tap to hire individually or call direct.
   </p>
   ${TEAM.map(m=>`
     <div class="trow" style="flex-wrap:wrap;gap:10px">
@@ -938,7 +1047,7 @@ V.team=()=>`
     </div>`).join('')}
   <div class="box" style="margin-top:12px">
     <div class="kv"><span>Photographers</span><b>4</b></div>
-    <div class="kv"><span>Cinematographers</span><b>2</b></div>
+    <div class="kv"><span>Videographers</span><b>2</b></div>
     <div class="kv"><span>Drone pilot</span><b>1 (DGCA licensed)</b></div>
     <div class="kv"><span>Editors &amp; operators</span><b>2</b></div>
     <div class="kv tot"><span>Total team</span><b style="font-size:20px">10</b></div>
@@ -1000,7 +1109,7 @@ V.story=()=>`
     <cite>— Apna Digital Zone, Arrah</cite>
   </div>
   <p style="font-size:13px;color:#cfc9bd;line-height:1.7;margin-bottom:18px">
-    Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families here deserve cinematic wedding films of the same standard as anywhere else. Several hundred weddings, galas and official projects later, that hasn't changed.
+    Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families here deserve wedding films of the same standard as anywhere else. Several hundred weddings, galas and official projects later, that hasn't changed.
   </p>
   ${[
     ['👑','Trusted across Bihar','Weddings, VIP galas and government projects'],
@@ -1068,9 +1177,21 @@ function stageNote(i,o){
            'Full gallery, film and printed album handed over.'];
   return N[i];
 }
-function pickService(id){S.draft.service=id;go('packages')}
+/* Rate-priced services have no wedding package to choose, so they go straight
+   to the calendar -- the number of dates picked is what drives their quote. */
+function pickService(id){
+  S.draft.service=id;
+  const cfg=rateCfg(id);
+  if(cfg){ S.draft.pkg=null; if(!S.draft.rate||!rateOpt(id,S.draft.rate)) S.draft.rate=cfg.opts[0].id; go('date'); }
+  else { S.draft.rate=null; go('packages'); }
+}
 function pickPkg(id){S.draft.pkg=id;if(!S.draft.service)S.draft.service='wedding';go('date')}
-function pickDate(iso){S.draft.date=iso;render()}
+function pickDate(iso){
+  if(!S.draft.dates) S.draft.dates=[];
+  const i=S.draft.dates.indexOf(iso);
+  if(i>-1) S.draft.dates.splice(i,1); else S.draft.dates.push(iso);
+  render();
+}
 function shiftMonth(n){
   let m=S.calMonth+n,y=S.calYear;
   if(m<0){m=11;y--} if(m>11){m=0;y++}
@@ -1078,13 +1199,28 @@ function shiftMonth(n){
   if(y<now.getFullYear()||(y===now.getFullYear()&&m<now.getMonth()))return;
   S.calMonth=m;S.calYear=y;render();
 }
+/* Reads whatever fields are currently on screen. The details form re-renders
+   when region, rate or crew size changes, so anything already typed has to be
+   captured first or it is lost on the redraw. */
+function captureDetails(){
+  const g=id=>{const el=document.getElementById(id); return el?el.value.trim():null;};
+  const set=(k,v)=>{ if(v!==null) S.draft[k]=v; };
+  set('name',g('f_name')); set('phone',g('f_phone'));
+  set('venue',g('f_venue')); set('notes',g('f_notes'));
+  set('district',g('f_district')); set('city',g('f_city')); set('pin',g('f_pin'));
+  const pkg=g('f_pkg'); if(pkg!==null) S.draft.pkg=pkg;
+  const rate=g('f_rate'); if(rate!==null) S.draft.rate=rate;
+}
+function setRegion(v){ captureDetails(); S.draft.region=v; render(); }
+function setRate(v){ captureDetails(); S.draft.rate=v; render(); }
+function setStaff(v){ S.draft.staff=Math.max(1,Math.min(20,parseInt(v,10)||1)); }
+
 function saveDetails(){
-  const g=id=>document.getElementById(id).value.trim();
-  S.draft.name=g('f_name'); S.draft.phone=g('f_phone');
-  S.draft.venue=g('f_venue'); S.draft.notes=g('f_notes');
-  S.draft.service=document.getElementById('f_service').value;
-  S.draft.pkg=document.getElementById('f_pkg').value;
+  captureDetails();
   if(!S.draft.name||!S.draft.phone){toast('Please enter name and mobile number');return}
+  if(S.draft.pin && !/^\d{6}$/.test(S.draft.pin)){toast('PIN code should be 6 digits');return}
+  const cfg=rateCfg(S.draft.service);
+  if(cfg && !S.draft.rate){toast('Please choose a rate option');return}
   S.user={name:S.draft.name,phone:S.draft.phone}; store.set('user',S.user);
   go('review');
 }
@@ -1110,7 +1246,10 @@ function confirmBooking(){
   const total=e.total, paid=e.advance;
   const o={
     id:'ADZ'+String(Date.now()).slice(-6),
-    service:S.draft.service,pkg:S.draft.pkg,addons:S.draft.addons||[],hireSpec:S.draft.hireSpec,date:S.draft.date,venue:S.draft.venue,
+    service:S.draft.service,pkg:S.draft.pkg,rate:S.draft.rate,staff:S.draft.staff,
+    addons:S.draft.addons||[],hireSpec:S.draft.hireSpec,
+    dates:(S.draft.dates||[]).slice().sort(), date:(S.draft.dates||[]).slice().sort()[0],
+    region:S.draft.region,district:S.draft.district,city:S.draft.city,pin:S.draft.pin,venue:S.draft.venue,
     name:S.draft.name,phone:S.draft.phone,notes:S.draft.notes,
     total,paid,stage:1,created:new Date().toISOString(),method:S.draft.method
   };
