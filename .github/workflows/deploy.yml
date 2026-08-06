@@ -1,0 +1,57 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Never let two deploys touch the box at once, and never cancel one midway
+# through a docker build.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # The key is pinned to a forced command on the server, so the command
+      # sent here is ignored — the box always runs /root/deploy-apna.sh, which
+      # resets to origin/master and rebuilds the container.
+      - name: Deploy
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+              -o IdentitiesOnly=yes \
+              -o BatchMode=yes \
+              -o ConnectTimeout=20 \
+              "$DEPLOY_USER@$DEPLOY_HOST" deploy
+
+      - name: Verify site responds
+        run: |
+          for attempt in 1 2 3 4 5; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 https://apnadigitalzone.com/ || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "Site returned 200"
+              exit 0
+            fi
+            echo "Attempt $attempt: got $code, retrying in 10s"
+            sleep 10
+          done
+          echo "Site did not return 200 after deploy"
+          exit 1
