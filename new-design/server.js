@@ -12,6 +12,8 @@ const MIME = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon"
 };
@@ -24,10 +26,21 @@ const PAGES = {
   "/app/": "app/index.html"
 };
 
+// The app is served both at /app/ (website domain) and at the root of
+// apnadigitalapp.ai-workflows.cloud, where Caddy rewrites every path to
+// /app<path>. Shared images live outside app/, so an asset request arrives as
+// /app/assets/... on that domain and /assets/... on this one. Map the first
+// form back onto the real directory so one relative path works from both.
+function resolve(urlPath) {
+  if (PAGES[urlPath]) return PAGES[urlPath];
+  if (urlPath.startsWith("/app/assets/")) return urlPath.slice("/app/".length);
+  return urlPath.replace(/^\/+/, "");
+}
+
 http
   .createServer((req, res) => {
     const urlPath = decodeURIComponent(req.url.split("?")[0]);
-    let rel = PAGES[urlPath] || urlPath.replace(/^\/+/, "");
+    let rel = resolve(urlPath);
     let filePath = path.join(ROOT, rel);
 
     if (!filePath.startsWith(ROOT)) {

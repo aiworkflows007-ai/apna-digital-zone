@@ -321,6 +321,37 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .fade{animation:fade .3s ease}
 @keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .note{font-size:11px;color:var(--muted);line-height:1.6;text-align:center;margin-top:12px}
+
+/* ---- portfolio gallery ---- */
+.gal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.gal img{width:100%;height:132px;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:pointer;transition:.22s}
+.gal img:active{transform:scale(.97)}
+.lb{position:fixed;inset:0;background:rgba(6,6,8,.94);z-index:120;display:none;align-items:center;justify-content:center;padding:16px}
+.lb.on{display:flex}
+.lb img{max-width:100%;max-height:78vh;border-radius:14px}
+.lb .x{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;background:var(--surf2);border:1px solid var(--line);color:var(--cream);font-size:19px;cursor:pointer}
+.lb .nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:var(--surf2);border:1px solid var(--line);color:var(--cream);font-size:20px;cursor:pointer}
+.lb .prev{left:12px}.lb .next{right:12px}
+.lb .cnt{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);letter-spacing:.1em}
+
+/* ---- how it works ---- */
+.step{display:flex;gap:13px;margin-bottom:16px}
+.step .n{flex:0 0 30px;height:30px;border-radius:50%;background:rgba(201,162,77,.14);border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.step .c b{font-size:13.5px;color:var(--cream);display:block;margin-bottom:3px}
+.step .c p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ---- story ---- */
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0 4px}
+.stat div{background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:13px 8px;text-align:center}
+.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:23px;color:var(--gold);line-height:1}
+.stat span{font-size:9.5px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;display:block;margin-top:5px}
+.quote{border-left:2px solid var(--gold);padding:2px 0 2px 13px;margin:15px 0}
+.quote p{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#ded8cd;line-height:1.55}
+.quote cite{font-size:10.5px;color:var(--muted);font-style:normal;display:block;margin-top:7px;letter-spacing:.06em}
+.feat{display:flex;gap:11px;align-items:flex-start;margin-bottom:13px}
+.feat .ic{font-size:19px;line-height:1}
+.feat b{font-size:12.5px;color:var(--cream);display:block;margin-bottom:2px}
+.feat p{font-size:11.5px;color:var(--muted);line-height:1.55}
 </style>
 </head>
 <body>
@@ -334,12 +365,19 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   <div id="view"></div>
   <div class="tabs" id="tabs"></div>
   <div id="toast"></div>
+  <div class="lb" id="lb" onclick="if(event.target.id==='lb')lbClose()">
+    <button class="x" onclick="lbClose()" aria-label="Close">✕</button>
+    <button class="nav prev" onclick="lbStep(-1)" aria-label="Previous">‹</button>
+    <img id="lbImg" alt="Apna Digital Zone portfolio frame">
+    <button class="nav next" onclick="lbStep(1)" aria-label="Next">›</button>
+    <div class="cnt" id="lbCnt"></div>
+  </div>
 </div>
 
 <script>
 /* ======================= DATA ======================= */
-const IMG='https://apnadigitalzone.com/assets/img/services/';
-const LOGO='https://apnadigitalzone.com/assets/img/anss-logo.png';
+const IMG='../assets/img/services/';
+const LOGO='../assets/img/anss-logo.png';
 const HERO='assets/img/couple-decor.jpg';
 const PHONE='919386415795';
 
@@ -377,7 +415,7 @@ const ADDONS=[
  {id:'live_tv',   n:'Live TV & YouTube Broadcasting',   price:7999,  desc:'Live HD stream setup for out-of-town relatives'}
 ];
 
-const TIMG='https://apnadigitalzone.com/assets/img/teams/';
+const TIMG='../assets/img/teams/';
 const TEAM=[
  {n:'Anjali Gupta',      r:'Founder',          i:'team-1.jpg',  p:'8709464955'},
  {n:'Rakesh Kumar Gupta',r:'Managing Director',i:'team-2.jpg',  p:'9386415795'},
@@ -424,8 +462,35 @@ function go(screen,push=true){
   if(push && S.screen!==screen) S.stack.push(S.screen);
   S.screen=screen; render(); document.getElementById('view').scrollTop=0;
 }
-function back(){ S.screen=S.stack.pop()||'home'; render(); }
+function back(){
+  // If the lightbox is open, back dismisses it instead of leaving the screen.
+  const lb=document.getElementById('lb');
+  if(lb&&lb.classList.contains('on')){ lbClose(); return; }
+  S.screen=S.stack.pop()||'home'; render();
+}
 function setTab(t){ S.tab=t; S.stack=[]; S.screen=t; render(); document.getElementById('view').scrollTop=0; }
+/* ---- portfolio lightbox ---- */
+let lbAt=0;
+function lightbox(i){
+  lbAt=i;
+  document.getElementById('lbImg').src=IMG+GALLERY[lbAt];
+  document.getElementById('lbCnt').textContent=(lbAt+1)+' / '+GALLERY.length;
+  document.getElementById('lb').classList.add('on');
+}
+function lbStep(d){
+  lbAt=(lbAt+d+GALLERY.length)%GALLERY.length;
+  lightbox(lbAt);
+}
+function lbClose(){ document.getElementById('lb').classList.remove('on'); }
+// Escape on desktop; on a phone the hardware back button should dismiss the
+// lightbox rather than leave the screen underneath it.
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('on')) return;
+  if(e.key==='Escape') lbClose();
+  if(e.key==='ArrowLeft') lbStep(-1);
+  if(e.key==='ArrowRight') lbStep(1);
+});
+
 function toast(m){
   const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show');
   clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove('show'),2100);
@@ -436,7 +501,7 @@ const TITLES={
   services:'Our Services', packages:'Choose a Package', date:'Pick Your Date',
   details:'Your Details', review:'Review & Pay', pay:'Payment', done:'Booking Confirmed',
   bookings:'My Bookings', order:'Order Details', account:'My Account',
-  team:'Our Team', offers:'Offers & Updates'
+  team:'Our Team', gallery:'Our Work', process:'How It Works', story:'Our Story'
 };
 function header(){
   const t=document.getElementById('top');
@@ -525,6 +590,20 @@ V.home=()=>`
         </div>`).join('')}
     </div>
 
+    <div class="h-row"><h3>Our Work</h3><a onclick="go('gallery')">View all</a></div>
+    <div class="srow">
+      ${GALLERY.slice(0,6).map((g,i)=>`
+        <div class="scard" style="flex:0 0 132px" onclick="lightbox(${i})">
+          <img loading="lazy" src="${IMG}${g}" alt="Apna Digital Zone portfolio frame ${i+1}" style="height:132px">
+        </div>`).join('')}
+    </div>
+
+    <div class="h-row"><h3>How It Works</h3><a onclick="go('process')">Details</a></div>
+    <div class="box">
+      ${[['1','Check your date'],['2','Lock the package'],['3','The shoot'],['4','Delivery']]
+        .map(([n,t])=>`<div class="kv"><span>Step ${n}</span><b style="font-size:12.5px">${t}</b></div>`).join('')}
+    </div>
+
     <div class="h-row"><h3>Wedding Packages</h3><a onclick="go('packages')">Compare</a></div>
     ${PACKAGES.map(p=>`
       <div class="pk ${p.id==='gold'?'sel':''}" onclick="pickPkg('${p.id}')">
@@ -542,6 +621,13 @@ V.home=()=>`
           <div class="ph"><img loading="lazy" src="${TIMG}${m.i}" alt="${m.n}"></div>
           <b>${m.n}</b><span>${m.r}</span>
         </div>`).join('')}
+    </div>
+
+    <div class="h-row"><h3>Our Story</h3><a onclick="go('story')">Read</a></div>
+    <div class="stat">
+      <div><b>687</b><span>Events</span></div>
+      <div><b>15</b><span>Years</span></div>
+      <div><b>10</b><span>Team</span></div>
     </div>
 
     <div class="h-row"><h3>Studio</h3></div>
@@ -816,6 +902,73 @@ V.team=()=>`
     <div class="kv"><span>Editors &amp; operators</span><b>2</b></div>
     <div class="kv tot"><span>Total team</span><b style="font-size:20px">10</b></div>
   </div>
+</div>`;
+
+/* Portfolio frames. Same set as the website gallery — these are the studio's
+   service photographs; swap GALLERY for real portfolio frames when the client
+   supplies them. */
+const GALLERY=SERVICES.map(s=>s.img);
+
+V.gallery=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:16px">
+    A few frames we're proud of — weddings, pre-wedding stories, newborn sittings and corporate work. Tap any photo to view it full screen.
+  </p>
+  <div class="gal">
+    ${GALLERY.map((g,i)=>`<img loading="lazy" src="${IMG}${g}" alt="Apna Digital Zone portfolio frame ${i+1}" onclick="lightbox(${i})">`).join('')}
+  </div>
+  <button class="btn btn-out" style="margin-top:18px" onclick="window.open('https://www.instagram.com/apnadigitalzone/','_blank')">More on Instagram →</button>
+  <button class="btn btn-gold" style="margin-top:10px" onclick="go('date')">📅 Check Your Date</button>
+</div>`;
+
+V.process=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:20px">
+    Four steps from enquiry to album — so you know exactly what happens after you book.
+  </p>
+  ${[
+    ['1','Check Your Date','Send us the date. We confirm availability the same day — on WhatsApp or by call.'],
+    ['2','Lock the Package','Pick a package, sign the digital contract, pay 25% advance. Your date is blocked.'],
+    ['3','The Shoot','Our team arrives 90 minutes early, coordinates with your planner, and stays till the last ritual.'],
+    ['4','Delivery','Teaser in 7 days. Full gallery, film and printed album within 30 days. Tracked in this app.']
+  ].map(([n,t,d])=>`
+    <div class="step">
+      <div class="n">${n}</div>
+      <div class="c"><b>${t}</b><p>${d}</p></div>
+    </div>`).join('')}
+  <div class="box" style="margin-top:8px">
+    <div class="kv"><span>Advance to lock a date</span><b>25%</b></div>
+    <div class="kv"><span>GST</span><b>18%</b></div>
+    <div class="kv"><span>Teaser delivery</span><b>7 days</b></div>
+    <div class="kv tot"><span>Full delivery</span><b style="font-size:16px">30 days</b></div>
+  </div>
+  <button class="btn btn-gold" style="margin-top:16px" onclick="go('date')">📅 Check Your Date</button>
+</div>`;
+
+V.story=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <img loading="lazy" src="${IMG}candid-photography.jpg" alt="Apna Digital Zone candid photography"
+       style="width:100%;height:180px;object-fit:cover;border-radius:15px;border:1px solid var(--line)">
+  <div class="stat">
+    <div><b>687</b><span>Events</span></div>
+    <div><b>15</b><span>Years</span></div>
+    <div><b>10</b><span>Team</span></div>
+  </div>
+  <div class="quote">
+    <p>“Every frame is a heritage heirloom. We colour-grade each moment so your children can relive the emotion 20 years from now.”</p>
+    <cite>— Apna Digital Zone, Arrah</cite>
+  </div>
+  <p style="font-size:13px;color:#cfc9bd;line-height:1.7;margin-bottom:18px">
+    Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families here deserve cinematic wedding films of the same standard as anywhere else. Several hundred weddings, galas and official projects later, that hasn't changed.
+  </p>
+  ${[
+    ['👑','Trusted across Bihar','Weddings, VIP galas and government projects'],
+    ['🔒','100% in-house editing','Your raw files never leave the studio'],
+    ['🚁','Licensed drone pilots','DGCA-certified, 4K aerial coverage'],
+    ['⚡','7-day teaser delivery','Highlight reel while the memories are fresh']
+  ].map(([ic,t,d])=>`
+    <div class="feat"><span class="ic">${ic}</span><div><b>${t}</b><p>${d}</p></div></div>`).join('')}
+  <button class="btn btn-gold" style="margin-top:8px" onclick="setTab('services')">Explore Services →</button>
 </div>`;
 
 V.account=()=>`
