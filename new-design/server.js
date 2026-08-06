@@ -26,6 +26,16 @@ const PAGES = {
   "/app/": "app/index.html"
 };
 
+// Files kept as a single copy but requested from several places. The site, the
+// app and the two .dc.html demos each load ./chatbot.js, which resolves under a
+// different prefix depending on the page doing the loading. Serving one file
+// everywhere means an edit cannot land in one copy and miss the others.
+const SHARED = {
+  "/chatbot.js": "chatbot.js",
+  "/app/chatbot.js": "chatbot.js",
+  "/website/chatbot.js": "chatbot.js"
+};
+
 // The app is served both at /app/ (website domain) and at the root of
 // apnadigitalapp.ai-workflows.cloud, where Caddy rewrites every path to
 // /app<path>. Shared images live outside app/, so an asset request arrives as
@@ -33,6 +43,7 @@ const PAGES = {
 // form back onto the real directory so one relative path works from both.
 function resolve(urlPath) {
   if (PAGES[urlPath]) return PAGES[urlPath];
+  if (SHARED[urlPath]) return SHARED[urlPath];
   if (urlPath.startsWith("/app/assets/")) return urlPath.slice("/app/".length);
   return urlPath.replace(/^\/+/, "");
 }
