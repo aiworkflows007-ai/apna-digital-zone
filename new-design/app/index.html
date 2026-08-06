@@ -322,6 +322,27 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 @keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .note{font-size:11px;color:var(--muted);line-height:1.6;text-align:center;margin-top:12px}
 
+/* ---- showreel ---- */
+.film{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;cursor:pointer;background:var(--surf)}
+.film img{width:100%;height:180px;object-fit:cover;display:block}
+.film:active{transform:scale(.985)}
+.film .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;
+  background:rgba(11,11,13,.72);border:1px solid rgba(201,162,77,.6);color:var(--gold);display:grid;place-items:center;font-size:17px;padding-left:3px}
+.film .cap{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:#f2eee6;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+.player{position:fixed;inset:0;background:rgba(6,6,8,.95);z-index:130;display:none;align-items:center;justify-content:center;padding:14px}
+.player.on{display:flex}
+.player .wrap16{width:100%;max-width:760px;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.player iframe{width:100%;height:100%;border:0}
+.player .x{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;background:var(--surf2);border:1px solid var(--line);color:var(--cream);font-size:19px;cursor:pointer}
+
+/* ---- testimonials ---- */
+.review{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:12px}
+.review .stars{color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:8px}
+.review p{font-family:'Cormorant Garamond',serif;font-size:15.5px;font-style:italic;color:#ded8cd;line-height:1.6}
+.review .who{margin-top:11px;padding-top:10px;border-top:1px solid var(--line)}
+.review .who b{font-size:12.5px;color:var(--cream);display:block}
+.review .who span{font-size:10.5px;color:var(--muted)}
+
 /* ---- per-service rate chips + book-online row ---- */
 .ratelist{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 8px;padding:0 2px}
 .ratechip{font-size:10.5px;color:var(--gold-lt);background:rgba(201,162,77,.10);border:1px solid rgba(201,162,77,.3);border-radius:999px;padding:4px 9px;white-space:nowrap}
@@ -370,6 +391,10 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
   <div id="view"></div>
   <div class="tabs" id="tabs"></div>
   <div id="toast"></div>
+  <div class="player" id="player" onclick="if(event.target.id==='player')closeFilm()">
+    <button class="x" onclick="closeFilm()" aria-label="Close">✕</button>
+    <div class="wrap16" id="playerBox"></div>
+  </div>
   <div class="lb" id="lb" onclick="if(event.target.id==='lb')lbClose()">
     <button class="x" onclick="lbClose()" aria-label="Close">✕</button>
     <button class="nav prev" onclick="lbStep(-1)" aria-label="Previous">‹</button>
@@ -535,12 +560,28 @@ function go(screen,push=true){
   S.screen=screen; render(); document.getElementById('view').scrollTop=0;
 }
 function back(){
-  // If the lightbox is open, back dismisses it instead of leaving the screen.
+  // If an overlay is open, back dismisses it instead of leaving the screen.
+  const pl=document.getElementById('player');
+  if(pl&&pl.classList.contains('on')){ closeFilm(); return; }
   const lb=document.getElementById('lb');
   if(lb&&lb.classList.contains('on')){ lbClose(); return; }
   S.screen=S.stack.pop()||'home'; render();
 }
 function setTab(t){ S.tab=t; S.stack=[]; S.screen=t; render(); document.getElementById('view').scrollTop=0; }
+/* ---- showreel player ---- */
+function playFilm(i){
+  const f=FILMS[i]; if(!f) return;
+  document.getElementById('playerBox').innerHTML=
+    `<iframe src="https://www.youtube.com/embed/${f.id}?autoplay=1&rel=0" title="${f.t}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+  document.getElementById('player').classList.add('on');
+}
+function closeFilm(){
+  // Clearing the iframe stops playback; hiding the overlay alone leaves the
+  // audio running behind the app.
+  document.getElementById('playerBox').innerHTML='';
+  document.getElementById('player').classList.remove('on');
+}
+
 /* ---- portfolio lightbox ---- */
 let lbAt=0;
 function lightbox(i){
@@ -557,6 +598,7 @@ function lbClose(){ document.getElementById('lb').classList.remove('on'); }
 // Escape on desktop; on a phone the hardware back button should dismiss the
 // lightbox rather than leave the screen underneath it.
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && document.getElementById('player').classList.contains('on')){ closeFilm(); return; }
   if(!document.getElementById('lb').classList.contains('on')) return;
   if(e.key==='Escape') lbClose();
   if(e.key==='ArrowLeft') lbStep(-1);
@@ -573,7 +615,8 @@ const TITLES={
   services:'Our Services', packages:'Choose a Package', date:'Pick Your Date',
   details:'Your Details', review:'Review & Pay', pay:'Payment', done:'Booking Confirmed',
   bookings:'My Bookings', order:'Order Details', account:'My Account',
-  team:'Our Team', gallery:'Our Work', process:'How It Works', story:'Our Story'
+  team:'Our Team', gallery:'Our Work', process:'How It Works', story:'Our Story',
+  films:'Showreel', reviews:'Client Words'
 };
 function header(){
   const t=document.getElementById('top');
@@ -662,6 +705,16 @@ V.home=()=>`
         </div>`).join('')}
     </div>
 
+    <div class="h-row"><h3>Showreel</h3><a onclick="go('films')">Watch all</a></div>
+    <div class="srow">
+      ${FILMS.slice(0,4).map((f,i)=>`
+        <div class="scard" style="flex:0 0 208px;position:relative" onclick="playFilm(${i})">
+          <img loading="lazy" src="${YT_THUMB(f.id)}" alt="${f.t}" style="height:117px">
+          <span class="play" style="width:40px;height:40px;font-size:14px;top:58px">▶</span>
+          <div class="b"><b>${f.t}</b></div>
+        </div>`).join('')}
+    </div>
+
     <div class="h-row"><h3>Our Work</h3><a onclick="go('gallery')">View all</a></div>
     <div class="srow">
       ${GALLERY.slice(0,6).map((g,i)=>`
@@ -693,6 +746,13 @@ V.home=()=>`
           <div class="ph"><img loading="lazy" src="${TIMG}${m.i}" alt="${m.n}"></div>
           <b>${m.n}</b><span>${m.r}</span>
         </div>`).join('')}
+    </div>
+
+    <div class="h-row"><h3>Client Words</h3><a onclick="go('reviews')">Read all</a></div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p>${TESTIMONIALS[0].q}</p>
+      <div class="who"><b>${TESTIMONIALS[0].n}</b><span>${TESTIMONIALS[0].m}</span></div>
     </div>
 
     <div class="h-row"><h3>Our Story</h3><a onclick="go('story')">Read</a></div>
@@ -922,6 +982,13 @@ V.review=()=>{
     <div class="kv"><span>Pay now (25% advance)</span><b style="color:var(--gold);font-size:17px">${money(adv)}</b></div>
     <div class="kv"><span>Balance on shoot day</span><b>${money(tot-adv)}</b></div>
   </div>`}
+  ${/* A word from a past client sits where hesitation peaks -- right before
+        handing over money. */''}
+  <div class="review" style="margin-top:14px">
+    <div class="stars">★★★★★</div>
+    <p>${TESTIMONIALS[1].q}</p>
+    <div class="who"><b>${TESTIMONIALS[1].n}</b><span>${TESTIMONIALS[1].m}</span></div>
+  </div>
   <p class="note">Advance is fully refundable if cancelled 30+ days before the event date.</p>
 </div>
 ${e.onRequest?'':`<div class="stick"><button class="btn btn-gold" onclick="go('pay')">Pay ${money(adv)} Advance →</button></div>`}`;
@@ -1058,6 +1125,57 @@ V.team=()=>`
    service photographs; swap GALLERY for real portfolio frames when the client
    supplies them. */
 const GALLERY=SERVICES.map(s=>s.img);
+
+/* Showreel. Thumbnails come from YouTube's own CDN and the film plays in an
+   overlay, so only the one being watched loads an iframe -- six embeds on a
+   phone would cost several megabytes before anyone pressed play. */
+const FILMS=[
+  {id:'XpgrOgIetUw', t:'Wedding Film'},
+  {id:'MgTAUNPNB7s', t:'Wedding Film'},
+  {id:'iUdZRBVwyIo', t:'Wedding Film'},
+  {id:'uSeomsSLfBc', t:'Wedding Film'},
+  {id:'r712KDSXZSE', t:'Wedding Film'},
+  {id:'ci9mZhl1_Ns', t:'Wedding Film'}
+];
+const YT_THUMB=id=>`https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+
+const TESTIMONIALS=[
+  {q:"They shot my daughter's wedding across three days and never once got in the way. The teaser film had my whole family in tears.",
+   n:'Ramesh Kumar Singh', m:'Arrah, Bihar'},
+  {q:"The drone shots of our baraat are something else. Album quality is better than what my cousin paid double for in Patna.",
+   n:'Ankit & Pooja', m:'Wedding, Feb 2025'},
+  {q:"Booked them for a newborn shoot. Patient, gentle with the baby, and delivered edited photos in nine days flat.",
+   n:'Shweta Prasad', m:'Newborn Shoot'}
+];
+
+V.films=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:16px">
+    Real couples, real ceremonies — shot and edited by our team in Arrah. Tap any film to watch.
+  </p>
+  ${FILMS.map((f,i)=>`
+    <div class="film" onclick="playFilm(${i})">
+      <img loading="lazy" src="${YT_THUMB(f.id)}" alt="${f.t} by Apna Digital Zone">
+      <span class="play">▶</span>
+      <span class="cap">${f.t}</span>
+    </div>`).join('')}
+  <button class="btn btn-out" style="margin-top:6px" onclick="window.open('https://www.youtube.com/@apnadigitalzone3158','_blank')">See all films on YouTube →</button>
+  <button class="btn btn-gold" style="margin-top:10px" onclick="go('date')">📅 Check Your Date</button>
+</div>`;
+
+V.reviews=()=>`
+<div class="pad pb fade" style="padding-top:16px">
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
+    687 families have trusted us with a day they only get once. Here are a few of them.
+  </p>
+  ${TESTIMONIALS.map(t=>`
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p>${t.q}</p>
+      <div class="who"><b>${t.n}</b><span>${t.m}</span></div>
+    </div>`).join('')}
+  <button class="btn btn-gold" style="margin-top:6px" onclick="go('date')">📅 Check Your Date</button>
+</div>`;
 
 V.gallery=()=>`
 <div class="pad pb fade" style="padding-top:16px">
