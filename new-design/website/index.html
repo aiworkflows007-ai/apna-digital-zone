@@ -622,6 +622,25 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
   .custom-pkg-builder{padding:16px}
   #calc_total{font-size:32px}
 }
+/* ---- multi-date pickers (enquiry form + availability checker) ---- */
+.mdate{display:flex;gap:8px;align-items:center}
+.mdate input[type="date"]{flex:1;min-width:0}
+.mdate-add{flex:0 0 auto;background:rgba(201,162,77,.14);border:1px solid rgba(201,162,77,.45);color:#c9a24d;
+  border-radius:9px;padding:10px 14px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.04em}
+.mdate-add:hover{background:rgba(201,162,77,.24)}
+.mdate-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mdate-chip{background:rgba(201,162,77,.12);border:1px solid rgba(201,162,77,.4);color:#e6cd92;
+  border-radius:999px;padding:5px 11px;font-size:11.5px;cursor:pointer}
+.mdate-chip:hover{background:rgba(220,60,60,.16);border-color:rgba(220,60,60,.5);color:#f0b4b4}
+.mdate-hint{display:block;margin-top:6px;font-size:11px;color:#8c877e;line-height:1.5}
+select.locked{opacity:.85;border-color:rgba(201,162,77,.5)}
+
+/* ---- per-service rate chips + book online ---- */
+.ratelist{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.ratechip{font-size:11px;color:#e6cd92;background:rgba(201,162,77,.10);border:1px solid rgba(201,162,77,.3);
+  border-radius:999px;padding:4px 10px;white-space:nowrap}
+.card-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.btn-book{padding:9px 16px;font-size:11.5px}
 </style>
 </head>
 <body>
@@ -1273,14 +1292,43 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
             </select>
           </div>
           <div class="field">
-            <label>Event Date</label>
-            <input type="date" name="date" required>
+            <label>Event Date(s)</label>
+            <div class="mdate">
+              <input type="date" id="bf_dateinput">
+              <button type="button" class="mdate-add" onclick="addFormDate()">+ Add</button>
+            </div>
+            <div class="mdate-chips" id="bf_datechips"></div>
+            <input type="hidden" name="date" id="bf_dates" required>
+            <small class="mdate-hint">Add every day you need us — haldi, wedding and reception can be separate days.</small>
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label>Venue / City</label>
-            <input type="text" name="venue" placeholder="e.g. Arrah, Patna, Buxar">
+            <label>Event Location</label>
+            <select name="region" id="bf_region" onchange="onRegionChange()">
+              <option value="Bihar">Bihar</option>
+              <option value="Outside Bihar">Outside Bihar</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>District</label>
+            <input type="text" name="district" id="bf_district" placeholder="e.g. Bhojpur">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>City / Town</label>
+            <input type="text" name="city" placeholder="e.g. Arrah">
+          </div>
+          <div class="field">
+            <label>PIN Code</label>
+            <input type="tel" name="pin" inputmode="numeric" maxlength="6" pattern="\d{6}" placeholder="802302">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Venue Name / Landmark</label>
+            <input type="text" name="venue" placeholder="e.g. Mahadev Palace, near Bullet Showroom">
           </div>
           <div class="field">
             <label>Package Interested In</label>
@@ -1373,6 +1421,20 @@ footer{background:#08080a;padding:70px 0 0;border-top:1px solid rgba(245,241,232
 <script>
 const B='/assets/img/services/';
 
+/* Per-service rate cards. Mirrors RATES in app/index.html — keep the two in
+   step, a customer who sees one price here and another in the app will trust
+   neither. VIP Event is quoted per event, so it shows "on request". */
+const RATES={
+  'Candid Photography':{unit:'day',opts:[
+    ['Wedding',8000],['Birthday',7000],['Anniversary',7000],['Baby Shoot',15000],['VIP Event',null]]},
+  'Newborn Baby Shoot':{unit:'day',opts:[['Traditional',10000],['Candid',15000]]},
+  'Seminar & Corporate':{unit:'day',opts:[['Traditional',10000],['Candid',15000]]},
+  'Freelance Photographer':{unit:'staff',opts:[
+    ['Wedding',2000],['Government Project',4000],['Drone Operator',5000]]}
+};
+const UNIT_LABEL={day:'day',staff:'staff'};
+const inrShort=n=>'₹'+n.toLocaleString('en-IN');
+
 /* ---- services ---- */
 const SERVICES=[
  {t:'Wedding Photography & Videography',tag:'Signature',i:'cenimatic-photographer.jpg',d:'Two-camera coverage of every ritual, shot frame by frame and colour-graded frame by frame. Your whole day, preserved properly.'},
@@ -1397,7 +1459,12 @@ document.getElementById('svc').innerHTML=SERVICES.map(s=>`
    <div class="card-body">
      <h3>${s.t}</h3>
      <p>${s.d}</p>
-     <a href="javascript:void(0)" class="card-link" onclick="selectHireService('${s.t}')">Book This <span>→</span></a>
+     ${RATES[s.t]?`<div class="ratelist">${RATES[s.t].opts.map(([n,p])=>
+       `<span class="ratechip">${n} · ${p!=null?inrShort(p)+'/'+UNIT_LABEL[RATES[s.t].unit]:'on request'}</span>`).join('')}</div>`:''}
+     <div class="card-actions">
+       <a href="javascript:void(0)" class="btn btn-gold btn-book" onclick="bookServiceOnline('${s.t.replace(/'/g,"\\'")}')">Book Online</a>
+       <a href="javascript:void(0)" class="card-link" onclick="selectHireService('${s.t.replace(/'/g,"\\'")}')">Enquire <span>→</span></a>
+     </div>
    </div>
  </article>`).join('');
 
@@ -1439,19 +1506,53 @@ function openHireModalWithSpec(titleText, specVal) {
   document.getElementById('hm_specialist').value = specVal;
   document.getElementById('hireModalSpecTitle').textContent = titleText;
   
-  const dateInput = document.getElementById('hm_date');
-  if (!dateInput.value) {
+  // Seed one sensible default date as a chip, rather than writing straight to
+  // the hidden field, so the picker and the submitted value stay in agreement.
+  if (!hmDates.length) {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 14);
-    dateInput.value = futureDate.toISOString().split('T')[0];
+    hmDates = [futureDate.toISOString().split('T')[0]];
+    renderHmDates();
   }
   
   checkDateAvailability();
   document.getElementById('hireModal').classList.add('open');
 }
 
+/* ---- availability checker: multiple dates ---- */
+let hmDates = [];
+function renderHmDates() {
+  const wrap = document.getElementById('hm_datechips');
+  const hidden = document.getElementById('hm_date');
+  if (!wrap || !hidden) return;
+  hmDates.sort();
+  wrap.innerHTML = hmDates.map(iso => {
+    const d = new Date(iso + 'T00:00:00');
+    const label = d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+    return `<button type="button" class="mdate-chip" onclick="removeHmDate('${iso}')">${label} ✕</button>`;
+  }).join('');
+  hidden.value = hmDates.map(iso =>
+    new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})
+  ).join('; ');
+  checkDateAvailability();
+}
+function addHmDate() {
+  const input = document.getElementById('hm_dateinput');
+  const v = input && input.value;
+  if (!v) return;
+  if (hmDates.indexOf(v) === -1) hmDates.push(v);
+  input.value = '';
+  renderHmDates();
+}
+function removeHmDate(iso) {
+  hmDates = hmDates.filter(d => d !== iso);
+  renderHmDates();
+}
+
 function checkDateAvailability() {
-  const dateVal = document.getElementById('hm_date').value;
+  // Peak status is driven by the earliest date chosen; the summary line names
+  // them all so a three-day booking does not look like a one-day one.
+  const dateVal = hmDates.length ? hmDates[0] : (document.getElementById('hm_date') || {}).value;
   if (!dateVal) return;
 
   const d = new Date(dateVal);
@@ -1471,14 +1572,18 @@ function checkDateAvailability() {
     iconEl.textContent = '⚡';
     titleEl.style.color = '#fbbf24';
     titleEl.textContent = `High Demand — Slots Filling Fast for ${formattedDate}`;
-    descEl.textContent = `Peak wedding season date! Only 2 crew teams remaining. Lock your date now.`;
+    descEl.textContent = hmDates.length > 1
+      ? `Peak season across ${hmDates.length} days. Only 2 crew teams remaining — lock your dates now.`
+      : `Peak wedding season date! Only 2 crew teams remaining. Lock your date now.`;
   } else {
     statusBox.style.background = 'rgba(37,211,102,0.12)';
     statusBox.style.borderColor = 'rgba(37,211,102,0.4)';
     iconEl.textContent = '🟢';
     titleEl.style.color = '#25D366';
-    titleEl.textContent = `Studio Available for ${formattedDate}`;
-    descEl.textContent = `Great news! Our 6-member video crew & drone pilots are free for your date.`;
+    titleEl.textContent = hmDates.length > 1
+      ? `Studio Available for all ${hmDates.length} dates`
+      : `Studio Available for ${formattedDate}`;
+    descEl.textContent = `Great news! Our 6-member video crew & drone pilots are free for your date${hmDates.length > 1 ? 's' : ''}.`;
   }
 }
 
@@ -1494,7 +1599,10 @@ function selectHireTeam(teamType) {
   openHireModalWithSpec("Pre-selected: " + teamType, "Team/Booking: " + teamType);
 }
 
-function selectPkgForForm(pkgName) {
+/* NOTE: a second selectPkgForForm was defined further down this file and
+   silently overrode this one, so the package buttons never opened the modal.
+   Kept under its own name so both behaviours remain reachable. */
+function openPkgModal(pkgName) {
   let displayName = pkgName.charAt(0).toUpperCase() + pkgName.slice(1) + " Package";
   openHireModalWithSpec("Pre-selected: " + displayName, "Package: " + displayName);
 }
@@ -1628,7 +1736,9 @@ document.getElementById('bookForm').addEventListener('submit',e=>{
   const f=new FormData(e.target), g=k=>(f.get(k)||'—');
   const txt=`*New Enquiry — Apna Digital Zone*%0A%0A`+
     `*Name:* ${g('name')}%0A*Mobile:* ${g('phone')}%0A*Event:* ${g('event')}%0A`+
-    `*Date:* ${g('date')}%0A*Venue:* ${g('venue')}%0A*Package:* ${g('pkg')}%0A*Notes:* ${g('msg')}`;
+    `*Date(s):* ${g('date')}%0A*Location:* ${g('region')}%0A`+
+    `*District:* ${g('district')}%0A*City:* ${g('city')}%0A*PIN:* ${g('pin')}%0A`+
+    `*Venue:* ${g('venue')}%0A*Package:* ${g('pkg')}%0A*Notes:* ${g('msg')}`;
   window.open('https://wa.me/919386415795?text='+txt,'_blank');
 });
 
@@ -1642,6 +1752,92 @@ function selectPkgForForm(pkgId) {
       }
     }
   }
+  document.getElementById('book').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---- enquiry form: multiple event dates ---- */
+let formDates = [];
+function renderFormDates() {
+  const wrap = document.getElementById('bf_datechips');
+  const hidden = document.getElementById('bf_dates');
+  if (!wrap || !hidden) return;
+  formDates.sort();
+  wrap.innerHTML = formDates.map(iso => {
+    const d = new Date(iso + 'T00:00:00');
+    const label = d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+    return `<button type="button" class="mdate-chip" onclick="removeFormDate('${iso}')">${label} ✕</button>`;
+  }).join('');
+  // The hidden field is what the form actually submits and what `required`
+  // validates against, so it must carry every chosen date.
+  hidden.value = formDates.map(iso =>
+    new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})
+  ).join('; ');
+}
+function addFormDate() {
+  const input = document.getElementById('bf_dateinput');
+  const v = input && input.value;
+  if (!v) return;
+  if (formDates.indexOf(v) === -1) formDates.push(v);
+  input.value = '';
+  renderFormDates();
+}
+function removeFormDate(iso) {
+  formDates = formDates.filter(d => d !== iso);
+  renderFormDates();
+}
+function onRegionChange() {
+  const r = document.getElementById('bf_region');
+  const d = document.getElementById('bf_district');
+  if (r && d) d.placeholder = r.value === 'Outside Bihar' ? 'e.g. Varanasi' : 'e.g. Bhojpur';
+}
+
+/* Book Online: lock the enquiry form to the service just chosen. Leaving the
+   other eleven options selectable invites the customer to contradict the
+   choice they made one click earlier. */
+function bookServiceOnline(serviceName) {
+  const sel = document.querySelector('select[name="event"]');
+  if (sel) {
+    let match = null;
+    for (const opt of sel.options) {
+      const a = opt.text.toLowerCase(), b = serviceName.toLowerCase();
+      if (a === b || a.indexOf(b) > -1 || b.indexOf(a) > -1) { match = opt; break; }
+    }
+    if (!match) {
+      match = new Option(serviceName, serviceName);
+      sel.add(match);
+    }
+    // Keep only the chosen option, and remember how to restore the rest.
+    if (!sel.dataset.locked) {
+      sel.dataset.locked = '1';
+      sel.dataset.original = sel.innerHTML;
+    }
+    const text = match.text, value = match.value || match.text;
+    sel.innerHTML = '';
+    sel.add(new Option(text, value, true, true));
+    sel.classList.add('locked');
+    let undo = document.getElementById('bf_unlock');
+    if (!undo) {
+      undo = document.createElement('button');
+      undo.type = 'button';
+      undo.id = 'bf_unlock';
+      undo.className = 'mdate-add';
+      undo.style.marginTop = '6px';
+      undo.textContent = 'Change service';
+      undo.onclick = unlockServiceSelect;
+      sel.parentNode.appendChild(undo);
+    }
+  }
+  document.getElementById('book').scrollIntoView({behavior:'smooth'});
+}
+function unlockServiceSelect() {
+  const sel = document.querySelector('select[name="event"]');
+  if (sel && sel.dataset.original) {
+    sel.innerHTML = sel.dataset.original;
+    delete sel.dataset.locked;
+    sel.classList.remove('locked');
+  }
+  const undo = document.getElementById('bf_unlock');
+  if (undo) undo.remove();
 }
 
 /* ---- custom package calculator ---- */
@@ -1796,8 +1992,13 @@ document.getElementById('yr').textContent=new Date().getFullYear();
           <input type="tel" id="hm_phone" required placeholder="+91 98765 43210">
         </div>
         <div class="field">
-          <label>Event Date *</label>
-          <input type="date" id="hm_date" required onchange="checkDateAvailability()">
+          <label>Event Date(s) *</label>
+          <div class="mdate">
+            <input type="date" id="hm_dateinput">
+            <button type="button" class="mdate-add" onclick="addHmDate()">+ Add</button>
+          </div>
+          <div class="mdate-chips" id="hm_datechips"></div>
+          <input type="hidden" id="hm_date" required>
         </div>
       </div>
       
@@ -1808,7 +2009,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
             <option value="Wedding Function">Wedding Function</option>
             <option value="Pre-Wedding Shoot">Pre-Wedding Shoot</option>
             <option value="Government Project">Government Project</option>
-            <option value="VIP Gala / Event">VIP Gala / Event</option>
+            <option value="VIP Event">VIP Event</option>
             <option value="Commercial / Drone Shoot">Commercial / Drone Shoot</option>
           </select>
         </div>

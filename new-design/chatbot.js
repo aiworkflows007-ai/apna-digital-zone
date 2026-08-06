@@ -36,6 +36,36 @@
     { id: "live_tv", name: "Live TV & YouTube Broadcasting", price: 7999 }
   ];
   var GST_RATE = 0.18, ADVANCE_RATE = 0.25;
+  /* Mirrors RATES in app/index.html. Services here are priced per day or per
+     staff member instead of by wedding package. */
+  var RATES = {
+    candid: { unit: "day", opts: [
+      { id: "wedding", n: "Wedding", price: 8000 },
+      { id: "birthday", n: "Birthday", price: 7000 },
+      { id: "anniv", n: "Anniversary", price: 7000 },
+      { id: "baby", n: "Baby Shoot", price: 15000 },
+      { id: "vip", n: "VIP Event", price: null }
+    ]},
+    newborn: { unit: "day", opts: [
+      { id: "trad", n: "Traditional", price: 10000 },
+      { id: "candid", n: "Candid", price: 15000 }
+    ]},
+    seminar: { unit: "day", opts: [
+      { id: "trad", n: "Traditional", price: 10000 },
+      { id: "candid", n: "Candid", price: 15000 }
+    ]},
+    freelance: { unit: "staff", opts: [
+      { id: "wedding", n: "Wedding", price: 2000 },
+      { id: "govt", n: "Government Project", price: 4000 },
+      { id: "drone", n: "Drone Operator", price: 5000 }
+    ]}
+  };
+  var UNIT_LABEL = { day: "day", staff: "staff member" };
+  function rateCfg(id) { return RATES[id] || null; }
+  function rateOpt(sid, rid) {
+    var c = rateCfg(sid);
+    return c ? (c.opts.filter(function (o) { return o.id === rid; })[0] || null) : null;
+  }
 
   function serviceLabel(id) {
     var s = SERVICES.filter(function (x) { return x.id === id; })[0];
@@ -53,8 +83,21 @@
      start a booking in chat and finish it in the app, and the two quoting the
      same package differently is worse than quoting nothing at all. */
   function estimate(draft) {
-    var id = draft.pkg === "unsure" ? "gold" : draft.pkg;
-    var base = draft.pkg ? pkgPrice(id) : 0;
+    var cfg = rateCfg(draft.service);
+    var opt = cfg ? rateOpt(draft.service, draft.rate) : null;
+    var base = 0, qty = 0, onRequest = false;
+
+    if (cfg) {
+      qty = cfg.unit === "staff"
+        ? Math.max(1, parseInt(draft.staff, 10) || 1)
+        : Math.max(1, (draft.dates || []).length);
+      if (opt && opt.price == null) onRequest = true;
+      base = (opt && opt.price != null) ? opt.price * qty : 0;
+    } else {
+      var id = draft.pkg === "unsure" ? "gold" : draft.pkg;
+      base = draft.pkg ? pkgPrice(id) : 0;
+    }
+
     var picked = (draft.addons || []).map(function (aid) {
       return ADDONS.filter(function (a) { return a.id === aid; })[0];
     }).filter(Boolean);
@@ -63,7 +106,8 @@
     var gst = subtotal * GST_RATE;
     var total = subtotal + gst;
     var advance = total * ADVANCE_RATE;
-    return { base: base, picked: picked, addonsTotal: addonsTotal, subtotal: subtotal,
+    return { base: base, rate: opt, qty: qty, unit: cfg ? cfg.unit : null, onRequest: onRequest,
+             picked: picked, addonsTotal: addonsTotal, subtotal: subtotal,
              gst: gst, total: total, advance: advance, balance: total - advance };
   }
   function inr(n) { return "₹" + Math.round(n).toLocaleString("en-IN"); }
@@ -181,7 +225,7 @@
     this.mode = mode;
     this.open = false;
     this.step = "intro";
-    this.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
+    this.draft = { service: "", pkg: "", rate: null, staff: 1, dates: [], addons: [], region: "Bihar", district: "", city: "", pin: "", venue: "", name: "", phone: "" };
     this.firstOpen = true;
   }
 
@@ -330,7 +374,8 @@
         self.showChoices(SERVICES.map(function (s) { return { label: s.label, value: s.id }; }), function (val) {
           self.draft.service = val;
           self.addUser(serviceLabel(val));
-          self.runStep("package");
+          // Day- and staff-rate services have no wedding package to pick.
+          self.runStep(rateCfg(val) ? "rate" : "package");
         });
       });
       return;
@@ -343,7 +388,34 @@
         }), function (val) {
           self.draft.pkg = val;
           self.addUser(pkgName(val));
-          self.runStep("addons");
+          self.runStep("date");
+        });
+      });
+      return;
+    }
+
+    if (step === "rate") {
+      var cfg = rateCfg(this.draft.service);
+      this.addBot(cfg.label || "Which rate applies?", function () {
+        self.showChoices(cfg.opts.map(function (o) {
+          return { label: o.price != null
+            ? o.n + " — " + inr(o.price) + "/" + UNIT_LABEL[cfg.unit]
+            : o.n + " — quoted on request", value: o.id };
+        }), function (val) {
+          self.draft.rate = val;
+          self.addUser(rateOpt(self.draft.service, val).n);
+          self.runStep(cfg.unit === "staff" ? "staff" : "date");
+        });
+      });
+      return;
+    }
+
+    if (step === "staff") {
+      this.addBot("How many crew members do you need?", function () {
+        self.showTextInput("e.g. 3", "number", function (val) {
+          self.draft.staff = Math.max(1, Math.min(20, parseInt(val, 10) || 1));
+          self.addUser(self.draft.staff + (self.draft.staff > 1 ? " crew members" : " crew member"));
+          self.runStep("date");
         });
       });
       return;
@@ -351,18 +423,72 @@
 
     if (step === "addons") {
       var e0 = estimate(this.draft);
-      this.addBot(
-        "<b>" + esc(pkgName(this.draft.pkg)) + "</b> comes to <b>" + inr(e0.total) +
-        "</b> including 18% GST. Want to add anything? Tap to include or remove — the total updates as you go.",
-        function () {
-          self.showAddons(function () {
-            var e = estimate(self.draft);
-            self.addUser(e.picked.length
-              ? e.picked.map(function (a) { return a.name; }).join(", ")
-              : "No add-ons");
-            self.runStep("date");
-          });
+      var lead;
+      if (e0.onRequest) {
+        lead = "VIP Event coverage is quoted per event, so our team will confirm the rate directly. Meanwhile, want to add anything?";
+      } else if (e0.rate) {
+        lead = "<b>" + esc(e0.rate.n) + "</b> at " + inr(e0.rate.price) + "/" + UNIT_LABEL[e0.unit] +
+               " × " + e0.qty + " comes to <b>" + inr(e0.total) + "</b> including 18% GST. Want to add anything?";
+      } else {
+        lead = "<b>" + esc(pkgName(this.draft.pkg)) + "</b> comes to <b>" + inr(e0.total) +
+               "</b> including 18% GST. Want to add anything?";
+      }
+      this.addBot(lead + " Tap to include or remove — the total updates as you go.", function () {
+        self.showAddons(function () {
+          var e = estimate(self.draft);
+          self.addUser(e.picked.length
+            ? e.picked.map(function (a) { return a.name; }).join(", ")
+            : "No add-ons");
+          self.runStep("region");
         });
+      });
+      return;
+    }
+
+    if (step === "region") {
+      this.addBot("Is the event in Bihar or outside Bihar?", function () {
+        self.showChoices([
+          { label: "In Bihar", value: "Bihar" },
+          { label: "Outside Bihar", value: "Outside Bihar" }
+        ], function (val) {
+          self.draft.region = val;
+          self.addUser(val);
+          self.runStep("district");
+        });
+      });
+      return;
+    }
+
+    if (step === "district") {
+      this.addBot("Which district?", function () {
+        self.showTextInput(self.draft.region === "Outside Bihar" ? "e.g. Varanasi" : "e.g. Bhojpur", "text", function (val) {
+          self.draft.district = val;
+          self.addUser(val);
+          self.runStep("city");
+        });
+      });
+      return;
+    }
+
+    if (step === "city") {
+      this.addBot("And the city or town?", function () {
+        self.showTextInput("e.g. Arrah", "text", function (val) {
+          self.draft.city = val;
+          self.addUser(val);
+          self.runStep("pin");
+        });
+      });
+      return;
+    }
+
+    if (step === "pin") {
+      this.addBot("PIN code, so the crew can plan travel and reach on time?", function () {
+        self.showTextInput("802302", "tel", function (val) {
+          self.draft.pin = val;
+          self.addUser(val);
+          self.runStep("venue");
+        });
+      });
       return;
     }
 
@@ -371,15 +497,17 @@
         self.showMultiDateInput(function () {
           var list = self.draft.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ");
           self.addUser(list);
-          self.runStep("venue");
+          // Add-ons come after the dates so a per-day quote is already accurate
+          // by the time the running total appears.
+          self.runStep("addons");
         });
       });
       return;
     }
 
     if (step === "venue") {
-      this.addBot("Which city or venue will this be at?", function () {
-        self.showTextInput("e.g. Arrah, Patna, Buxar", "text", function (val) {
+      this.addBot("Venue name or a landmark we should head for?", function () {
+        self.showTextInput("e.g. Mahadev Palace, near Bullet Showroom", "text", function (val) {
           self.draft.venue = val;
           self.addUser(val);
           self.runStep("name");
@@ -445,7 +573,11 @@
 
     function renderTotal() {
       var e = estimate(self.draft);
-      var html = '<div class="r"><span>' + esc(pkgName(self.draft.pkg)) + " package</span><b>" + inr(e.base) + "</b></div>";
+      var html = e.rate
+        ? '<div class="r"><span>' + esc(e.rate.n) +
+          (e.rate.price != null ? " — " + inr(e.rate.price) + "/" + UNIT_LABEL[e.unit] + " × " + e.qty : " — on request") +
+          "</span><b>" + (e.rate.price != null ? inr(e.base) : "—") + "</b></div>"
+        : '<div class="r"><span>' + esc(pkgName(self.draft.pkg)) + " package</span><b>" + inr(e.base) + "</b></div>";
       e.picked.forEach(function (a) {
         html += '<div class="r"><span>+ ' + esc(a.name) + "</span><b>" + inr(a.price) + "</b></div>";
       });
@@ -619,18 +751,28 @@
     var box = el("div", { class: "adz-summary" });
     box.innerHTML =
       row("Service", serviceLabel(d.service)) +
-      row("Package", pkgName(d.pkg)) +
+      (e.rate
+        ? row("Rate", esc(e.rate.n) + (e.rate.price != null
+            ? " — " + inr(e.rate.price) + "/" + UNIT_LABEL[e.unit] : " — on request")) +
+          (e.unit === "staff" ? row("Crew size", String(e.qty)) : "")
+        : row("Package", pkgName(d.pkg))) +
       e.picked.map(function (a) { return row("+ " + esc(a.name), inr(a.price)); }).join("") +
       row("Date(s)", d.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ")) +
+      row("Location", esc(d.region || "—")) +
+      row("District", esc(d.district || "—")) +
+      row("City", esc(d.city || "—")) +
+      row("PIN", esc(d.pin || "—")) +
       row("Venue", esc(d.venue)) +
       row("Name", esc(d.name)) +
       row("Mobile", esc(d.phone)) +
-      row("Package amount", inr(e.base)) +
-      (e.picked.length ? row("Add-ons", inr(e.addonsTotal)) : "") +
-      row("GST @ 18%", inr(e.gst)) +
-      '<div class="r total"><span>Total</span><b>' + inr(e.total) + "</b></div>" +
-      row("Advance (25%) due now", inr(e.advance)) +
-      row("Balance on shoot day", inr(e.balance));
+      (e.onRequest
+        ? '<div class="r total"><span>Total</span><b>On request</b></div>'
+        : row(e.rate ? "Shoot amount" : "Package amount", inr(e.base)) +
+          (e.picked.length ? row("Add-ons", inr(e.addonsTotal)) : "") +
+          row("GST @ 18%", inr(e.gst)) +
+          '<div class="r total"><span>Total</span><b>' + inr(e.total) + "</b></div>" +
+          row("Advance (25%) due now", inr(e.advance)) +
+          row("Balance on shoot day", inr(e.balance)));
     function row(k, v) { return '<div class="r"><span>' + k + "</span><b>" + v + "</b></div>"; }
 
     var confirmBtn = el("button", { class: "adz-btn gold" });
@@ -642,7 +784,7 @@
       // Must match the constructor's shape -- this previously reset to a
       // `date` string with no `dates` array, so the next date step threw on
       // draft.dates.slice() and the conversation dead-ended.
-      self.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
+      self.draft = { service: "", pkg: "", rate: null, staff: 1, dates: [], addons: [], region: "Bihar", district: "", city: "", pin: "", venue: "", name: "", phone: "" };
       self.addUser("Start over");
       self.runStep("intro");
     };
@@ -660,8 +802,10 @@
       var order = {
         id: "ADZ" + String(Date.now()).slice(-6),
         service: d.service, pkg: d.pkg === "unsure" ? "gold" : d.pkg,
-        addons: d.addons || [],
-        dates: d.dates, date: d.dates && d.dates[0], venue: d.venue, name: d.name, phone: d.phone,
+        rate: d.rate, staff: d.staff, addons: d.addons || [],
+        dates: d.dates, date: d.dates && d.dates.slice().sort()[0],
+        region: d.region, district: d.district, city: d.city, pin: d.pin,
+        venue: d.venue, name: d.name, phone: d.phone,
         notes: "Booked via chat assistant", total: e.total, paid: e.advance,
         stage: 1, created: new Date().toISOString(), method: "upi"
       };
@@ -684,19 +828,29 @@
         "*Event:* " + serviceLabel(d.service) + "\n" +
         "*Date(s):* " + (d.dates.length ? d.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ") : "—") + "\n" +
         "*Venue:* " + (d.venue || "—") + "\n" +
-        "*Package:* " + pkgName(d.pkg) + "\n" +
+        (estimate(d).rate
+          ? "*Rate:* " + estimate(d).rate.n + (estimate(d).rate.price != null
+              ? " — " + inr(estimate(d).rate.price) + "/" + UNIT_LABEL[estimate(d).unit] + " × " + estimate(d).qty
+              : " — quoted on request") + "\n"
+          : "*Package:* " + pkgName(d.pkg) + "\n") +
         (estimate(d).picked.length
           ? "*Add-ons:* " + estimate(d).picked.map(function (a) { return a.name; }).join(", ") + "\n"
           : "") +
-        "*Estimated total (incl. 18% GST):* " + inr(estimate(d).total) + "\n" +
-        "*Advance (25%):* " + inr(estimate(d).advance) + "\n" +
+        "*Location:* " + (d.region || "—") + "\n" +
+        "*District:* " + (d.district || "—") + "\n" +
+        "*City:* " + (d.city || "—") + "\n" +
+        "*PIN:* " + (d.pin || "—") + "\n" +
+        (estimate(d).onRequest
+          ? "*Estimated total:* Quoted on request\n"
+          : "*Estimated total (incl. 18% GST):* " + inr(estimate(d).total) + "\n" +
+            "*Advance (25%):* " + inr(estimate(d).advance) + "\n") +
         "*Notes:* Booked via chat assistant";
       window.open("https://wa.me/" + PHONE + "?text=" + encodeURIComponent(txt), "_blank");
       this.addBot("I've opened WhatsApp with everything filled in — just hit send and our team will confirm within the hour.", function () {
         var again = el("button", { class: "adz-btn ghost" });
         again.textContent = "Start a New Chat";
         again.onclick = function () {
-          self.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
+          self.draft = { service: "", pkg: "", rate: null, staff: 1, dates: [], addons: [], region: "Bihar", district: "", city: "", pin: "", venue: "", name: "", phone: "" };
           self.body.innerHTML = "";
           self.runStep("intro");
         };
