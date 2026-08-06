@@ -369,7 +369,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 /* ---- story ---- */
 .stat{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0 4px}
 .stat div{background:var(--surf);border:1px solid var(--line);border-radius:13px;padding:13px 8px;text-align:center}
-.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:23px;color:var(--gold);line-height:1}
+.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(18px,5.6vw,23px);color:var(--gold);line-height:1;white-space:nowrap;letter-spacing:-.3px}
 .stat span{font-size:9.5px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;display:block;margin-top:5px}
 .quote{border-left:2px solid var(--gold);padding:2px 0 2px 13px;margin:15px 0}
 .quote p{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#ded8cd;line-height:1.55}
@@ -656,7 +656,7 @@ V.home=()=>`
     <span class="decor-sparkle" style="bottom:65px;right:25px;animation-delay:2.1s">💫</span>
     <img src="${HERO}" alt="Apna Digital Zone Romantic Wedding Shoot">
     <div class="hero-txt">
-      <span class="eyebrow">✦ REAL WEDDING LOVE STORIES · 687 EVENTS</span>
+      <span class="eyebrow">✦ REAL WEDDING LOVE STORIES · 1,500+ EVENTS</span>
       <h1>Your Love Story,<br><em>told like a film.</em></h1>
       <p>Romantic candid moments under royal mandap &amp; chandelier decor.</p>
     </div>
@@ -757,7 +757,7 @@ V.home=()=>`
 
     <div class="h-row"><h3>Our Story</h3><a onclick="go('story')">Read</a></div>
     <div class="stat">
-      <div><b>687</b><span>Events</span></div>
+      <div><b>1,500+</b><span>Events</span></div>
       <div><b>15</b><span>Years</span></div>
       <div><b>10</b><span>Team</span></div>
     </div>
@@ -769,7 +769,7 @@ V.home=()=>`
       <div class="kv"><span>Call</span><b>+91 93864 15795</b></div>
     </div>
     <button class="btn btn-wa" onclick="window.open('https://wa.me/${PHONE}','_blank')">Chat on WhatsApp</button>
-    <p class="note">687 events covered · 15 years · 100% on-time delivery</p>
+    <p class="note">1,500+ events covered · 15 years · 100% on-time delivery</p>
   </div>
 </div>`;
 
@@ -1166,7 +1166,7 @@ V.films=()=>`
 V.reviews=()=>`
 <div class="pad pb fade" style="padding-top:16px">
   <p style="font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:18px">
-    687 families have trusted us with a day they only get once. Here are a few of them.
+    1,500+ families have trusted us with a day they only get once. Here are a few of them.
   </p>
   ${TESTIMONIALS.map(t=>`
     <div class="review">
@@ -1218,7 +1218,7 @@ V.story=()=>`
   <img loading="lazy" src="${IMG}candid-photography.jpg" alt="Apna Digital Zone candid photography"
        style="width:100%;height:180px;object-fit:cover;border-radius:15px;border:1px solid var(--line)">
   <div class="stat">
-    <div><b>687</b><span>Events</span></div>
+    <div><b>1,500+</b><span>Events</span></div>
     <div><b>15</b><span>Years</span></div>
     <div><b>10</b><span>Team</span></div>
   </div>
@@ -1227,10 +1227,10 @@ V.story=()=>`
     <cite>— Apna Digital Zone, Arrah</cite>
   </div>
   <p style="font-size:13px;color:#cfc9bd;line-height:1.7;margin-bottom:18px">
-    Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families here deserve wedding films of the same standard as anywhere else. Several hundred weddings, galas and official projects later, that hasn't changed.
+    Apna Digital Zone started in Vishnu Nagar with one camera and a stubborn belief: that families here deserve wedding films of the same standard as anywhere else. Over 1,500 weddings and official government projects later, that hasn't changed.
   </p>
   ${[
-    ['👑','Trusted across Bihar','Weddings, VIP galas and government projects'],
+    ['👑','Trusted across Bihar','Weddings and official government projects'],
     ['🔒','100% in-house editing','Your raw files never leave the studio'],
     ['🚁','Licensed drone pilots','DGCA-certified, 4K aerial coverage'],
     ['⚡','7-day teaser delivery','Highlight reel while the memories are fresh']
