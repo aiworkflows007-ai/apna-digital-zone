@@ -31,16 +31,27 @@ jobs:
       # The key is pinned to a forced command on the server, so the command
       # sent here is ignored — the box always runs /root/deploy-apna.sh, which
       # resets to origin/master and rebuilds the container.
+      # Retried because the runner-to-Hostinger hop times out occasionally with
+      # no fault on the server side (no firewall, no fail2ban, box reachable
+      # throughout). The deploy script is idempotent, so a repeat is harmless.
       - name: Deploy
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          ssh -i ~/.ssh/deploy_key \
-              -o IdentitiesOnly=yes \
-              -o BatchMode=yes \
-              -o ConnectTimeout=20 \
-              "$DEPLOY_USER@$DEPLOY_HOST" deploy
+          for attempt in 1 2 3; do
+            if ssh -i ~/.ssh/deploy_key \
+                   -o IdentitiesOnly=yes \
+                   -o BatchMode=yes \
+                   -o ConnectTimeout=25 \
+                   "$DEPLOY_USER@$DEPLOY_HOST" deploy; then
+              exit 0
+            fi
+            echo "Deploy attempt $attempt failed"
+            [ "$attempt" -lt 3 ] && sleep 15
+          done
+          echo "Deploy failed after 3 attempts"
+          exit 1
 
       # Checks the hostnames that actually resolve to this VPS. Do NOT point
       # this at apnadigitalzone.com — that domain still resolves to the
