@@ -444,6 +444,26 @@ function avail(d){
 const INR=n=>'₹'+n.toLocaleString('en-IN');
 const money=n=>INR(Math.round(n));
 
+const GST_RATE=0.18, ADVANCE_RATE=0.25;
+
+/* Single source of truth for what a booking costs. Every screen that shows a
+   price and the order that gets saved all go through this -- previously the
+   review and payment screens quoted the bare package while the saved order
+   included add-ons, so the customer was shown one number and charged another. */
+function estimate(draft){
+  const pkg = PACKAGES.find(x=>x.id===(draft&&draft.pkg)) || null;
+  const base = pkg ? pkg.price : 0;
+  const picked = ((draft&&draft.addons)||[])
+    .map(id=>ADDONS.find(a=>a.id===id))
+    .filter(Boolean);
+  const addonsTotal = picked.reduce((s,a)=>s+a.price,0);
+  const subtotal = base + addonsTotal;
+  const gst = subtotal*GST_RATE;
+  const total = subtotal+gst;
+  const advance = total*ADVANCE_RATE;
+  return {pkg, base, picked, addonsTotal, subtotal, gst, total, advance, balance: total-advance};
+}
+
 /* ======================= STATE ======================= */
 const store={
   get(k,f){try{return JSON.parse(localStorage.getItem('adz_'+k))??f}catch(e){return f}},
@@ -686,9 +706,28 @@ V.packages=()=>`
     }).join('')}
   </div>
 
+  ${(()=>{ const e=estimate(S.draft); return !e.pkg ? '' : `
+  <div class="box" style="border-color:rgba(201,162,77,.35);background:linear-gradient(150deg,rgba(201,162,77,.09),var(--surf) 60%)">
+    <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Estimated cost</div>
+    <div class="kv"><span>${e.pkg.n} package</span><b>${money(e.base)}</b></div>
+    ${e.picked.map(a=>`<div class="kv"><span>+ ${a.n}</span><b>${money(a.price)}</b></div>`).join('')}
+    ${e.picked.length?`<div class="kv"><span>Subtotal</span><b>${money(e.subtotal)}</b></div>`:''}
+    <div class="kv"><span>GST @ 18%</span><b>${money(e.gst)}</b></div>
+    <div class="kv tot"><span>Total</span><b>${money(e.total)}</b></div>
+    <div class="kv"><span>Pay now (25% advance)</span><b style="color:var(--gold)">${money(e.advance)}</b></div>
+    <div class="kv"><span>Balance on shoot day</span><b>${money(e.balance)}</b></div>
+  </div>
+  <p class="note">Estimate only — confirmed on the review screen before any payment.</p>`; })()}
+
   <button class="btn btn-out" onclick="window.open('https://wa.me/${PHONE}?text=Hi,%20I%20need%20a%20custom%20package','_blank')">Need something custom? Ask us</button>
 </div>
-<div class="stick"><button class="btn btn-gold" onclick="go('date')" ${S.draft.pkg?'':'disabled'}>Continue to Date →</button></div>`;
+<div class="stick">
+  ${S.draft.pkg?`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;font-size:11.5px">
+    <span style="color:var(--muted)">Estimated total</span>
+    <b style="color:var(--gold);font-size:15px">${money(estimate(S.draft).total)}</b>
+  </div>`:''}
+  <button class="btn btn-gold" onclick="go('date')" ${S.draft.pkg?'':'disabled'}>Continue to Date →</button>
+</div>`;
 
 V.date=()=>{
   const first=new Date(S.calYear,S.calMonth,1);
@@ -750,8 +789,9 @@ V.details=()=>`
 <div class="stick"><button class="btn btn-gold" onclick="saveDetails()">Review Booking →</button></div>`;
 
 V.review=()=>{
-  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
-  const gst=p.price*0.18, tot=p.price+gst, adv=tot*0.25;
+  const e=estimate(S.draft);
+  const p=e.pkg||PACKAGES[1];
+  const gst=e.gst, tot=e.total, adv=e.advance;
   return `
 <div class="pad pb fade" style="padding-top:16px">
   <div class="box">
@@ -763,7 +803,9 @@ V.review=()=>{
     <div class="kv"><span>Mobile</span><b>${S.draft.phone}</b></div>
   </div>
   <div class="box">
-    <div class="kv"><span>Package amount</span><b>${money(p.price)}</b></div>
+    <div class="kv"><span>Package amount</span><b>${money(e.base)}</b></div>
+    ${e.picked.map(a=>`<div class="kv"><span>+ ${a.n}</span><b>${money(a.price)}</b></div>`).join('')}
+    ${e.picked.length?`<div class="kv"><span>Subtotal</span><b>${money(e.subtotal)}</b></div>`:''}
     <div class="kv"><span>GST @ 18%</span><b>${money(gst)}</b></div>
     <div class="kv tot"><span>Total</span><b>${money(tot)}</b></div>
   </div>
@@ -777,8 +819,7 @@ V.review=()=>{
 };
 
 V.pay=()=>{
-  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
-  const adv=p.price*1.18*0.25;
+  const adv=estimate(S.draft).advance;
   const M=[['upi','⌗','UPI','GPay · PhonePe · Paytm · BHIM'],
            ['card','▭','Card','Credit / Debit / RuPay'],
            ['net','🏦','Net Banking','All major Indian banks'],
@@ -788,7 +829,7 @@ V.pay=()=>{
   <div class="box" style="text-align:center;border-color:rgba(201,162,77,.3)">
     <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">Amount payable now</div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);line-height:1.2">${money(adv)}</div>
-    <div style="font-size:11.5px;color:var(--muted)">25% advance · ${p.n} package</div>
+    <div style="font-size:11.5px;color:var(--muted)">25% advance · ${(estimate(S.draft).pkg||PACKAGES[1]).n} package${estimate(S.draft).picked.length?` + ${estimate(S.draft).picked.length} add-on${estimate(S.draft).picked.length>1?'s':''}`:''}</div>
   </div>
   <div class="h-row"><h3>Payment Method</h3></div>
   ${M.map(([k,i,t,s])=>`
@@ -1065,15 +1106,8 @@ function hireSpecialist(name, role){
   toast(`Selected ${name} for your event!`);
 }
 function confirmBooking(){
-  const p=PACKAGES.find(x=>x.id===S.draft.pkg)||PACKAGES[1];
-  let basePrice = p.price;
-  if(S.draft.addons && S.draft.addons.length > 0){
-    S.draft.addons.forEach(aid => {
-      const a = ADDONS.find(x => x.id === aid);
-      if(a) basePrice += a.price;
-    });
-  }
-  const total=basePrice*1.18, paid=total*0.25;
+  const e=estimate(S.draft);
+  const total=e.total, paid=e.advance;
   const o={
     id:'ADZ'+String(Date.now()).slice(-6),
     service:S.draft.service,pkg:S.draft.pkg,addons:S.draft.addons||[],hireSpec:S.draft.hireSpec,date:S.draft.date,venue:S.draft.venue,

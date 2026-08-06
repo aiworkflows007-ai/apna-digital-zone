@@ -27,6 +27,15 @@
     { id: "platinum", name: "Platinum", price: 174999 },
     { id: "unsure", name: "Not sure yet", price: 74999 }
   ];
+  /* Keep in step with ADDONS in app/index.html. */
+  var ADDONS = [
+    { id: "drone", name: "4K Drone Aerial Coverage", price: 9999 },
+    { id: "teaser", name: "60s Teaser Reel (7-Day Delivery)", price: 4999 },
+    { id: "album_sheet", name: "Karizma Album Pack (+20 Sheets)", price: 3999 },
+    { id: "prewed", name: "Pre-Wedding Story Shoot", price: 14999 },
+    { id: "live_tv", name: "Live TV & YouTube Broadcasting", price: 7999 }
+  ];
+  var GST_RATE = 0.18, ADVANCE_RATE = 0.25;
 
   function serviceLabel(id) {
     var s = SERVICES.filter(function (x) { return x.id === id; })[0];
@@ -39,6 +48,23 @@
   function pkgPrice(id) {
     var p = PACKAGES.filter(function (x) { return x.id === id; })[0];
     return p ? p.price : PACKAGES[1].price;
+  }
+  /* Mirrors estimate() in app/index.html. Both must agree -- a customer can
+     start a booking in chat and finish it in the app, and the two quoting the
+     same package differently is worse than quoting nothing at all. */
+  function estimate(draft) {
+    var id = draft.pkg === "unsure" ? "gold" : draft.pkg;
+    var base = draft.pkg ? pkgPrice(id) : 0;
+    var picked = (draft.addons || []).map(function (aid) {
+      return ADDONS.filter(function (a) { return a.id === aid; })[0];
+    }).filter(Boolean);
+    var addonsTotal = picked.reduce(function (s, a) { return s + a.price; }, 0);
+    var subtotal = base + addonsTotal;
+    var gst = subtotal * GST_RATE;
+    var total = subtotal + gst;
+    var advance = total * ADVANCE_RATE;
+    return { base: base, picked: picked, addonsTotal: addonsTotal, subtotal: subtotal,
+             gst: gst, total: total, advance: advance, balance: total - advance };
   }
   function inr(n) { return "₹" + Math.round(n).toLocaleString("en-IN"); }
   function esc(s) {
@@ -155,7 +181,7 @@
     this.mode = mode;
     this.open = false;
     this.step = "intro";
-    this.draft = { service: "", pkg: "", dates: [], venue: "", name: "", phone: "" };
+    this.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
     this.firstOpen = true;
   }
 
@@ -317,9 +343,26 @@
         }), function (val) {
           self.draft.pkg = val;
           self.addUser(pkgName(val));
-          self.runStep("date");
+          self.runStep("addons");
         });
       });
+      return;
+    }
+
+    if (step === "addons") {
+      var e0 = estimate(this.draft);
+      this.addBot(
+        "<b>" + esc(pkgName(this.draft.pkg)) + "</b> comes to <b>" + inr(e0.total) +
+        "</b> including 18% GST. Want to add anything? Tap to include or remove — the total updates as you go.",
+        function () {
+          self.showAddons(function () {
+            var e = estimate(self.draft);
+            self.addUser(e.picked.length
+              ? e.picked.map(function (a) { return a.name; }).join(", ")
+              : "No add-ons");
+            self.runStep("date");
+          });
+        });
       return;
     }
 
@@ -387,6 +430,62 @@
       wrap.appendChild(b);
     });
     this.setComposer(wrap);
+  };
+
+  /* Add-on picker: toggle chips with a running estimate underneath, so the
+     cost of a choice is visible at the moment it is made. */
+  ChatWidget.prototype.showAddons = function (onDone) {
+    var self = this;
+    if (!self.draft.addons) self.draft.addons = [];
+    var wrap = el("div", {});
+    var chips = el("div", { class: "adz-chips" });
+    chips.style.marginBottom = "8px";
+    var totalBox = el("div", { class: "adz-summary" });
+    var doneBtn = el("button", { class: "adz-btn gold" });
+
+    function renderTotal() {
+      var e = estimate(self.draft);
+      var html = '<div class="r"><span>' + esc(pkgName(self.draft.pkg)) + " package</span><b>" + inr(e.base) + "</b></div>";
+      e.picked.forEach(function (a) {
+        html += '<div class="r"><span>+ ' + esc(a.name) + "</span><b>" + inr(a.price) + "</b></div>";
+      });
+      if (e.picked.length) html += '<div class="r"><span>Subtotal</span><b>' + inr(e.subtotal) + "</b></div>";
+      html += '<div class="r"><span>GST @ 18%</span><b>' + inr(e.gst) + "</b></div>";
+      html += '<div class="r total"><span>Estimated total</span><b>' + inr(e.total) + "</b></div>";
+      html += '<div class="r"><span>Advance (25%) due now</span><b>' + inr(e.advance) + "</b></div>";
+      totalBox.innerHTML = html;
+      doneBtn.textContent = e.picked.length
+        ? "Continue with " + e.picked.length + " add-on" + (e.picked.length > 1 ? "s" : "") + " →"
+        : "Continue without add-ons →";
+    }
+    function renderChips() {
+      chips.innerHTML = "";
+      ADDONS.forEach(function (a) {
+        var on = self.draft.addons.indexOf(a.id) > -1;
+        var b = el("button", { class: "adz-chip" });
+        b.textContent = (on ? "✓ " : "+ ") + a.name + " " + inr(a.price);
+        if (on) { b.style.borderColor = "#c9a24d"; b.style.color = "#e6cd92"; }
+        b.onclick = function () {
+          var i = self.draft.addons.indexOf(a.id);
+          if (i > -1) self.draft.addons.splice(i, 1); else self.draft.addons.push(a.id);
+          renderChips(); renderTotal();
+        };
+        chips.appendChild(b);
+      });
+    }
+
+    doneBtn.onclick = function () {
+      chips.querySelectorAll("button").forEach(function (x) { x.disabled = true; x.style.opacity = ".5"; });
+      doneBtn.disabled = true;
+      onDone();
+    };
+
+    renderChips(); renderTotal();
+    wrap.appendChild(chips);
+    wrap.appendChild(totalBox);
+    wrap.appendChild(doneBtn);
+    this.setComposer(wrap);
+    this.scrollBottom();
   };
 
   ChatWidget.prototype.showMultiDateInput = function (onDone) {
@@ -516,17 +615,22 @@
 
   ChatWidget.prototype.showSummary = function () {
     var self = this, d = this.draft;
-    var price = pkgPrice(d.pkg);
-    var total = price * 1.18, advance = total * 0.25;
+    var e = estimate(d);
     var box = el("div", { class: "adz-summary" });
     box.innerHTML =
       row("Service", serviceLabel(d.service)) +
       row("Package", pkgName(d.pkg)) +
+      e.picked.map(function (a) { return row("+ " + esc(a.name), inr(a.price)); }).join("") +
       row("Date(s)", d.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ")) +
       row("Venue", esc(d.venue)) +
       row("Name", esc(d.name)) +
       row("Mobile", esc(d.phone)) +
-      '<div class="r total"><span>Advance (25%) due now</span><b>' + inr(advance) + "</b></div>";
+      row("Package amount", inr(e.base)) +
+      (e.picked.length ? row("Add-ons", inr(e.addonsTotal)) : "") +
+      row("GST @ 18%", inr(e.gst)) +
+      '<div class="r total"><span>Total</span><b>' + inr(e.total) + "</b></div>" +
+      row("Advance (25%) due now", inr(e.advance)) +
+      row("Balance on shoot day", inr(e.balance));
     function row(k, v) { return '<div class="r"><span>' + k + "</span><b>" + v + "</b></div>"; }
 
     var confirmBtn = el("button", { class: "adz-btn gold" });
@@ -535,7 +639,10 @@
     var overBtn = el("button", { class: "adz-btn ghost" });
     overBtn.textContent = "Start Over";
     overBtn.onclick = function () {
-      self.draft = { service: "", pkg: "", date: "", venue: "", name: "", phone: "" };
+      // Must match the constructor's shape -- this previously reset to a
+      // `date` string with no `dates` array, so the next date step threw on
+      // draft.dates.slice() and the conversation dead-ended.
+      self.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
       self.addUser("Start over");
       self.runStep("intro");
     };
@@ -549,21 +656,24 @@
     var self = this, d = this.draft;
     this.setComposer(null);
     if (this.mode === "app") {
-      var price = pkgPrice(d.pkg === "unsure" ? "gold" : d.pkg);
-      var total = price * 1.18, paid = total * 0.25;
+      var e = estimate(d);
       var order = {
         id: "ADZ" + String(Date.now()).slice(-6),
         service: d.service, pkg: d.pkg === "unsure" ? "gold" : d.pkg,
-        dates: d.dates, venue: d.venue, name: d.name, phone: d.phone,
-        notes: "Booked via chat assistant", total: total, paid: paid,
+        addons: d.addons || [],
+        dates: d.dates, date: d.dates && d.dates[0], venue: d.venue, name: d.name, phone: d.phone,
+        notes: "Booked via chat assistant", total: e.total, paid: e.advance,
         stage: 1, created: new Date().toISOString(), method: "upi"
       };
+      // The app reads adz_orders / adz_user. This used to write adz_orders_dc,
+      // so a chat booking was saved somewhere nothing reads and never appeared
+      // in My Bookings -- while the bot claimed it would.
       try {
-        var orders = JSON.parse(localStorage.getItem("adz_orders_dc") || "[]");
+        var orders = JSON.parse(localStorage.getItem("adz_orders") || "[]");
         orders = [order].concat(orders);
-        localStorage.setItem("adz_orders_dc", JSON.stringify(orders));
-        localStorage.setItem("adz_user_dc", JSON.stringify({ name: d.name, phone: d.phone }));
-      } catch (e) {}
+        localStorage.setItem("adz_orders", JSON.stringify(orders));
+        localStorage.setItem("adz_user", JSON.stringify({ name: d.name, phone: d.phone }));
+      } catch (e2) {}
       var datesText = d.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ");
       this.addBot("🎉 Booked! Your ID is <b>" + order.id + "</b> for " + datesText + ". Reloading so it shows up in <b>My Bookings</b>…");
       setTimeout(function () { location.reload(); }, 1900);
@@ -575,13 +685,18 @@
         "*Date(s):* " + (d.dates.length ? d.dates.slice().sort().map(function (x) { return longDate(x); }).join("; ") : "—") + "\n" +
         "*Venue:* " + (d.venue || "—") + "\n" +
         "*Package:* " + pkgName(d.pkg) + "\n" +
+        (estimate(d).picked.length
+          ? "*Add-ons:* " + estimate(d).picked.map(function (a) { return a.name; }).join(", ") + "\n"
+          : "") +
+        "*Estimated total (incl. 18% GST):* " + inr(estimate(d).total) + "\n" +
+        "*Advance (25%):* " + inr(estimate(d).advance) + "\n" +
         "*Notes:* Booked via chat assistant";
       window.open("https://wa.me/" + PHONE + "?text=" + encodeURIComponent(txt), "_blank");
       this.addBot("I've opened WhatsApp with everything filled in — just hit send and our team will confirm within the hour.", function () {
         var again = el("button", { class: "adz-btn ghost" });
         again.textContent = "Start a New Chat";
         again.onclick = function () {
-          self.draft = { service: "", pkg: "", date: "", venue: "", name: "", phone: "" };
+          self.draft = { service: "", pkg: "", dates: [], addons: [], venue: "", name: "", phone: "" };
           self.body.innerHTML = "";
           self.runStep("intro");
         };
