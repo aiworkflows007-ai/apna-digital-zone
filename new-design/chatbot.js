@@ -44,7 +44,7 @@
       { id: "birthday", n: "Birthday", price: 7000 },
       { id: "anniv", n: "Anniversary", price: 7000 },
       { id: "baby", n: "Baby Shoot", price: 15000 },
-      { id: "vip", n: "VIP Event", price: null }
+      { id: "vip", n: "VIP Event", price: 12000 }
     ]},
     newborn: { unit: "day", opts: [
       { id: "trad", n: "Traditional", price: 10000 },
